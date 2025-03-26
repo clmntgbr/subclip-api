@@ -5,13 +5,16 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use App\Entity\ValueObject\Email;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Embedded;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Uid\Uuid;
 
 const USER_READ = 'user.read';
@@ -19,7 +22,7 @@ const USER_WRITE = 'user.write';
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email.value'])]
 #[ApiResource(
     operations: [
         new Get(
@@ -38,9 +41,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups([USER_READ])]
     private Uuid $id;
 
-    #[ORM\Column(length: 180)]
-    #[Groups([USER_READ])]
-    private ?string $email = null;
+    #[Embedded(class: Email::class)]
+    private ?Email $email;
 
     #[ORM\Column]
     #[Groups([USER_READ])]
@@ -67,18 +69,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->id = Uuid::v4();
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
     }
 
     public function getUserIdentifier(): string
@@ -167,6 +157,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(?string $lastName): static
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    #[Groups([USER_READ])]
+    #[SerializedName('email')]
+    public function getApiEmail()
+    {
+        return $this->email->__toString();
+    }
+
+    public function getEmail(): Email
+    {
+        return $this->email;
+    }
+
+    public function setEmail(Email $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }
