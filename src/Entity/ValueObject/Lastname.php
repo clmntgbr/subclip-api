@@ -15,6 +15,8 @@ class Lastname implements \Stringable
     public function __construct(string $value)
     {
         Assert::notEmpty($value);
+        Assert::notWhitespaceOnly($value);
+        Assert::string($value);
         $this->value = $value;
     }
 

@@ -3,6 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\User;
+use App\Entity\ValueObject\Password;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
@@ -51,7 +52,8 @@ readonly class UserEvent
     private function hashPassword(User $user): void
     {
         if ($user->getPlainPassword()) {
-            $user->setPassword($this->userPasswordHasher->hashPassword($user, $user->getPlainPassword()));
+            $password = new Password($this->userPasswordHasher->hashPassword($user, $user->getPlainPassword()->__toString()));
+            $user->setPassword($password);
         }
 
         $user->eraseCredentials();

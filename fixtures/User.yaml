@@ -3,6 +3,6 @@ App\Entity\User:
     email: "<email('clement@gmail.com')>"
     firstname: "<firstname('Clement')>"
     lastname: "<lastname('Random')>"
-    plain_password: "clement"
+    plain_password: "<plainPassword('clement')>"
     roles: ["ROLE_ADMIN"]
     api_key: '@api_key_1'

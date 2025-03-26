@@ -8,6 +8,8 @@ use ApiPlatform\Metadata\Get;
 use App\Entity\ValueObject\Email;
 use App\Entity\ValueObject\Firstname;
 use App\Entity\ValueObject\Lastname;
+use App\Entity\ValueObject\Password;
+use App\Entity\ValueObject\PlainPassword;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -46,15 +48,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Embedded(class: Email::class)]
     private Email $email;
 
+    #[Embedded(class: Password::class)]
+    private Password $password;
+
+    #[Embedded(class: PlainPassword::class)]
+    private ?PlainPassword $plainPassword;
+
     #[ORM\Column]
     #[Groups([USER_READ])]
     private array $roles = [];
 
-    #[ORM\Column]
-    private ?string $password = null;
+    // #[ORM\Column]
+    // private ?string $password = null;
 
-    #[ORM\Column(type: Types::STRING, nullable: true)]
-    private ?string $plainPassword = null;
+    // #[ORM\Column(type: Types::STRING, nullable: true)]
+    // private ?string $plainPassword = null;
 
     #[Embedded(class: Lastname::class)]
     private Lastname $lastname;
@@ -93,10 +101,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getPassword(): ?string
     {
-        return $this->password;
+        return $this->password->__toString();
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(Password $password): static
     {
         $this->password = $password;
 
@@ -125,12 +133,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    public function getPlainPassword(): ?string
+    public function getPlainPassword(): ?PlainPassword
     {
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(?string $plainPassword): static
+    public function setPlainPassword(PlainPassword $plainPassword): static
     {
         $this->plainPassword = $plainPassword;
 
