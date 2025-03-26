@@ -17,3 +17,4 @@ framework:
             App\Message\RemoveApiKey: sync
             App\Message\UpdateApiKey: sync
             App\Message\CreateClip: sync
+            App\Message\CreateVideo: sync

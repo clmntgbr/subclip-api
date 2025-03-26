@@ -41,6 +41,7 @@ class SecurityController extends AbstractController
         $plainToken = bin2hex(random_bytes(32));
 
         $this->messageBus->dispatch(new UpdateApiKey($user, $plainToken));
+
         return new JsonResponse(data: ['token' => $plainToken], status: Response::HTTP_OK);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\MessageHandler;
 
 use App\Entity\ApiKey;
-use App\Entity\User;
 use App\Message\UpdateApiKey;
 use App\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -13,8 +12,7 @@ final class UpdateApiKeyHandler
 {
     public function __construct(
         private UserRepository $userRepository,
-    )
-    {
+    ) {
     }
 
     public function __invoke(UpdateApiKey $message): void

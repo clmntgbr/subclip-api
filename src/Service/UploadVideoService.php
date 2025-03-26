@@ -2,14 +2,8 @@
 
 namespace App\Service;
 
-use App\Dto\UploadVideoConfiguration;
-use App\Entity\MediaPod;
 use App\Entity\User;
 use App\Message\CreateClip;
-use App\Protobuf\MediaPodStatus;
-use App\Repository\ConfigurationRepository;
-use App\Repository\MediaPodRepository;
-use App\Repository\VideoRepository;
 use League\Flysystem\FilesystemOperator;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -77,7 +71,14 @@ class UploadVideoService
                 fclose($stream);
             }
 
-            $this->messageBus->dispatch(new CreateClip($clipId, $user));
+            $this->messageBus->dispatch(new CreateClip(
+                $clipId,
+                $user,
+                $file->getClientOriginalName(),
+                $fileName,
+                $file->getMimeType(),
+                $file->getSize(),
+            ));
 
             return new JsonResponse([
                 'message' => 'Video uploaded successfully.',

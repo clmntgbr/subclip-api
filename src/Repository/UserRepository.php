@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\ApiKey;
 use App\Entity\User;
 use App\Entity\ValueObject\Password;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
