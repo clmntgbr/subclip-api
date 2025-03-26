@@ -1,7 +1,7 @@
 framework:
     messenger:
         transports:
-            default:
+            async:
                 dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
                 options:
                     exchange:
@@ -9,6 +9,9 @@ framework:
                         type: direct
                     auto_setup: true
                     queues:
-                        default:
-                            binding_keys: [default]
+                        async:
+                            binding_keys: [async]
+            sync: 'sync://'
+                
         routing:
+            App\Message\RemoveApiKey: sync

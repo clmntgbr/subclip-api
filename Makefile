@@ -62,10 +62,22 @@ fabric:
 	$(PHP) php bin/console messenger:setup-transports
 
 db: 
-	$(PHP) php bin/console doctrine:database:drop -f
+	$(PHP) php bin/console doctrine:database:drop -f --if-exists
 	$(PHP) php bin/console doctrine:database:create
 	$(PHP) php bin/console doctrine:schema:update -f
 	$(PHP) php bin/console hautelook:fixtures:load -n
 
-fixtures:
+fixture:
 	$(PHP) php bin/console hautelook:fixtures:load -n
+
+schema:
+	$(PHP) php bin/console doctrine:schema:update -f
+
+regenerate:
+	$(PHP) php bin/console make:entity --regenerate App
+
+entity:
+	$(PHP) php bin/console make:entity
+
+dotenv:
+	$(PHP) php bin/console debug:dotenv

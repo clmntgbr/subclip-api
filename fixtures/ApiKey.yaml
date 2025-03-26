@@ -1,0 +1,5 @@
+App\Entity\ApiKey:
+  api_key_1:
+    token: b501903e5fbc70c3dc58c54590b2148c0e88958a7c9362762b60ef3082779175
+    expireAt: <dateTimeBetween('now', '+7 days')>
+    user: '@user_1'

@@ -1,0 +1,8 @@
+App\Entity\User:
+  user_1:
+    lastName: <lastname()>
+    firstName: "clement"
+    email: "clement@gmail.com"
+    plain_password: "clement"
+    roles: ["ROLE_ADMIN"]
+    api_key: '@api_key_1'

@@ -19,6 +19,7 @@
         "hautelook/alice-bundle": ">=2.14.1",
         "nelmio/cors-bundle": ">=2.5",
         "runtime/frankenphp-symfony": ">=0.2",
+        "stof/doctrine-extensions-bundle": "^1.13",
         "symfony/amqp-messenger": "7.2.*",
         "symfony/asset": "7.2.*",
         "symfony/console": "7.2.*",
@@ -85,9 +86,12 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "7.2.*",
             "docker": true
         }
+    },
+    "require-dev": {
+        "symfony/maker-bundle": "^1.62"
     }
 }
