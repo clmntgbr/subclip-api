@@ -15,3 +15,4 @@ framework:
                 
         routing:
             App\Message\RemoveApiKey: sync
+            App\Message\UpdateApiKey: sync

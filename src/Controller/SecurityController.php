@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Dto\GetToken;
 use App\Entity\User;
+use App\Message\UpdateApiKey;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -18,6 +20,7 @@ class SecurityController extends AbstractController
     public function __construct(
         private UserPasswordHasherInterface $userPasswordHasher,
         private UserRepository $userRepository,
+        private MessageBusInterface $messageBus,
     ) {
     }
 
@@ -25,7 +28,7 @@ class SecurityController extends AbstractController
     public function token(#[MapRequestPayload()] GetToken $getToken): JsonResponse
     {
         /** @var ?User $user */
-        $user = $this->userRepository->findOneBy(['email.value' => $getToken->email]);
+        $user = $this->userRepository->findOneBy(['email.email' => $getToken->email]);
 
         if (null === $user) {
             return new JsonResponse(data: ['message' => 'User not found'], status: Response::HTTP_UNAUTHORIZED);
@@ -36,9 +39,8 @@ class SecurityController extends AbstractController
         }
 
         $plainToken = bin2hex(random_bytes(32));
-        $user->updateToken($user, $plainToken);
-        $this->userRepository->save($user);
 
+        $this->messageBus->dispatch(new UpdateApiKey($user, $plainToken));
         return new JsonResponse(data: ['token' => $plainToken], status: Response::HTTP_OK);
     }
 }

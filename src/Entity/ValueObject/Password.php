@@ -11,19 +11,19 @@ use Webmozart\Assert\Assert;
 #[ORM\Embeddable]
 class Password implements \Stringable
 {
-    #[ORM\Column(name: 'value', type: Types::STRING, length: 180, nullable: false, unique: false)]
-    private string $value;
+    #[ORM\Column(name: 'password', type: Types::STRING, length: 180, nullable: false)]
+    private string $password;
 
-    public function __construct(string $value)
+    public function __construct(string $password)
     {
-        Assert::notEmpty($value);
-        Assert::notWhitespaceOnly($value);
-        Assert::string($value);
-        $this->value = $value;
+        Assert::notEmpty($password);
+        Assert::notWhitespaceOnly($password);
+        Assert::string($password);
+        $this->password = $password;
     }
 
     public function __toString(): string
     {
-        return $this->value;
+        return $this->password;
     }
 }

@@ -34,20 +34,4 @@ class UserRepository extends AbstractRepository implements PasswordUpgraderInter
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
-
-    public function updateToken(User $user, string $token): User
-    {
-        if (null === $user->getApiKey()) {
-            $apiKey = new ApiKey();
-            $apiKey->setUser($user);
-            $user->setApiKey($apiKey);
-        }
-
-        $user->getApiKey()->setToken($token);
-        $user->getApiKey()->setExpireAt(new \DateTimeImmutable('+7 days'));
-
-        $this->save($user);
-
-        return $user;
-    }
 }

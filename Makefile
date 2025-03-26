@@ -81,6 +81,9 @@ regenerate:
 entity:
 	$(PHP) php bin/console make:entity
 
+message:
+	$(PHP) php bin/console make:message
+
 dotenv:
 	$(PHP) php bin/console debug:dotenv
 

@@ -25,7 +25,7 @@ class ApiKey
     #[ApiProperty(identifier: true)]
     private Uuid $id;
 
-    #[Embedded(class: Token::class)]
+    #[Embedded(class: Token::class, columnPrefix: false)]
     private ?Token $token;
 
     #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]

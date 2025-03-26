@@ -25,7 +25,7 @@ const USER_WRITE = 'user.write';
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email.value'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email.email'])]
 #[ApiResource(
     operations: [
         new Get(
@@ -44,23 +44,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups([USER_READ])]
     private Uuid $id;
 
-    #[Embedded(class: Email::class)]
+    #[Embedded(class: Email::class, columnPrefix: false)]
     private Email $email;
 
-    #[Embedded(class: Password::class)]
+    #[Embedded(class: Password::class, columnPrefix: false)]
     private Password $password;
 
-    #[Embedded(class: PlainPassword::class)]
+    #[Embedded(class: PlainPassword::class, columnPrefix: false)]
     private ?PlainPassword $plainPassword;
 
     #[ORM\Column]
     #[Groups([USER_READ])]
     private array $roles = [];
 
-    #[Embedded(class: Lastname::class)]
+    #[Embedded(class: Lastname::class, columnPrefix: false)]
     private Lastname $lastname;
 
-    #[Embedded(class: Firstname::class)]
+    #[Embedded(class: Firstname::class, columnPrefix: false)]
     private Firstname $firstname;
 
     #[ORM\OneToOne(targetEntity: ApiKey::class, cascade: ['persist', 'remove'])]
@@ -193,19 +193,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->email = $email;
 
         return $this;
-    }
-
-    public function updateToken(User $user, string $token): User
-    {
-        if (null === $user->getApiKey()) {
-            $apiKey = new ApiKey();
-            $apiKey->setUser($user);
-            $user->setApiKey($apiKey);
-        }
-
-        $user->getApiKey()->setToken($token);
-        $user->getApiKey()->setExpireAt(new \DateTimeImmutable('+7 days'));
-
-        return $user;
     }
 }
