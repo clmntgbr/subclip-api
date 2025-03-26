@@ -8,7 +8,8 @@ class FirstnameProvider
 {
     public function firstname(string $firstname): Firstname
     {
-        $firstname = str_replace("\\","", $firstname);
+        $firstname = str_replace('\\', '', $firstname);
+
         return new Firstname($firstname);
     }
 }

@@ -8,7 +8,8 @@ class EmailProvider
 {
     public function email(string $email): Email
     {
-        $email = str_replace("\\","", $email);
+        $email = str_replace('\\', '', $email);
+
         return new Email($email);
     }
 }

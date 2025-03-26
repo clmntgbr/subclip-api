@@ -14,7 +14,7 @@ final class RemoveApiKeyHandler
         private ApiKeyRepository $apiKeyRepository,
     ) {
     }
-    
+
     public function __invoke(RemoveApiKey $message): void
     {
         /** @var ?ApiKey $apiKey */

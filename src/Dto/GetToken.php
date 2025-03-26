@@ -2,7 +2,6 @@
 
 namespace App\Dto;
 
-use App\Validator\Constraints\UniqueEmail;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class GetToken

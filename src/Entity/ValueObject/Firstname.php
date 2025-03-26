@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Entity\ValueObject;
 
 use Doctrine\DBAL\Types\Types;
@@ -9,7 +11,7 @@ use Webmozart\Assert\Assert;
 #[ORM\Embeddable]
 class Firstname implements \Stringable
 {
-    #[ORM\Column(name: "value", type: Types::STRING,  nullable: false)]
+    #[ORM\Column(name: 'value', type: Types::STRING, nullable: false)]
     private string $value;
 
     public function __construct(string $value)

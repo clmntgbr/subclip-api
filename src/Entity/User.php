@@ -11,7 +11,6 @@ use App\Entity\ValueObject\Lastname;
 use App\Entity\ValueObject\Password;
 use App\Entity\ValueObject\PlainPassword;
 use App\Repository\UserRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Embedded;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -32,13 +31,13 @@ const USER_WRITE = 'user.write';
         new Get(
             uriTemplate: '/me',
             normalizationContext: ['skip_null_values' => false, 'groups' => [USER_READ]],
-        )
+        ),
     ]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
-    
+
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ApiProperty(identifier: true)]
@@ -57,12 +56,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups([USER_READ])]
     private array $roles = [];
-
-    // #[ORM\Column]
-    // private ?string $password = null;
-
-    // #[ORM\Column(type: Types::STRING, nullable: true)]
-    // private ?string $plainPassword = null;
 
     #[Embedded(class: Lastname::class)]
     private Lastname $lastname;
@@ -200,5 +193,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->email = $email;
 
         return $this;
+    }
+
+    public function updateToken(User $user, string $token): User
+    {
+        if (null === $user->getApiKey()) {
+            $apiKey = new ApiKey();
+            $apiKey->setUser($user);
+            $user->setApiKey($apiKey);
+        }
+
+        $user->getApiKey()->setToken($token);
+        $user->getApiKey()->setExpireAt(new \DateTimeImmutable('+7 days'));
+
+        return $user;
     }
 }

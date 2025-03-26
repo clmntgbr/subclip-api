@@ -14,7 +14,7 @@ use Symfony\Component\Uid\Uuid;
 class Clip
 {
     use TimestampableEntity;
-    
+
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ApiProperty(identifier: true)]

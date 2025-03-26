@@ -13,6 +13,6 @@ class StatusController extends AbstractController
     #[Route('/status', name: 'status', methods: ['GET'])]
     public function status(): JsonResponse
     {
-      return new JsonResponse(data: ['status' => 'ok'], status: Response::HTTP_OK);
+        return new JsonResponse(data: ['status' => 'ok'], status: Response::HTTP_OK);
     }
 }

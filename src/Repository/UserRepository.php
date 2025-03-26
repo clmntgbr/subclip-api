@@ -14,7 +14,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 /**
  * @extends ServiceEntityRepository<User>
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UserRepository extends AbstractRepository implements PasswordUpgraderInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -46,8 +46,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->getApiKey()->setToken($token);
         $user->getApiKey()->setExpireAt(new \DateTimeImmutable('+7 days'));
 
-        $this->getEntityManager()->persist($user);
-        $this->getEntityManager()->flush();
+        $this->save($user);
 
         return $user;
     }

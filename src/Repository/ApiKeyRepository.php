@@ -9,22 +9,10 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<ApiKey>
  */
-class ApiKeyRepository extends ServiceEntityRepository
+class ApiKeyRepository extends AbstractRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ApiKey::class);
-    }
-
-    public function remove(ApiKey $apiKey): void
-    {
-        $this->getEntityManager()->remove($apiKey);
-        $this->getEntityManager()->flush();
-    }
-
-    public function save(ApiKey $apiKey): void
-    {
-        $this->getEntityManager()->persist($apiKey);
-        $this->getEntityManager()->flush();
     }
 }

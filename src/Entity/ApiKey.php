@@ -9,7 +9,6 @@ use App\Repository\ApiKeyRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Embedded;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
 const API_KEY_READ = 'user.read';
@@ -20,7 +19,7 @@ const API_KEY_WRITE = 'user.write';
 class ApiKey
 {
     use TimestampableEntity;
-    
+
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ApiProperty(identifier: true)]

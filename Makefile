@@ -7,9 +7,11 @@ DOCKER_COMPOSE = docker compose -p $(PROJECT_NAME)
 
 CONTAINER_PHP := $(shell docker container ls -f "name=$(PROJECT_NAME)-php" -q)
 CONTAINER_DB := $(shell docker container ls -f "name=$(PROJECT_NAME)-database" -q)
+CONTAINER_QA := $(shell docker container ls -f "name=$(PROJECT_NAME)-qa" -q)
 
 PHP := docker exec -ti $(CONTAINER_PHP)
 DATABASE := docker exec -ti $(CONTAINER_DB)
+QA := docker exec -ti $(CONTAINER_QA)
 
 ## Kill all containers
 kill:
@@ -81,3 +83,9 @@ entity:
 
 dotenv:
 	$(PHP) php bin/console debug:dotenv
+
+php-cs-fixer:
+	$(QA) ./php-cs-fixer fix src --rules=@Symfony --verbose --diff
+
+php-stan:
+	$(QA) ./vendor/bin/phpstan analyse src -l $(or $(level), 5)
