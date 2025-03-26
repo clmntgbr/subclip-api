@@ -6,6 +6,8 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use App\Entity\ValueObject\Email;
+use App\Entity\ValueObject\Firstname;
+use App\Entity\ValueObject\Lastname;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -42,7 +44,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Uuid $id;
 
     #[Embedded(class: Email::class)]
-    private ?Email $email;
+    private Email $email;
 
     #[ORM\Column]
     #[Groups([USER_READ])]
@@ -54,13 +56,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $plainPassword = null;
 
-    #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups([USER_READ])]
-    private ?string $firstName = null;
+    #[Embedded(class: Lastname::class)]
+    private Lastname $lastname;
 
-    #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups([USER_READ])]
-    private ?string $lastName = null;
+    #[Embedded(class: Firstname::class)]
+    private Firstname $firstname;
 
     #[ORM\OneToOne(targetEntity: ApiKey::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: 'api_key_id', referencedColumnName: 'id', nullable: true)]
@@ -137,26 +137,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getFirstName(): ?string
+    public function getFirstname(): Firstname
     {
-        return $this->firstName;
+        return $this->firstname;
     }
 
-    public function setFirstName(?string $firstName): static
+    public function setFirstname(Firstname $firstname): static
     {
-        $this->firstName = $firstName;
+        $this->firstname = $firstname;
 
         return $this;
     }
 
-    public function getLastName(): ?string
+    public function getLastname(): Lastname
     {
-        return $this->lastName;
+        return $this->lastname;
     }
 
-    public function setLastName(?string $lastName): static
+    public function setLastname(Lastname $lastname): static
     {
-        $this->lastName = $lastName;
+        $this->lastname = $lastname;
 
         return $this;
     }
@@ -166,6 +166,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getApiEmail()
     {
         return $this->email->__toString();
+    }
+
+    #[Groups([USER_READ])]
+    #[SerializedName('firstname')]
+    public function getApiFirstname()
+    {
+        return $this->firstname->__toString();
+    }
+
+    #[Groups([USER_READ])]
+    #[SerializedName('lastname')]
+    public function getApiLastname()
+    {
+        return $this->lastname->__toString();
     }
 
     public function getEmail(): Email

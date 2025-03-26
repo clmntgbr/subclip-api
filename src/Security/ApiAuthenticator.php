@@ -39,7 +39,7 @@ class ApiAuthenticator extends AbstractAuthenticator
         $hashedToken = hash('sha256', $plainToken);
 
         /** @var ?ApiKey $apiKey */
-        $apiKey = $this->apiKeyRepository->findOneBy(['token' => $hashedToken]);
+        $apiKey = $this->apiKeyRepository->findOneBy(['token.value' => $hashedToken]);
 
         if (null === $apiKey) {
             throw new AuthenticationException();

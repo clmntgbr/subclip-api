@@ -23,5 +23,11 @@ services:
     App\Fixtures\Provider\EmailProvider:
         tags: ['nelmio_alice.faker.provider']
 
+    App\Fixtures\Provider\LastnameProvider:
+        tags: ['nelmio_alice.faker.provider']
+
+    App\Fixtures\Provider\FirstnameProvider:
+        tags: ['nelmio_alice.faker.provider']
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

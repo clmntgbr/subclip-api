@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use App\Entity\ValueObject\Token;
 use App\Repository\ApiKeyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Embedded;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -24,8 +26,8 @@ class ApiKey
     #[ApiProperty(identifier: true)]
     private Uuid $id;
 
-    #[ORM\Column(length: 64, nullable: true)]
-    private ?string $token = null;
+    #[Embedded(class: Token::class)]
+    private ?Token $token;
 
     #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
@@ -39,7 +41,7 @@ class ApiKey
         $this->id = Uuid::v4();
     }
 
-    public function getToken(): ?string
+    public function getToken(): ?Token
     {
         return $this->token;
     }
@@ -52,7 +54,7 @@ class ApiKey
     public function setToken(string $token): static
     {
         $token = hash('sha256', $token);
-        $this->token = $token;
+        $this->token = new Token($token);
 
         return $this;
     }
