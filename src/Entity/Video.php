@@ -11,8 +11,6 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
-use const App\Entity\CLIP_READ;
-
 #[ORM\Entity(repositoryClass: VideoRepository::class)]
 #[ApiResource]
 class Video
@@ -54,7 +52,7 @@ class Video
         $this->size = $size;
     }
 
-    public function getName() : ?string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -64,7 +62,7 @@ class Video
         return $this->originalName;
     }
 
-    public function getMimeType() 
+    public function getMimeType()
     {
         return $this->mimeType;
     }
@@ -77,5 +75,17 @@ class Video
     public function getId(): ?Uuid
     {
         return $this->id;
+    }
+
+    #[Groups([CLIP_READ])]
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    #[Groups([CLIP_READ])]
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
     }
 }

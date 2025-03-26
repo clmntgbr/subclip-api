@@ -1,12 +1,12 @@
 meta {
-  name: Post Video
+  name: Get Clips
   type: http
-  seq: 3
+  seq: 4
 }
 
-post {
-  url: {{api_url}}api/video/upload
-  body: multipartForm
+get {
+  url: {{api_url}}api/clips
+  body: none
   auth: apikey
 }
 
