@@ -12,18 +12,18 @@ use Webmozart\Assert\Assert;
 class Password implements \Stringable
 {
     #[ORM\Column(name: 'password', type: Types::STRING, length: 180, nullable: false)]
-    private string $password;
+    private string $value;
 
-    public function __construct(string $password)
+    public function __construct(string $value)
     {
-        Assert::notEmpty($password);
-        Assert::notWhitespaceOnly($password);
-        Assert::string($password);
-        $this->password = $password;
+        Assert::notEmpty($value);
+        Assert::notWhitespaceOnly($value);
+        Assert::string($value);
+        $this->value = $value;
     }
 
     public function __toString(): string
     {
-        return $this->password;
+        return $this->value;
     }
 }

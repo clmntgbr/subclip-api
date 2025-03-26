@@ -28,7 +28,7 @@ class SecurityController extends AbstractController
     public function token(#[MapRequestPayload()] GetToken $getToken): JsonResponse
     {
         /** @var ?User $user */
-        $user = $this->userRepository->findOneBy(['email.email' => $getToken->email]);
+        $user = $this->userRepository->findOneBy(['email.value' => $getToken->email]);
 
         if (null === $user) {
             return new JsonResponse(data: ['message' => 'User not found'], status: Response::HTTP_UNAUTHORIZED);

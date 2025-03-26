@@ -11,15 +11,15 @@ use Doctrine\ORM\Mapping as ORM;
 class Token implements \Stringable
 {
     #[ORM\Column(name: 'token', type: Types::STRING, length: 64, nullable: true)]
-    private string $token;
+    private string $value;
 
-    public function __construct(string $token)
+    public function __construct(string $value)
     {
-        $this->token = $token;
+        $this->value = $value;
     }
 
     public function __toString(): string
     {
-        return $this->token;
+        return $this->value;
     }
 }

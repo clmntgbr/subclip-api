@@ -12,18 +12,18 @@ use Webmozart\Assert\Assert;
 class Firstname implements \Stringable
 {
     #[ORM\Column(name: 'firstname', type: Types::STRING, nullable: false)]
-    private string $firstname;
+    private string $value;
 
-    public function __construct(string $firstname)
+    public function __construct(string $value)
     {
-        Assert::notEmpty($firstname);
-        Assert::notWhitespaceOnly($firstname);
-        Assert::string($firstname);
-        $this->firstname = $firstname;
+        Assert::notEmpty($value);
+        Assert::notWhitespaceOnly($value);
+        Assert::string($value);
+        $this->value = $value;
     }
 
     public function __toString(): string
     {
-        return $this->firstname;
+        return $this->value;
     }
 }
