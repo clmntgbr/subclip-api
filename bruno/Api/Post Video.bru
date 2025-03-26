@@ -1,0 +1,17 @@
+meta {
+  name: Post Video
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{api_url}}api/video/upload
+  body: none
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-API-KEY
+  value: {{token}}
+  placement: header
+}
