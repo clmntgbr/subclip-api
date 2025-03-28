@@ -1,20 +1,23 @@
 framework:
     messenger:
         transports:
-            async:
+            microservices:
                 dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                serializer: App\Messenger\Serializer\ProtobufSerializer
                 options:
                     exchange:
                         name: messages
                         type: direct
                     auto_setup: true
                     queues:
-                        async:
-                            binding_keys: [async]
+                        microservices:
+                            binding_keys: [microservices]
             sync: 'sync://'
                 
         routing:
+            App\Message\MicroServicesMessage: sync
             App\Message\RemoveApiKey: sync
             App\Message\UpdateApiKey: sync
             App\Message\CreateClip: sync
             App\Message\CreateVideo: sync
+            'App\Protobuf\MicroServicesMessage': microservices

@@ -77,8 +77,8 @@ class Clip
         $this->id = $clipId;
         $this->user = $user;
         $this->originalVideo = $originalVideo;
-        $this->status = new Status(ClipStatus::name(ClipStatus::UPLOADED));
-        $this->statuses = new Statuses([ClipStatus::name(ClipStatus::UPLOADED)]);
+        $this->status = new Status(ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_PENDING));
+        $this->statuses = new Statuses([ClipStatus::name(ClipStatus::UPLOADED), ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_PENDING)]);
     }
 
     #[Groups([CLIP_READ])]
@@ -106,7 +106,7 @@ class Clip
 
     #[Groups([CLIP_READ])]
     #[SerializedName('status')]
-    public function getApiStatus(): string
+    public function getStatusToString(): string
     {
         return $this->status->__toString();
     }
