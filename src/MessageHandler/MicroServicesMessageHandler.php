@@ -2,8 +2,8 @@
 
 namespace App\MessageHandler;
 
-use App\Protobuf\MicroServicesMessage as ProtobufMicroServicesMessage;
 use App\Message\MicroServicesMessage;
+use App\Protobuf\MicroServicesMessage as ProtobufMicroServicesMessage;
 use App\Service\ProtobufService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
@@ -17,6 +17,7 @@ final class MicroServicesMessageHandler
         private MessageBusInterface $messageBus,
     ) {
     }
+
     public function __invoke(MicroServicesMessage $message): void
     {
         $protobufClip = $this->protobufService->getProtobufClip($message->clip);
@@ -26,7 +27,7 @@ final class MicroServicesMessageHandler
         $protobufMicroServicesMessage->setService($message->service);
 
         $this->messageBus->dispatch($protobufMicroServicesMessage, [
-            new AmqpStamp('microservices', 0, []),
+            new AmqpStamp($message->service, 0, []),
         ]);
     }
 }

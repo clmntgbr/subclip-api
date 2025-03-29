@@ -3,20 +3,9 @@
 namespace App\Service;
 
 use App\Entity\Clip;
-use App\Entity\User;
 use App\Entity\Video;
-use App\Message\CreateClip;
-use League\Flysystem\FilesystemOperator;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Uid\Uuid;
 use App\Protobuf\Clip as ProtobufClip;
 use App\Protobuf\Video as ProtobufVideo;
-use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProtobufService
 {
@@ -63,6 +52,26 @@ class ProtobufService
 
         if ($video->getSize()) {
             $protobuf->setSize($video->getSize());
+        }
+
+        if ($video->getLength()) {
+            $protobuf->setLength($video->getLength());
+        }
+
+        if ($video->getAss()) {
+            $protobuf->setAss($video->getAss());
+        }
+
+        if ($video->getSubtitle()) {
+            $protobuf->setSubtitle($video->getSubtitle());
+        }
+
+        if ($video->getSubtitles()) {
+            $protobuf->setSubtitles($video->getSubtitles());
+        }
+
+        if ($video->getAudios()) {
+            $protobuf->setAudios($video->getAudios());
         }
 
         return $protobuf;

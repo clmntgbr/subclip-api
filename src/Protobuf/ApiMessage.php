@@ -8,9 +8,9 @@ namespace App\Protobuf;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
- * Generated from protobuf message <code>App.Protobuf.MicroServicesMessage</code>.
+ * Generated from protobuf message <code>App.Protobuf.ApiMessage</code>.
  */
-class MicroServicesMessage extends \Google\Protobuf\Internal\Message
+class ApiMessage extends \Google\Protobuf\Internal\Message
 {
     /**
      * Generated from protobuf field <code>.App.Protobuf.Clip clip = 1;</code>.

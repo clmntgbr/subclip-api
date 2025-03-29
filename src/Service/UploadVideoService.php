@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\Clip;
 use App\Entity\User;
 use App\Message\CreateClip;
 use League\Flysystem\FilesystemOperator;
@@ -11,7 +10,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -53,7 +51,7 @@ class UploadVideoService
 
         try {
             $clipId = Uuid::v4();
-            $fileName = sprintf('%s.%s', md5(uniqid()), $file->guessExtension());
+            $fileName = sprintf('%s.%s', $clipId->toString(), $file->guessExtension());
             $path = sprintf('%s/%s/%s', $user->getId(), $clipId->toString(), $fileName);
 
             $stream = fopen($file->getPathname(), 'r');

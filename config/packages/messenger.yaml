@@ -6,12 +6,18 @@ framework:
                 serializer: App\Messenger\Serializer\ProtobufSerializer
                 options:
                     exchange:
-                        name: messages
+                        name: microservices
                         type: direct
                     auto_setup: true
                     queues:
-                        microservices:
-                            binding_keys: [microservices]
+                        sound_extractor:
+                            binding_keys: [sound_extractor]
+                        subtitle_generator:
+                            binding_keys: [subtitle_generator]
+                        subtitle_merger:
+                            binding_keys: [subtitle_merger]
+                        api:
+                            binding_keys: [api]
             sync: 'sync://'
                 
         routing:
@@ -21,3 +27,4 @@ framework:
             App\Message\CreateClip: sync
             App\Message\CreateVideo: sync
             'App\Protobuf\MicroServicesMessage': microservices
+            'App\Protobuf\ApiMessage': microservices

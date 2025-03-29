@@ -39,6 +39,26 @@ class Video
     #[Groups([CLIP_READ])]
     private ?int $size = null;
 
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Groups([CLIP_READ])]
+    private ?int $length = null;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups([CLIP_READ])]
+    private ?string $subtitle = null;
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups([CLIP_READ])]
+    private ?string $ass = null;
+
+    #[ORM\Column(type: Types::JSON, nullable: false)]
+    #[Groups([CLIP_READ])]
+    private array $subtitles = [];
+
+    #[ORM\Column(type: Types::JSON, nullable: false)]
+    #[Groups([CLIP_READ])]
+    private array $audios = [];
+
     public function __construct(
         string $originalName,
         string $name,
@@ -50,6 +70,31 @@ class Video
         $this->name = $name;
         $this->mimeType = $mimeType;
         $this->size = $size;
+    }
+
+    public function getLength(): ?int
+    {
+        return $this->length;
+    }
+
+    public function getAudios(): array
+    {
+        return $this->audios;
+    }
+
+    public function getSubtitles(): array
+    {
+        return $this->subtitles;
+    }
+
+    public function getSubtitle(): ?string
+    {
+        return $this->subtitle;
+    }
+
+    public function getAss(): ?string
+    {
+        return $this->ass;
     }
 
     public function getName(): ?string

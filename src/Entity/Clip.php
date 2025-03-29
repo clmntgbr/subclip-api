@@ -55,6 +55,9 @@ class Clip
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $name = null;
 
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $cover = null;
+
     #[ORM\OneToOne(targetEntity: Video::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: 'orginal_video_id', referencedColumnName: 'id', nullable: false)]
     private ?Video $originalVideo = null;
@@ -96,6 +99,12 @@ class Clip
     public function getOriginalVideo(): Video
     {
         return $this->originalVideo;
+    }
+
+    #[Groups([CLIP_READ])]
+    public function getCover(): string
+    {
+        return $this->cover;
     }
 
     #[Groups([CLIP_READ])]
