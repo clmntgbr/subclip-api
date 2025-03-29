@@ -102,6 +102,90 @@ class Video
         return $this->name;
     }
 
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function setLength(int $length): self
+    {
+        $this->length = $length;
+
+        return $this;
+    }
+
+    public function setSize(int $size): self
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    public function setSubtitle(string $subtitle): self
+    {
+        $this->subtitle = $subtitle;
+
+        return $this;
+    }
+
+    public function setAss(string $ass): self
+    {
+        $this->ass = $ass;
+
+        return $this;
+    }
+
+    public function setOriginalName(string $originalName): self
+    {
+        $this->originalName = $originalName;
+
+        return $this;
+    }
+
+    public function setSubtitles(array $subtitles): self
+    {
+        $this->subtitles = $subtitles;
+
+        return $this;
+    }
+
+    public function setAudios(array $audios): self
+    {
+        $this->audios = $audios;
+
+        return $this;
+    }
+
+    public function addSubtitles(string $subtitle): static
+    {
+        $this->subtitles[] = $subtitle;
+
+        return $this;
+    }
+
+    public function addAudios(string $audio): static
+    {
+        $this->audios[] = $audio;
+
+        return $this;
+    }
+
+    public function setId(string $id): self
+    {
+        $this->id = Uuid::fromString($id);
+
+        return $this;
+    }
+
+    public function setMimeType(string $mimeType): self
+    {
+        $this->mimeType = $mimeType;
+
+        return $this;
+    }
+
     public function getOriginalName(): ?string
     {
         return $this->originalName;

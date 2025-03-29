@@ -11,6 +11,7 @@ use App\Repository\ClipRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
+use Symfony\Component\Workflow\WorkflowInterface;
 
 #[AsMessageHandler]
 final class CreateClipHandler
@@ -18,6 +19,7 @@ final class CreateClipHandler
     public function __construct(
         private ClipRepository $clipRepository,
         private MessageBusInterface $messageBus,
+        private WorkflowInterface $clipStateMachine,
     ) {
     }
 
@@ -36,6 +38,12 @@ final class CreateClipHandler
         $video = $handledStamp->getResult();
 
         $clip = new Clip($message->user, $message->clipId, $video);
+
+        if (!$this->clipStateMachine->can($clip, 'process_sound')) {
+            throw new \RuntimeException('Clip is not in a valid state to process sound');
+        }
+
+        $this->clipStateMachine->apply($clip, 'process_sound');
         $this->clipRepository->save($clip);
 
         $this->messageBus->dispatch(new MicroServicesMessage($clip, 'sound_extractor'));

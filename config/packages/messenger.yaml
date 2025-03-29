@@ -28,3 +28,4 @@ framework:
             App\Message\CreateVideo: sync
             'App\Protobuf\MicroServicesMessage': microservices
             'App\Protobuf\ApiMessage': microservices
+            App\Message\SoundExtractorMessage: sync

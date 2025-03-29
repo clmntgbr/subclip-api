@@ -2,7 +2,9 @@
 
 namespace App\MessageHandler;
 
+use App\Message\SoundExtractorMessage;
 use App\Protobuf\ApiMessage;
+use App\Protobuf\ClipStatus;
 use App\Service\ProtobufService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -18,6 +20,12 @@ final class ApiMessageHandler
 
     public function __invoke(ApiMessage $message): void
     {
-        dd($message->getClip());
+        match ($message->getClip()->getStatus()) {
+            ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_PENDING) => $this->messageBus->dispatch(new SoundExtractorMessage($message)),
+            ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_COMPLETE) => $this->messageBus->dispatch(new SoundExtractorMessage($message)),
+            ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_ERROR) => $this->messageBus->dispatch(new SoundExtractorMessage($message)),
+
+            default => throw new \RuntimeException('Unknown message type'),
+        };
     }
 }

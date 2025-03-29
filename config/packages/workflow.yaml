@@ -1,0 +1,37 @@
+framework:
+    workflows:
+        clip:
+            type: 'state_machine'
+            marking_store:
+                type: 'method'
+                property: 'status'
+            supports:
+                - App\Entity\Clip
+            initial_marking: UPLOADED
+            places:
+                - UPLOADED
+                - SOUND_EXTRACTOR_PENDING
+                - SOUND_EXTRACTOR_COMPLETE
+                - SOUND_EXTRACTOR_ERROR
+                - SUBTITLE_GENERATOR_PENDING
+                - SUBTITLE_GENERATOR_COMPLETE
+                - SUBTITLE_GENERATOR_ERROR
+            transitions:
+                process_sound:
+                    from: UPLOADED
+                    to: SOUND_EXTRACTOR_PENDING
+                sound_extraction_success:
+                    from: SOUND_EXTRACTOR_PENDING
+                    to: SOUND_EXTRACTOR_COMPLETE
+                sound_extraction_failure:
+                    from: SOUND_EXTRACTOR_PENDING
+                    to: SOUND_EXTRACTOR_ERROR
+                process_subtitles:
+                    from: SOUND_EXTRACTOR_COMPLETE
+                    to: SUBTITLE_GENERATOR_PENDING
+                subtitle_generation_success:
+                    from: SUBTITLE_GENERATOR_PENDING
+                    to: SUBTITLE_GENERATOR_COMPLETE
+                subtitle_generation_failure:
+                    from: SUBTITLE_GENERATOR_PENDING
+                    to: SUBTITLE_GENERATOR_ERROR

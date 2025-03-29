@@ -8,16 +8,12 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\ApiResource\UploadVideoAction;
-use App\Entity\ValueObject\Status;
-use App\Entity\ValueObject\Statuses;
 use App\Protobuf\ClipStatus;
 use App\Repository\ClipRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Embedded;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Uid\Uuid;
 
 const CLIP_READ = 'clip.read';
@@ -66,11 +62,13 @@ class Clip
     #[ORM\JoinColumn(name: 'processed_video_id', referencedColumnName: 'id', nullable: true)]
     private ?Video $processedVideo = null;
 
-    #[Embedded(class: Status::class, columnPrefix: false)]
-    private Status $status;
+    #[ORM\Column(type: Types::STRING, nullable: false)]
+    #[Groups([CLIP_READ])]
+    private string $status;
 
-    #[Embedded(class: Statuses::class, columnPrefix: false)]
-    private Statuses $statuses;
+    #[ORM\Column(type: Types::JSON, nullable: false)]
+    #[Groups([CLIP_READ])]
+    private array $statuses = [];
 
     public function __construct(
         User $user,
@@ -80,8 +78,8 @@ class Clip
         $this->id = $clipId;
         $this->user = $user;
         $this->originalVideo = $originalVideo;
-        $this->status = new Status(ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_PENDING));
-        $this->statuses = new Statuses([ClipStatus::name(ClipStatus::UPLOADED), ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_PENDING)]);
+        $this->status = ClipStatus::name(ClipStatus::UPLOADED);
+        $this->statuses = [ClipStatus::name(ClipStatus::UPLOADED)];
     }
 
     #[Groups([CLIP_READ])]
@@ -95,6 +93,33 @@ class Clip
         return $this->user;
     }
 
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+        $this->statuses[] = $status;
+
+        return $this;
+    }
+
+    public function setCover(string $cover): self
+    {
+        $this->cover = $cover;
+
+        return $this;
+    }
+
+    public function setOriginalVideo(Video $video): self
+    {
+        $this->originalVideo = $video;
+
+        return $this;
+    }
+
     #[Groups([CLIP_READ])]
     public function getOriginalVideo(): Video
     {
@@ -102,7 +127,7 @@ class Clip
     }
 
     #[Groups([CLIP_READ])]
-    public function getCover(): string
+    public function getCover(): ?string
     {
         return $this->cover;
     }
@@ -113,18 +138,9 @@ class Clip
         return $this->processedVideo;
     }
 
-    #[Groups([CLIP_READ])]
-    #[SerializedName('status')]
-    public function getStatusToString(): string
+    public function getStatuses(): array
     {
-        return $this->status->__toString();
-    }
-
-    #[Groups([CLIP_READ])]
-    #[SerializedName('statuses')]
-    public function getApiStatuses(): array
-    {
-        return $this->statuses->getValues();
+        return $this->statuses;
     }
 
     #[Groups([CLIP_READ])]
