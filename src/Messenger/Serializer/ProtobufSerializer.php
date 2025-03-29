@@ -46,7 +46,9 @@ class ProtobufSerializer implements SerializerInterface
             throw new \InvalidArgumentException(sprintf('Message must be an instance of %s, %s given', Message::class, get_class($message)));
         }
 
-        /* @var ApiMessage | MicroServicesMessage $message */
+        /**
+         * @var ApiMessage | MicroServicesMessage $message 
+         * */
 
         return [
             'body' => json_encode([
