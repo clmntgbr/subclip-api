@@ -3,7 +3,7 @@
 namespace App\Messenger\Serializer;
 
 use App\Protobuf\ApiMessage;
-use App\Protobuf\MicroServicesMessage;
+use App\Protobuf\ServicesMessage;
 use Google\Protobuf\Internal\Message;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\MessageDecodingFailedException;
@@ -47,7 +47,7 @@ class ProtobufSerializer implements SerializerInterface
         }
 
         /*
-         * @var ApiMessage | MicroServicesMessage $message
+         * @var ApiMessage | ServicesMessage $message
          * */
 
         return [

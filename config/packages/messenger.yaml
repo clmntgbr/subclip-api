@@ -21,11 +21,11 @@ framework:
             sync: 'sync://'
                 
         routing:
-            App\Message\MicroServicesMessage: sync
+            App\Message\ServicesMessage: sync
             App\Message\RemoveApiKey: sync
             App\Message\UpdateApiKey: sync
             App\Message\CreateClip: sync
             App\Message\CreateVideo: sync
-            'App\Protobuf\MicroServicesMessage': microservices
-            'App\Protobuf\ApiMessage': microservices
-            App\Message\SoundExtractorMessage: sync
+            'App\Protobuf\ServicesMessage': microservices
+            'App\Protobuf\SoundExtractorMessage': microservices
+            'App\Protobuf\SubtitleGeneratorMessage': microservices

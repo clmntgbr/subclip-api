@@ -2,15 +2,15 @@
 
 namespace App\MessageHandler;
 
-use App\Message\MicroServicesMessage;
-use App\Protobuf\MicroServicesMessage as ProtobufMicroServicesMessage;
+use App\Message\ServicesMessage;
+use App\Protobuf\ServicesMessage as ProtobufServicesMessage;
 use App\Service\ProtobufService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsMessageHandler]
-final class MicroServicesMessageHandler
+final class ServicesMessageHandler
 {
     public function __construct(
         private ProtobufService $protobufService,
@@ -18,15 +18,15 @@ final class MicroServicesMessageHandler
     ) {
     }
 
-    public function __invoke(MicroServicesMessage $message): void
+    public function __invoke(ServicesMessage $message): void
     {
         $protobufClip = $this->protobufService->getProtobufClip($message->clip);
 
-        $protobufMicroServicesMessage = new ProtobufMicroServicesMessage();
-        $protobufMicroServicesMessage->setClip($protobufClip);
-        $protobufMicroServicesMessage->setService($message->service);
+        $protobufServicesMessage = new ProtobufServicesMessage();
+        $protobufServicesMessage->setClip($protobufClip);
+        $protobufServicesMessage->setService($message->service);
 
-        $this->messageBus->dispatch($protobufMicroServicesMessage, [
+        $this->messageBus->dispatch($protobufServicesMessage, [
             new AmqpStamp($message->service, 0, []),
         ]);
     }

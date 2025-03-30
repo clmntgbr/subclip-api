@@ -17,7 +17,7 @@ framework:
                 - SUBTITLE_GENERATOR_COMPLETE
                 - SUBTITLE_GENERATOR_ERROR
             transitions:
-                process_sound:
+                process_sound_extractor:
                     from: UPLOADED
                     to: SOUND_EXTRACTOR_PENDING
                 sound_extraction_success:
@@ -26,12 +26,23 @@ framework:
                 sound_extraction_failure:
                     from: SOUND_EXTRACTOR_PENDING
                     to: SOUND_EXTRACTOR_ERROR
-                process_subtitles:
+
+                process_subtitle_generator:
                     from: SOUND_EXTRACTOR_COMPLETE
                     to: SUBTITLE_GENERATOR_PENDING
-                subtitle_generation_success:
+                subtitle_generator_success:
                     from: SUBTITLE_GENERATOR_PENDING
                     to: SUBTITLE_GENERATOR_COMPLETE
-                subtitle_generation_failure:
+                subtitle_generator_failure:
                     from: SUBTITLE_GENERATOR_PENDING
                     to: SUBTITLE_GENERATOR_ERROR
+
+                process_subtitle_merger:
+                    from: SUBTITLE_GENERATOR_COMPLETE
+                    to: SUBTITLE_MERGER_PENDING
+                subtitle_merger_success:
+                    from: SUBTITLE_MERGER_PENDING
+                    to: SUBTITLE_MERGER_COMPLETE
+                subtitle_merger_failure:
+                    from: SUBTITLE_MERGER_PENDING
+                    to: SUBTITLE_MERGER_ERROR

@@ -6,7 +6,7 @@ use App\Entity\Clip;
 use App\Entity\Video;
 use App\Message\CreateClip;
 use App\Message\CreateVideo;
-use App\Message\MicroServicesMessage;
+use App\Message\ServicesMessage;
 use App\Repository\ClipRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -39,14 +39,14 @@ final class CreateClipHandler
 
         $clip = new Clip($message->user, $message->clipId, $video);
 
-        if (!$this->clipStateMachine->can($clip, 'process_sound')) {
+        if (!$this->clipStateMachine->can($clip, 'process_sound_extractor')) {
             throw new \RuntimeException('Clip is not in a valid state to process sound');
         }
 
-        $this->clipStateMachine->apply($clip, 'process_sound');
+        $this->clipStateMachine->apply($clip, 'process_sound_extractor');
         $this->clipRepository->save($clip);
 
-        $this->messageBus->dispatch(new MicroServicesMessage($clip, 'sound_extractor'));
+        $this->messageBus->dispatch(new ServicesMessage($clip, 'sound_extractor'));
 
         return $clip;
     }

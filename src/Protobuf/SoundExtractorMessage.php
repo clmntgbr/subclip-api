@@ -8,9 +8,9 @@ namespace App\Protobuf;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
- * Generated from protobuf message <code>App.Protobuf.ApiMessage</code>.
+ * Generated from protobuf message <code>App.Protobuf.SoundExtractorMessage</code>.
  */
-class ApiMessage extends \Google\Protobuf\Internal\Message
+class SoundExtractorMessage extends \Google\Protobuf\Internal\Message
 {
     /**
      * Generated from protobuf field <code>.App.Protobuf.Clip clip = 1;</code>.

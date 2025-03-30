@@ -4,7 +4,7 @@ namespace App\MessageHandler;
 
 use App\Message\ServicesMessage;
 use App\Protobuf\ClipStatus;
-use App\Protobuf\SoundExtractorMessage;
+use App\Protobuf\SubtitleGeneratorMessage;
 use App\Repository\ClipRepository;
 use App\Service\ProtobufService;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -12,7 +12,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Workflow\WorkflowInterface;
 
 #[AsMessageHandler]
-final class SoundExtractorMessageHandler
+final class SubtitleGeneratorMessageHandler
 {
     public function __construct(
         private readonly ProtobufService $protobufService,
@@ -22,9 +22,8 @@ final class SoundExtractorMessageHandler
     ) {
     }
 
-    public function __invoke(SoundExtractorMessage $message): void
+    public function __invoke(SubtitleGeneratorMessage $message): void
     {
-        // dd('SoundExtractorMessage');
         $clip = $this->protobufService->getClip($message->getClip());
 
         $canTransition = false;
@@ -50,14 +49,14 @@ final class SoundExtractorMessageHandler
             }
         }
 
-        if (!$this->clipStateMachine->can($clip, 'process_subtitle_generator')) {
+        if (!$this->clipStateMachine->can($clip, 'process_subtitle_merger')) {
             return;
         }
 
-        $this->clipStateMachine->apply($clip, 'process_subtitle_generator');
+        $this->clipStateMachine->apply($clip, 'process_subtitle_merger');
         $this->clipRepository->save($clip);
 
-        $this->messageBus->dispatch(new ServicesMessage($clip, 'subtitle_generator'));
+        $this->messageBus->dispatch(new ServicesMessage($clip, 'subtitle_merger'));
 
         return;
     }
