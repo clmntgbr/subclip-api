@@ -42,6 +42,7 @@ class Clip
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ApiProperty(identifier: true)]
+    #[Groups([CLIP_READ])]
     private Uuid $id;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -49,17 +50,26 @@ class Clip
     private User $user;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups([CLIP_READ])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups([CLIP_READ])]
     private ?string $cover = null;
+
+    #[ORM\OneToOne(targetEntity: Configuration::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(name: 'configuration_id', referencedColumnName: 'id', nullable: false)]
+    #[Groups([CLIP_READ])]
+    private Configuration $configuration;
 
     #[ORM\OneToOne(targetEntity: Video::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: 'orginal_video_id', referencedColumnName: 'id', nullable: false)]
-    private ?Video $originalVideo = null;
+    #[Groups([CLIP_READ])]
+    private Video $originalVideo;
 
     #[ORM\OneToOne(targetEntity: Video::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: 'processed_video_id', referencedColumnName: 'id', nullable: true)]
+    #[Groups([CLIP_READ])]
     private ?Video $processedVideo = null;
 
     #[ORM\Column(type: Types::STRING, nullable: false)]
@@ -74,15 +84,16 @@ class Clip
         User $user,
         Uuid $clipId,
         Video $originalVideo,
+        Configuration $configuration,
     ) {
         $this->id = $clipId;
         $this->user = $user;
         $this->originalVideo = $originalVideo;
+        $this->configuration = $configuration;
         $this->status = ClipStatus::name(ClipStatus::UPLOADED);
         $this->statuses = [ClipStatus::name(ClipStatus::UPLOADED)];
     }
 
-    #[Groups([CLIP_READ])]
     public function getId(): ?Uuid
     {
         return $this->id;
@@ -120,6 +131,13 @@ class Clip
         return $this;
     }
 
+    public function setConfiguration(Configuration $configuration): self
+    {
+        $this->configuration = $configuration;
+
+        return $this;
+    }
+
     public function setOriginalVideo(Video $video): self
     {
         $this->originalVideo = $video;
@@ -127,19 +145,26 @@ class Clip
         return $this;
     }
 
-    #[Groups([CLIP_READ])]
     public function getOriginalVideo(): Video
     {
         return $this->originalVideo;
     }
 
-    #[Groups([CLIP_READ])]
+    public function getConfiguration(): Configuration
+    {
+        return $this->configuration;
+    }
+
     public function getCover(): ?string
     {
         return $this->cover;
     }
 
-    #[Groups([CLIP_READ])]
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
     public function getProcessedVideo(): ?Video
     {
         return $this->processedVideo;

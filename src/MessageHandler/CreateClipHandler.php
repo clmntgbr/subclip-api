@@ -3,6 +3,7 @@
 namespace App\MessageHandler;
 
 use App\Entity\Clip;
+use App\Entity\Configuration;
 use App\Entity\Video;
 use App\Message\CreateClip;
 use App\Message\CreateVideo;
@@ -37,7 +38,7 @@ final class CreateClipHandler
         /** @var Video $video */
         $video = $handledStamp->getResult();
 
-        $clip = new Clip($message->user, $message->clipId, $video);
+        $clip = new Clip($message->user, $message->clipId, $video, new Configuration());
 
         if (!$this->clipStateMachine->can($clip, 'process_sound_extractor')) {
             throw new \RuntimeException('Clip is not in a valid state to process sound');

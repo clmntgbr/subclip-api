@@ -39,14 +39,11 @@ class ProtobufSerializer implements SerializerInterface
 
     public function encode(Envelope $envelope): array
     {
+        /** @var ServicesMessage $message */
         $message = $envelope->getMessage();
 
         if (!$message instanceof Message) {
             throw new \InvalidArgumentException(sprintf('Message must be an instance of %s, %s given', Message::class, get_class($message)));
-        }
-
-        if (!$message instanceof ServicesMessage) {
-            throw new \InvalidArgumentException(sprintf('Message must be an instance of %s, %s given', ServicesMessage::class, get_class($message)));
         }
 
         return [

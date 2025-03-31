@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Clip;
+use App\Entity\Configuration;
 use App\Entity\User;
 use App\Entity\Video;
 use App\Protobuf\ClipStatus;
@@ -92,7 +93,7 @@ class DebugController extends AbstractController
 
         $video = new Video(
             'video.mp4',
-            'f27644432084872be07b716b6b32af76.mp4',
+            'e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4',
             'video/mp4',
             71541180
         );
@@ -113,7 +114,8 @@ class DebugController extends AbstractController
         $clip = new Clip(
             $user,
             Uuid::fromString($id),
-            $video
+            $video,
+            new Configuration(),
         );
 
         return $clip;
@@ -121,90 +123,90 @@ class DebugController extends AbstractController
 
     private function sendToS3(User $user, Clip $clip): void
     {
-        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76.mp4');
-        $stream = fopen('/app/public/debug/f27644432084872be07b716b6b32af76.mp4', 'r');
+        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4');
+        $stream = fopen('/app/public/debug/e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
         // Audios
 
-        $path = sprintf('%s/%s/audios/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_1.wav');
-        $stream = fopen('/app/public/debug/audios/f27644432084872be07b716b6b32af76_1.wav', 'r');
+        $path = sprintf('%s/%s/audios/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav');
+        $stream = fopen('/app/public/debug/audios/e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/audios/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_2.wav');
-        $stream = fopen('/app/public/debug/audios/f27644432084872be07b716b6b32af76_2.wav', 'r');
+        $path = sprintf('%s/%s/audios/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav');
+        $stream = fopen('/app/public/debug/audios/e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/audios/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_3.wav');
-        $stream = fopen('/app/public/debug/audios/f27644432084872be07b716b6b32af76_3.wav', 'r');
+        $path = sprintf('%s/%s/audios/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav');
+        $stream = fopen('/app/public/debug/audios/e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/audios/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_4.wav');
-        $stream = fopen('/app/public/debug/audios/f27644432084872be07b716b6b32af76_4.wav', 'r');
+        $path = sprintf('%s/%s/audios/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav');
+        $stream = fopen('/app/public/debug/audios/e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/audios/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_5.wav');
-        $stream = fopen('/app/public/debug/audios/f27644432084872be07b716b6b32af76_5.wav', 'r');
+        $path = sprintf('%s/%s/audios/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav');
+        $stream = fopen('/app/public/debug/audios/e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
         // Subtitles
 
-        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76.srt');
-        $stream = fopen('/app/public/debug/f27644432084872be07b716b6b32af76.srt', 'r');
+        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff.srt');
+        $stream = fopen('/app/public/debug/e363934c-837f-49fa-9f4a-55bb9afcfcff.srt', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76.ass');
-        $stream = fopen('/app/public/debug/f27644432084872be07b716b6b32af76.ass', 'r');
+        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff.ass');
+        $stream = fopen('/app/public/debug/e363934c-837f-49fa-9f4a-55bb9afcfcff.ass', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_1.srt');
-        $stream = fopen('/app/public/debug/subtitles/f27644432084872be07b716b6b32af76_1.srt', 'r');
+        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt');
+        $stream = fopen('/app/public/debug/subtitles/e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_2.srt');
-        $stream = fopen('/app/public/debug/subtitles/f27644432084872be07b716b6b32af76_2.srt', 'r');
+        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt');
+        $stream = fopen('/app/public/debug/subtitles/e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_3.srt');
-        $stream = fopen('/app/public/debug/subtitles/f27644432084872be07b716b6b32af76_3.srt', 'r');
+        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt');
+        $stream = fopen('/app/public/debug/subtitles/e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_4.srt');
-        $stream = fopen('/app/public/debug/subtitles/f27644432084872be07b716b6b32af76_4.srt', 'r');
+        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt');
+        $stream = fopen('/app/public/debug/subtitles/e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_5.srt');
-        $stream = fopen('/app/public/debug/subtitles/f27644432084872be07b716b6b32af76_5.srt', 'r');
+        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt');
+        $stream = fopen('/app/public/debug/subtitles/e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
 
-        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_5.srt');
-        $stream = fopen('/app/public/debug/subtitles/f27644432084872be07b716b6b32af76_5.srt', 'r');
+        $path = sprintf('%s/%s/subtitles/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt');
+        $stream = fopen('/app/public/debug/subtitles/e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
@@ -352,8 +354,8 @@ class DebugController extends AbstractController
 
     private function toSubtitleIncrustator(User $user, Clip $clip): AMQPMessage
     {
-        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_processed.mp4');
-        $stream = fopen('/app/public/debug/f27644432084872be07b716b6b32af76_processed_subtitle_incrustator.mp4', 'r');
+        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_processed.mp4');
+        $stream = fopen('/app/public/debug/e363934c-837f-49fa-9f4a-55bb9afcfcff_processed_subtitle_incrustator.mp4', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
@@ -380,8 +382,8 @@ class DebugController extends AbstractController
 
     private function toVideoSplitter(User $user, Clip $clip): AMQPMessage
     {
-        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'f27644432084872be07b716b6b32af76_processed.mp4');
-        $stream = fopen('/app/public/debug/f27644432084872be07b716b6b32af76_processed_video_splitter.mp4', 'r');
+        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_processed.mp4');
+        $stream = fopen('/app/public/debug/e363934c-837f-49fa-9f4a-55bb9afcfcff_processed_video_splitter.mp4', 'r');
         $this->awsStorage->writeStream($path, $stream, [
             'visibility' => 'public',
         ]);
@@ -408,36 +410,36 @@ class DebugController extends AbstractController
 
     private function getJsonSoundExtractor(): string
     {
-        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"f27644432084872be07b716b6b32af76.mp4","mimeType":"video/mp4","size":"71541180"},"status":"SOUND_EXTRACTOR_PENDING"}}';
+        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4","mimeType":"video/mp4","size":"71541180"},"status":"SOUND_EXTRACTOR_PENDING","configuration":{"id":"4dd6c05b-0dd6-4ef0-bcb3-7feccb330641","subtitleFont":"ARIAL","subtitleSize":16,"subtitleColor":"#FFFFFF","subtitleBold":"0","subtitleItalic":"0","subtitleUnderline":"0","subtitleOutlineColor":"#000000","subtitleOutlineThickness":2,"subtitleShadow":2,"subtitleShadowColor":"#000000","format":"ORIGINAL","split":1}}}';
     }
 
     private function getJsonSubtitleGenerator(): string
     {
-        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"f27644432084872be07b716b6b32af76.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","audios":["f27644432084872be07b716b6b32af76_1.wav","f27644432084872be07b716b6b32af76_2.wav","f27644432084872be07b716b6b32af76_3.wav","f27644432084872be07b716b6b32af76_4.wav","f27644432084872be07b716b6b32af76_5.wav"]},"status":"SOUND_EXTRACTOR_COMPLETE"}}';
+        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]},"status":"SOUND_EXTRACTOR_COMPLETE","configuration":{"id":"4dd6c05b-0dd6-4ef0-bcb3-7feccb330641","subtitleFont":"ARIAL","subtitleSize":16,"subtitleColor":"#FFFFFF","subtitleBold":"0","subtitleItalic":"0","subtitleUnderline":"0","subtitleOutlineColor":"#000000","subtitleOutlineThickness":2,"subtitleShadow":2,"subtitleShadowColor":"#000000","format":"ORIGINAL","split":1}}}';
     }
 
     private function getJsonSubtitleMerger(): string
     {
-        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"f27644432084872be07b716b6b32af76.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitles":["f27644432084872be07b716b6b32af76_1.srt","f27644432084872be07b716b6b32af76_2.srt","f27644432084872be07b716b6b32af76_3.srt","f27644432084872be07b716b6b32af76_4.srt","f27644432084872be07b716b6b32af76_5.srt"],"audios":["f27644432084872be07b716b6b32af76_1.wav","f27644432084872be07b716b6b32af76_2.wav","f27644432084872be07b716b6b32af76_3.wav","f27644432084872be07b716b6b32af76_4.wav","f27644432084872be07b716b6b32af76_5.wav"]},"status":"SUBTITLE_GENERATOR_COMPLETE"}}';
+        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitles":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt"],"audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]},"status":"SUBTITLE_GENERATOR_COMPLETE","configuration":{"id":"4dd6c05b-0dd6-4ef0-bcb3-7feccb330641","subtitleFont":"ARIAL","subtitleSize":16,"subtitleColor":"#FFFFFF","subtitleBold":"0","subtitleItalic":"0","subtitleUnderline":"0","subtitleOutlineColor":"#000000","subtitleOutlineThickness":2,"subtitleShadow":2,"subtitleShadowColor":"#000000","format":"ORIGINAL","split":1}}}';
     }
 
     private function getJsonSubtitleTransformer(): string
     {
-        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"f27644432084872be07b716b6b32af76.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"f27644432084872be07b716b6b32af76.srt","subtitles":["f27644432084872be07b716b6b32af76_1.srt","f27644432084872be07b716b6b32af76_2.srt","f27644432084872be07b716b6b32af76_3.srt","f27644432084872be07b716b6b32af76_4.srt","f27644432084872be07b716b6b32af76_5.srt"],"audios":["f27644432084872be07b716b6b32af76_1.wav","f27644432084872be07b716b6b32af76_2.wav","f27644432084872be07b716b6b32af76_3.wav","f27644432084872be07b716b6b32af76_4.wav","f27644432084872be07b716b6b32af76_5.wav"]},"status":"SUBTITLE_MERGER_COMPLETE"}}';
+        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"e363934c-837f-49fa-9f4a-55bb9afcfcff.srt","subtitles":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt"],"audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]},"status":"SUBTITLE_MERGER_COMPLETE","configuration":{"id":"4dd6c05b-0dd6-4ef0-bcb3-7feccb330641","subtitleFont":"ARIAL","subtitleSize":16,"subtitleColor":"#FFFFFF","subtitleBold":"0","subtitleItalic":"0","subtitleUnderline":"0","subtitleOutlineColor":"#000000","subtitleOutlineThickness":2,"subtitleShadow":2,"subtitleShadowColor":"#000000","format":"ORIGINAL","split":1}}}';
     }
 
     private function getJsonVideoFormatter(): string
     {
-        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"f27644432084872be07b716b6b32af76.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"f27644432084872be07b716b6b32af76.srt","ass":"f27644432084872be07b716b6b32af76.ass","subtitles":["f27644432084872be07b716b6b32af76_1.srt","f27644432084872be07b716b6b32af76_2.srt","f27644432084872be07b716b6b32af76_3.srt","f27644432084872be07b716b6b32af76_4.srt","f27644432084872be07b716b6b32af76_5.srt"],"audios":["f27644432084872be07b716b6b32af76_1.wav","f27644432084872be07b716b6b32af76_2.wav","f27644432084872be07b716b6b32af76_3.wav","f27644432084872be07b716b6b32af76_4.wav","f27644432084872be07b716b6b32af76_5.wav"]},"status":"SUBTITLE_TRANSFORMER_COMPLETE"}}';
+        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"e363934c-837f-49fa-9f4a-55bb9afcfcff.srt","ass":"e363934c-837f-49fa-9f4a-55bb9afcfcff.ass","subtitles":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt"],"audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]},"status":"SUBTITLE_TRANSFORMER_COMPLETE","configuration":{"id":"4dd6c05b-0dd6-4ef0-bcb3-7feccb330641","subtitleFont":"ARIAL","subtitleSize":16,"subtitleColor":"#FFFFFF","subtitleBold":"0","subtitleItalic":"0","subtitleUnderline":"0","subtitleOutlineColor":"#000000","subtitleOutlineThickness":2,"subtitleShadow":2,"subtitleShadowColor":"#000000","format":"ORIGINAL","split":1}}}';
     }
 
     private function getJsonSubtitleIncrustator(): string
     {
-        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"f27644432084872be07b716b6b32af76.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"f27644432084872be07b716b6b32af76.srt","ass":"f27644432084872be07b716b6b32af76.ass","subtitles":["f27644432084872be07b716b6b32af76_1.srt","f27644432084872be07b716b6b32af76_2.srt","f27644432084872be07b716b6b32af76_3.srt","f27644432084872be07b716b6b32af76_4.srt","f27644432084872be07b716b6b32af76_5.srt"],"audios":["f27644432084872be07b716b6b32af76_1.wav","f27644432084872be07b716b6b32af76_2.wav","f27644432084872be07b716b6b32af76_3.wav","f27644432084872be07b716b6b32af76_4.wav","f27644432084872be07b716b6b32af76_5.wav"]},"status":"VIDEO_FORMATTER_COMPLETE","processedVideo":{"id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"f27644432084872be07b716b6b32af76_processed.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"f27644432084872be07b716b6b32af76.srt","ass":"f27644432084872be07b716b6b32af76.ass","subtitles":["f27644432084872be07b716b6b32af76_1.srt","f27644432084872be07b716b6b32af76_2.srt","f27644432084872be07b716b6b32af76_3.srt","f27644432084872be07b716b6b32af76_4.srt","f27644432084872be07b716b6b32af76_5.srt"],"audios":["f27644432084872be07b716b6b32af76_1.wav","f27644432084872be07b716b6b32af76_2.wav","f27644432084872be07b716b6b32af76_3.wav","f27644432084872be07b716b6b32af76_4.wav","f27644432084872be07b716b6b32af76_5.wav"]}}}';
+        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"e363934c-837f-49fa-9f4a-55bb9afcfcff.srt","ass":"e363934c-837f-49fa-9f4a-55bb9afcfcff.ass","subtitles":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt"],"audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]},"status":"VIDEO_FORMATTER_COMPLETE","configuration":{"id":"4dd6c05b-0dd6-4ef0-bcb3-7feccb330641","subtitleFont":"ARIAL","subtitleSize":16,"subtitleColor":"#FFFFFF","subtitleBold":"0","subtitleItalic":"0","subtitleUnderline":"0","subtitleOutlineColor":"#000000","subtitleOutlineThickness":2,"subtitleShadow":2,"subtitleShadowColor":"#000000","format":"ORIGINAL","split":1},"processedVideo":{"id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff_processed.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"e363934c-837f-49fa-9f4a-55bb9afcfcff.srt","ass":"e363934c-837f-49fa-9f4a-55bb9afcfcff.ass","subtitles":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt"],"audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]}}}';
     }
 
     private function getJsonVideoSplitter(): string
     {
-        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"f27644432084872be07b716b6b32af76.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"f27644432084872be07b716b6b32af76.srt","ass":"f27644432084872be07b716b6b32af76.ass","subtitles":["f27644432084872be07b716b6b32af76_1.srt","f27644432084872be07b716b6b32af76_2.srt","f27644432084872be07b716b6b32af76_3.srt","f27644432084872be07b716b6b32af76_4.srt","f27644432084872be07b716b6b32af76_5.srt"],"audios":["f27644432084872be07b716b6b32af76_1.wav","f27644432084872be07b716b6b32af76_2.wav","f27644432084872be07b716b6b32af76_3.wav","f27644432084872be07b716b6b32af76_4.wav","f27644432084872be07b716b6b32af76_5.wav"]},"status":"SUBTITLE_INCRUSTATOR_COMPLETE","processedVideo":{"id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"f27644432084872be07b716b6b32af76_processed.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"f27644432084872be07b716b6b32af76.srt","ass":"f27644432084872be07b716b6b32af76.ass","subtitles":["f27644432084872be07b716b6b32af76_1.srt","f27644432084872be07b716b6b32af76_2.srt","f27644432084872be07b716b6b32af76_3.srt","f27644432084872be07b716b6b32af76_4.srt","f27644432084872be07b716b6b32af76_5.srt"],"audios":["f27644432084872be07b716b6b32af76_1.wav","f27644432084872be07b716b6b32af76_2.wav","f27644432084872be07b716b6b32af76_3.wav","f27644432084872be07b716b6b32af76_4.wav","f27644432084872be07b716b6b32af76_5.wav"]}}}';
+        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"e363934c-837f-49fa-9f4a-55bb9afcfcff.srt","ass":"e363934c-837f-49fa-9f4a-55bb9afcfcff.ass","subtitles":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt"],"audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]},"status":"SUBTITLE_INCRUSTATOR_COMPLETE","configuration":{"id":"4dd6c05b-0dd6-4ef0-bcb3-7feccb330641","subtitleFont":"ARIAL","subtitleSize":16,"subtitleColor":"#FFFFFF","subtitleBold":"0","subtitleItalic":"0","subtitleUnderline":"0","subtitleOutlineColor":"#000000","subtitleOutlineThickness":2,"subtitleShadow":2,"subtitleShadowColor":"#000000","format":"ORIGINAL","split":1},"processedVideo":{"id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff_processed.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"e363934c-837f-49fa-9f4a-55bb9afcfcff.srt","ass":"e363934c-837f-49fa-9f4a-55bb9afcfcff.ass","subtitles":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt"],"audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]}}}';
     }
 }

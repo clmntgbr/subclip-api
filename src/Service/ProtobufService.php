@@ -3,8 +3,10 @@
 namespace App\Service;
 
 use App\Entity\Clip;
+use App\Entity\Configuration;
 use App\Entity\Video;
 use App\Protobuf\Clip as ProtobufClip;
+use App\Protobuf\Configuration as ProtobufConfiguration;
 use App\Protobuf\Video as ProtobufVideo;
 use App\Repository\ClipRepository;
 use App\Repository\UserRepository;
@@ -21,8 +23,10 @@ class ProtobufService
     {
         $protobufClip = $this->transformClipToProtobuf($clip);
         $protobufOriginalVideo = $this->transformVideoToProtobuf($clip->getOriginalVideo());
+        $protobufConfiguration = $this->transformConfigurationToProtobuf($clip->getConfiguration());
 
         $protobufClip->setOriginalVideo($protobufOriginalVideo);
+        $protobufClip->setConfiguration($protobufConfiguration);
 
         return $protobufClip;
     }
@@ -36,6 +40,12 @@ class ProtobufService
         }
 
         $clip = $this->transformProtobufToClip($protobuf);
+
+        $originalVideo = $this->transformProtobufToVideo($clip->getOriginalVideo(), $protobuf->getOriginalVideo());
+        $configuration = $this->transformProtobufToConfiguration($clip->getConfiguration(), $protobuf->getConfiguration());
+
+        $clip->setOriginalVideo($originalVideo);
+        $clip->setConfiguration($configuration);
 
         return $clip;
     }
@@ -64,16 +74,9 @@ class ProtobufService
             throw new \RuntimeException('User not found');
         }
 
-        if ($clip->getCover()) {
+        if ($protobufClip->getCover()) {
             $clip->setCover($protobufClip->getCover());
         }
-
-        $clip->setOriginalVideo(
-            $this->transformProtobufToVideo(
-                $clip->getOriginalVideo(),
-                $protobufClip->getOriginalVideo()
-            )
-        );
 
         return $clip;
     }
@@ -181,6 +184,88 @@ class ProtobufService
         if ($video->getAudios()) {
             $protobuf->setAudios($video->getAudios());
         }
+
+        return $protobuf;
+    }
+
+    private function transformProtobufToConfiguration(?Configuration $configuration, ProtobufConfiguration $protobufConfiguration): Configuration
+    {
+        if (null === $configuration) {
+            $configuration = new Configuration();
+        }
+
+        if ($protobufConfiguration->getId()) {
+            $configuration->setId($protobufConfiguration->getId());
+        }
+
+        if ($protobufConfiguration->getFormat()) {
+            $configuration->setFormat($protobufConfiguration->getFormat());
+        }
+
+        if ($protobufConfiguration->getSplit()) {
+            $configuration->setSplit($protobufConfiguration->getSplit());
+        }
+
+        if ($protobufConfiguration->getSubtitleBold()) {
+            $configuration->setSubtitleBold($protobufConfiguration->getSubtitleBold());
+        }
+
+        if ($protobufConfiguration->getSubtitleColor()) {
+            $configuration->setSubtitleColor($protobufConfiguration->getSubtitleColor());
+        }
+
+        if ($protobufConfiguration->getSubtitleFont()) {
+            $configuration->setSubtitleFont($protobufConfiguration->getSubtitleFont());
+        }
+
+        if ($protobufConfiguration->getSubtitleItalic()) {
+            $configuration->setSubtitleItalic($protobufConfiguration->getSubtitleItalic());
+        }
+
+        if ($protobufConfiguration->getSubtitleOutlineColor()) {
+            $configuration->setSubtitleOutlineColor($protobufConfiguration->getSubtitleOutlineColor());
+        }
+
+        if ($protobufConfiguration->getSubtitleOutlineThickness()) {
+            $configuration->setSubtitleOutlineThickness($protobufConfiguration->getSubtitleOutlineThickness());
+        }
+
+        if ($protobufConfiguration->getSubtitleShadow()) {
+            $configuration->setSubtitleShadow($protobufConfiguration->getSubtitleShadow());
+        }
+
+        if ($protobufConfiguration->getSubtitleShadowColor()) {
+            $configuration->setSubtitleShadowColor($protobufConfiguration->getSubtitleShadowColor());
+        }
+
+        if ($protobufConfiguration->getSubtitleSize()) {
+            $configuration->setSubtitleSize($protobufConfiguration->getSubtitleSize());
+        }
+
+        if ($protobufConfiguration->getSubtitleUnderline()) {
+            $configuration->setSubtitleUnderline($protobufConfiguration->getSubtitleUnderline());
+        }
+
+        return $configuration;
+    }
+
+    private function transformConfigurationToProtobuf(Configuration $configuration): ProtobufConfiguration
+    {
+        $protobuf = new ProtobufConfiguration();
+
+        $protobuf->setId($configuration->getId()->__toString());
+        $protobuf->setSubtitleFont($configuration->getSubtitleFont());
+        $protobuf->setSubtitleSize($configuration->getSubtitleSize());
+        $protobuf->setFormat($configuration->getFormat());
+        $protobuf->setSplit($configuration->getSplit());
+        $protobuf->setSubtitleBold($configuration->getSubtitleBold());
+        $protobuf->setSubtitleColor($configuration->getSubtitleColor());
+        $protobuf->setSubtitleItalic($configuration->getSubtitleItalic());
+        $protobuf->setSubtitleOutlineColor($configuration->getSubtitleOutlineColor());
+        $protobuf->setSubtitleOutlineThickness($configuration->getSubtitleOutlineThickness());
+        $protobuf->setSubtitleShadow($configuration->getSubtitleShadow());
+        $protobuf->setSubtitleShadowColor($configuration->getSubtitleShadowColor());
+        $protobuf->setSubtitleUnderline($configuration->getSubtitleUnderline());
 
         return $protobuf;
     }

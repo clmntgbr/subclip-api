@@ -94,4 +94,4 @@ php-stan:
 	$(QA) ./vendor/bin/phpstan analyse src -l $(or $(level), 5)
 
 consume:
-	$(PHP) php bin/console messenger:consume microservices --queues=api -vv
+	$(PHP) php bin/console messenger:consume microservices --queues=api -v

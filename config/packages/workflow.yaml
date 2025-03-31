@@ -16,6 +16,15 @@ framework:
                 - SUBTITLE_GENERATOR_PENDING
                 - SUBTITLE_GENERATOR_COMPLETE
                 - SUBTITLE_GENERATOR_ERROR
+                - SUBTITLE_MERGER_PENDING
+                - SUBTITLE_MERGER_COMPLETE
+                - SUBTITLE_MERGER_ERROR
+                - SUBTITLE_TRANSFORMER_PENDING
+                - SUBTITLE_TRANSFORMER_COMPLETE
+                - SUBTITLE_TRANSFORMER_ERROR
+                - SUBTITLE_INCRUSTATOR_PENDING
+                - SUBTITLE_INCRUSTATOR_COMPLETE
+                - SUBTITLE_INCRUSTATOR_ERROR
             transitions:
                 process_sound_extractor:
                     from: UPLOADED
@@ -56,3 +65,13 @@ framework:
                 subtitle_transformer_failure:
                     from: SUBTITLE_TRANSFORMER_PENDING
                     to: SUBTITLE_TRANSFORMER_ERROR
+
+                process_subtitle_incrustator:
+                    from: SUBTITLE_TRANSFORMER_COMPLETE
+                    to: SUBTITLE_INCRUSTATOR_PENDING
+                subtitle_incrustator_success:
+                    from: SUBTITLE_INCRUSTATOR_PENDING
+                    to: SUBTITLE_INCRUSTATOR_COMPLETE
+                subtitle_incrustator_failure:
+                    from: SUBTITLE_INCRUSTATOR_PENDING
+                    to: SUBTITLE_INCRUSTATOR_ERROR
