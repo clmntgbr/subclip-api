@@ -106,6 +106,13 @@ class Clip
         return $this;
     }
 
+    public function setStatuses(array $statuses): self
+    {
+        $this->statuses = $statuses;
+
+        return $this;
+    }
+
     public function setCover(string $cover): self
     {
         $this->cover = $cover;

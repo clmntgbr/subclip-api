@@ -1,5 +1,6 @@
 App\Entity\User:
   user_1:
+    id: 'da59434f-602f-4d39-879c-eb0950812737'
     email: "<email('clement@gmail.com')>"
     firstname: "<firstname('Clement')>"
     lastname: "<lastname('Random')>"

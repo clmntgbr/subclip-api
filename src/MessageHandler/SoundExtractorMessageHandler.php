@@ -24,41 +24,45 @@ final class SoundExtractorMessageHandler
 
     public function __invoke(SoundExtractorMessage $message): void
     {
-        // dd('SoundExtractorMessage');
-        $clip = $this->protobufService->getClip($message->getClip());
+        try {
+            $clip = $this->protobufService->getClip($message->getClip());
 
-        $canTransition = false;
-        foreach ($this->clipStateMachine->getEnabledTransitions($clip) as $transition) {
-            if (in_array($message->getClip()->getStatus(), $transition->getTos())) {
-                $canTransition = true;
-                break;
+            $canTransition = false;
+            foreach ($this->clipStateMachine->getEnabledTransitions($clip) as $transition) {
+                if (in_array($message->getClip()->getStatus(), $transition->getTos())) {
+                    $canTransition = true;
+                    break;
+                }
             }
-        }
 
-        if (!$canTransition) {
-            $clip->setStatus(ClipStatus::name(ClipStatus::STATUS_ERROR));
+            if (!$canTransition) {
+                $clip->setStatus(ClipStatus::name(ClipStatus::STATUS_ERROR));
+                $this->clipRepository->save($clip);
+
+                return;
+            }
+
+            foreach ($this->clipStateMachine->getEnabledTransitions($clip) as $transition) {
+                if (in_array($message->getClip()->getStatus(), $transition->getTos())) {
+                    $this->clipStateMachine->apply($clip, $transition->getName());
+                    $this->clipRepository->save($clip);
+                    break;
+                }
+            }
+
+            if (!$this->clipStateMachine->can($clip, 'process_subtitle_generator')) {
+                return;
+            }
+
+            $this->clipStateMachine->apply($clip, 'process_subtitle_generator');
             $this->clipRepository->save($clip);
 
+            $this->messageBus->dispatch(new ServicesMessage($clip, 'subtitle_generator'));
+
             return;
+        } catch (\Exception $e) {
+            $this->clipStateMachine->apply($clip, 'sound_extraction_failure');
+            $this->clipRepository->save($clip);
         }
-
-        foreach ($this->clipStateMachine->getEnabledTransitions($clip) as $transition) {
-            if (in_array($message->getClip()->getStatus(), $transition->getTos())) {
-                $this->clipStateMachine->apply($clip, $transition->getName());
-                $this->clipRepository->save($clip);
-                break;
-            }
-        }
-
-        if (!$this->clipStateMachine->can($clip, 'process_subtitle_generator')) {
-            return;
-        }
-
-        $this->clipStateMachine->apply($clip, 'process_subtitle_generator');
-        $this->clipRepository->save($clip);
-
-        $this->messageBus->dispatch(new ServicesMessage($clip, 'subtitle_generator'));
-
-        return;
     }
 }

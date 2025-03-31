@@ -46,3 +46,13 @@ framework:
                 subtitle_merger_failure:
                     from: SUBTITLE_MERGER_PENDING
                     to: SUBTITLE_MERGER_ERROR
+
+                process_subtitle_transformer:
+                    from: SUBTITLE_MERGER_COMPLETE
+                    to: SUBTITLE_TRANSFORMER_PENDING
+                subtitle_transformer_success:
+                    from: SUBTITLE_TRANSFORMER_PENDING
+                    to: SUBTITLE_TRANSFORMER_COMPLETE
+                subtitle_transformer_failure:
+                    from: SUBTITLE_TRANSFORMER_PENDING
+                    to: SUBTITLE_TRANSFORMER_ERROR

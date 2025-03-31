@@ -16,6 +16,16 @@ framework:
                             binding_keys: [subtitle_generator]
                         subtitle_merger:
                             binding_keys: [subtitle_merger]
+                        subtitle_transformer:
+                            binding_keys: [subtitle_transformer]
+                        subtitle_incrustator:
+                            binding_keys: [subtitle_incrustator]
+                        video_formatter:
+                            binding_keys: [video_formatter]
+                        video_incrustator:
+                            binding_keys: [video_incrustator]
+                        video_splitter:
+                            binding_keys: [video_splitter]
                         api:
                             binding_keys: [api]
             sync: 'sync://'
@@ -29,3 +39,6 @@ framework:
             'App\Protobuf\ServicesMessage': microservices
             'App\Protobuf\SoundExtractorMessage': microservices
             'App\Protobuf\SubtitleGeneratorMessage': microservices
+            'App\Protobuf\SubtitleMergerMessage': microservices
+            'App\Protobuf\SubtitleTransformerMessage': microservices
+            'App\Protobuf\SubtitleIncrustatorMessage': microservices

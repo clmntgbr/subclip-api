@@ -2,7 +2,6 @@
 
 namespace App\Messenger\Serializer;
 
-use App\Protobuf\ApiMessage;
 use App\Protobuf\ServicesMessage;
 use Google\Protobuf\Internal\Message;
 use Symfony\Component\Messenger\Envelope;
@@ -46,9 +45,9 @@ class ProtobufSerializer implements SerializerInterface
             throw new \InvalidArgumentException(sprintf('Message must be an instance of %s, %s given', Message::class, get_class($message)));
         }
 
-        /*
-         * @var ApiMessage | ServicesMessage $message
-         * */
+        if (!$message instanceof ServicesMessage) {
+            throw new \InvalidArgumentException(sprintf('Message must be an instance of %s, %s given', ServicesMessage::class, get_class($message)));
+        }
 
         return [
             'body' => json_encode([

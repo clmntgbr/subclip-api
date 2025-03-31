@@ -104,6 +104,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function setId(string $id): self
+    {
+        $this->id = Uuid::fromString($id);
+
+        return $this;
+    }
+
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;

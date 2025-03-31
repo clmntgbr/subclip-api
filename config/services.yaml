@@ -4,6 +4,8 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            string $rabbitMqTransportDsn: '%env(MESSENGER_TRANSPORT_DSN)%'
 
     App\:
         resource: '../src/'
