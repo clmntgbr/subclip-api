@@ -1,9 +1,9 @@
 <?php
 
-namespace App\MessageHandler;
+namespace App\UseCase\CommandHandler;
 
 use App\Entity\ApiKey;
-use App\Message\UpdateApiKey;
+use App\UseCase\Command\UpdateApiKey;
 use App\Repository\UserRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -17,7 +17,12 @@ final class UpdateApiKeyHandler
 
     public function __invoke(UpdateApiKey $message): void
     {
-        $user = $message->user;
+        $user = $this->userRepository->findOneBy(['id' => $message->userId->__toString()]);
+
+        if ($user === null) {
+            return;
+        }
+
         $token = $message->token;
 
         if (null === $user->getApiKey()) {

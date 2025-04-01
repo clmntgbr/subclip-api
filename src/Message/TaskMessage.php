@@ -3,11 +3,12 @@
 namespace App\Message;
 
 use App\Entity\Clip;
+use Symfony\Component\Uid\Uuid;
 
-final class ServicesMessage
+final class TaskMessage
 {
     public function __construct(
-        public readonly Clip $clip,
+        public readonly Uuid $clipId,
         public readonly string $service,
     ) {
     }

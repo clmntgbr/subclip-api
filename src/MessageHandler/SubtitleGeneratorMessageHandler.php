@@ -2,7 +2,7 @@
 
 namespace App\MessageHandler;
 
-use App\Message\ServicesMessage;
+use App\Message\TaskMessage;
 use App\Protobuf\ClipStatus;
 use App\Protobuf\SubtitleGeneratorMessage;
 use App\Repository\ClipRepository;
@@ -57,7 +57,7 @@ final class SubtitleGeneratorMessageHandler
             $this->clipStateMachine->apply($clip, 'process_subtitle_merger');
             $this->clipRepository->save($clip);
 
-            $this->messageBus->dispatch(new ServicesMessage($clip, 'subtitle_merger'));
+            $this->messageBus->dispatch(new TaskMessage($clip->getId(), 'subtitle_merger'));
 
             return;
         } catch (\Exception $e) {

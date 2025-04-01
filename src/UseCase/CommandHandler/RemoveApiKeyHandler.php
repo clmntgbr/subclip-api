@@ -1,9 +1,9 @@
 <?php
 
-namespace App\MessageHandler;
+namespace App\UseCase\CommandHandler;
 
 use App\Entity\ApiKey;
-use App\Message\RemoveApiKey;
+use App\UseCase\Command\RemoveApiKey;
 use App\Repository\ApiKeyRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 

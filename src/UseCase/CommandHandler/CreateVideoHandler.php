@@ -1,9 +1,9 @@
 <?php
 
-namespace App\MessageHandler;
+namespace App\UseCase\CommandHandler;
 
 use App\Entity\Video;
-use App\Message\CreateVideo;
+use App\UseCase\Command\CreateVideo;
 use App\Repository\VideoRepository;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -15,9 +15,10 @@ final class CreateVideoHandler
     ) {
     }
 
-    public function __invoke(CreateVideo $message): Video
+    public function __invoke(CreateVideo $message): void
     {
         $video = new Video(
+            $message->videoId,
             $message->originalName,
             $message->name,
             $message->mimeType,
@@ -26,6 +27,6 @@ final class CreateVideoHandler
 
         $this->videoRepository->save($video);
 
-        return $video;
+        return;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\MessageHandler;
 
-use App\Message\ServicesMessage;
+use App\Message\TaskMessage;
 use App\Protobuf\ClipStatus;
 use App\Protobuf\SubtitleIncrustatorMessage;
 use App\Protobuf\SubtitleMergerMessage;

@@ -31,12 +31,14 @@ framework:
             sync: 'sync://'
                 
         routing:
-            App\Message\ServicesMessage: sync
-            App\Message\RemoveApiKey: sync
-            App\Message\UpdateApiKey: sync
-            App\Message\CreateClip: sync
-            App\Message\CreateVideo: sync
-            'App\Protobuf\ServicesMessage': microservices
+            App\UseCase\Command\RemoveApiKey: sync
+            App\UseCase\Command\UpdateApiKey: sync
+            App\UseCase\Command\CreateClip: sync
+            App\UseCase\Command\CreateVideo: sync
+
+            App\Message\TaskMessage: sync
+
+            'App\Protobuf\TaskMessage': microservices
             'App\Protobuf\SoundExtractorMessage': microservices
             'App\Protobuf\SubtitleGeneratorMessage': microservices
             'App\Protobuf\SubtitleMergerMessage': microservices

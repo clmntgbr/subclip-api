@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Message;
+namespace App\UseCase\Command;
 
 use App\Entity\User;
 use Symfony\Component\Uid\Uuid;
@@ -9,7 +9,7 @@ final class CreateClip
 {
     public function __construct(
         public readonly Uuid $clipId,
-        public readonly User $user,
+        public readonly Uuid $userId,
         public readonly string $originalName,
         public readonly string $name,
         public readonly string $mimeType,

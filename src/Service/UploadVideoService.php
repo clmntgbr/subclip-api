@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\User;
-use App\Message\CreateClip;
+use App\UseCase\Command\CreateClip;
 use League\Flysystem\FilesystemOperator;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -73,7 +73,7 @@ class UploadVideoService
 
             $this->messageBus->dispatch(new CreateClip(
                 $clipId,
-                $user,
+                $user->getId(),
                 $file->getClientOriginalName(),
                 $fileName,
                 $file->getMimeType(),

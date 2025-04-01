@@ -3,7 +3,7 @@
 namespace App\Security;
 
 use App\Entity\ApiKey;
-use App\Message\RemoveApiKey;
+use App\UseCase\Command\RemoveApiKey;
 use App\Repository\ApiKeyRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;

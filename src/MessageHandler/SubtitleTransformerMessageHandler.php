@@ -2,7 +2,7 @@
 
 namespace App\MessageHandler;
 
-use App\Message\ServicesMessage;
+use App\Message\TaskMessage;
 use App\Protobuf\ClipStatus;
 use App\Protobuf\SubtitleMergerMessage;
 use App\Protobuf\SubtitleTransformerMessage;
@@ -58,7 +58,7 @@ final class SubtitleTransformerMessageHandler
             $this->clipStateMachine->apply($clip, 'process_subtitle_incrustator');
             $this->clipRepository->save($clip);
 
-            $this->messageBus->dispatch(new ServicesMessage($clip, 'subtitle_incrustator'));
+            $this->messageBus->dispatch(new TaskMessage($clip->getId(), 'subtitle_incrustator'));
 
             return;
         } catch (\Exception $e) {

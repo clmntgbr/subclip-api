@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Message;
+namespace App\UseCase\Command;
 
 final class RemoveApiKey
 {

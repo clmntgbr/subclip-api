@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Dto\GetToken;
 use App\Entity\User;
-use App\Message\UpdateApiKey;
+use App\UseCase\Command\UpdateApiKey;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -40,7 +40,7 @@ class SecurityController extends AbstractController
 
         $plainToken = bin2hex(random_bytes(32));
 
-        $this->messageBus->dispatch(new UpdateApiKey($user, $plainToken));
+        $this->messageBus->dispatch(new UpdateApiKey($user->getId(), $plainToken));
 
         return new JsonResponse(data: ['token' => $plainToken], status: Response::HTTP_OK);
     }

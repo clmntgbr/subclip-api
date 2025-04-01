@@ -2,7 +2,7 @@
 
 namespace App\Messenger\Serializer;
 
-use App\Protobuf\ServicesMessage;
+use App\Protobuf\TaskMessage;
 use Google\Protobuf\Internal\Message;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\MessageDecodingFailedException;
@@ -39,7 +39,7 @@ class ProtobufSerializer implements SerializerInterface
 
     public function encode(Envelope $envelope): array
     {
-        /** @var ServicesMessage $message */
+        /** @var TaskMessage $message */
         $message = $envelope->getMessage();
 
         if (!$message instanceof Message) {

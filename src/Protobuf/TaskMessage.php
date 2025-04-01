@@ -9,9 +9,9 @@ use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
- * Generated from protobuf message <code>App.Protobuf.ServicesMessage</code>
+ * Generated from protobuf message <code>App.Protobuf.TaskMessage</code>
  */
-class ServicesMessage extends \Google\Protobuf\Internal\Message
+class TaskMessage extends \Google\Protobuf\Internal\Message
 {
     /**
      * Generated from protobuf field <code>.App.Protobuf.Clip clip = 1;</code>

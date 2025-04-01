@@ -60,12 +60,13 @@ class Video
     private array $audios = [];
 
     public function __construct(
+        Uuid $videoId,
         string $originalName,
         string $name,
         string $mimeType,
         int $size,
     ) {
-        $this->id = Uuid::v4();
+        $this->id = $videoId;
         $this->originalName = $originalName;
         $this->name = $name;
         $this->mimeType = $mimeType;
