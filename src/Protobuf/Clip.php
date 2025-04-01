@@ -37,6 +37,10 @@ class Clip extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>.App.Protobuf.Configuration configuration = 6;</code>
      */
     protected $configuration = null;
+    /**
+     * Generated from protobuf field <code>optional .App.Protobuf.Video processedVideo = 7;</code>
+     */
+    protected $processedVideo = null;
 
     /**
      * Constructor.
@@ -50,6 +54,7 @@ class Clip extends \Google\Protobuf\Internal\Message
      *     @type \App\Protobuf\Video $originalVideo
      *     @type string $cover
      *     @type \App\Protobuf\Configuration $configuration
+     *     @type \App\Protobuf\Video $processedVideo
      * }
      */
     public function __construct($data = NULL) {
@@ -205,6 +210,38 @@ class Clip extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkMessage($var, \App\Protobuf\Configuration::class);
         $this->configuration = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>optional .App.Protobuf.Video processedVideo = 7;</code>
+     * @return \App\Protobuf\Video|null
+     */
+    public function getProcessedVideo()
+    {
+        return $this->processedVideo;
+    }
+
+    public function hasProcessedVideo()
+    {
+        return isset($this->processedVideo);
+    }
+
+    public function clearProcessedVideo()
+    {
+        unset($this->processedVideo);
+    }
+
+    /**
+     * Generated from protobuf field <code>optional .App.Protobuf.Video processedVideo = 7;</code>
+     * @param \App\Protobuf\Video $var
+     * @return $this
+     */
+    public function setProcessedVideo($var)
+    {
+        GPBUtil::checkMessage($var, \App\Protobuf\Video::class);
+        $this->processedVideo = $var;
 
         return $this;
     }

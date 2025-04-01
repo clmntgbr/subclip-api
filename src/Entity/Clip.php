@@ -145,6 +145,13 @@ class Clip
         return $this;
     }
 
+    public function setProcessedVideo(Video $video): self
+    {
+        $this->processedVideo = $video;
+
+        return $this;
+    }
+
     public function getOriginalVideo(): Video
     {
         return $this->originalVideo;

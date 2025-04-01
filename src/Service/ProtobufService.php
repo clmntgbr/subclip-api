@@ -44,6 +44,11 @@ class ProtobufService
         $originalVideo = $this->transformProtobufToVideo($clip->getOriginalVideo(), $protobuf->getOriginalVideo());
         $configuration = $this->transformProtobufToConfiguration($clip->getConfiguration(), $protobuf->getConfiguration());
 
+        if (null !== $protobuf->getProcessedVideo()) {
+            $processedVideo = $this->transformProtobufToVideo($clip->getProcessedVideo(), $protobuf->getProcessedVideo());
+            $clip->setProcessedVideo($processedVideo);
+        }
+
         $clip->setOriginalVideo($originalVideo);
         $clip->setConfiguration($configuration);
 

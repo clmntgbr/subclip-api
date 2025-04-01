@@ -53,6 +53,7 @@ class DebugController extends AbstractController
             'subtitle_generator' => $this->toSubtitleGenerator($clip),
             'subtitle_merger' => $this->toSubtitleMerger($clip),
             'subtitle_transformer' => $this->toSubtitleTransformer($clip),
+            'subtitle_incrustator' => $this->toSubtitleIncrustator($clip),
             default => throw new \Exception('This service does not exist.'),
         };
 
@@ -330,36 +331,8 @@ class DebugController extends AbstractController
         return $message;
     }
 
-    private function toVideoFormatter(): AMQPMessage
+    private function toSubtitleIncrustator(Clip $clip): AMQPMessage
     {
-        $messageData = json_encode([
-            'task' => 'tasks.process_message',
-            'args' => [$this->getJsonVideoFormatter()],
-            'queue' => 'video_transformer',
-        ]);
-
-        $message = new AMQPMessage($messageData,
-            [
-                'content_type' => 'application/json',
-                'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
-                'headers' => [
-                    'type' => 'video_transformer',
-                    'Content-Type' => 'application/json',
-                ],
-            ]
-        );
-
-        return $message;
-    }
-
-    private function toSubtitleIncrustator(User $user, Clip $clip): AMQPMessage
-    {
-        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_processed.mp4');
-        $stream = fopen('/app/public/debug/e363934c-837f-49fa-9f4a-55bb9afcfcff_processed_subtitle_incrustator.mp4', 'r');
-        $this->awsStorage->writeStream($path, $stream, [
-            'visibility' => 'public',
-        ]);
-
         $messageData = json_encode([
             'task' => 'tasks.process_message',
             'args' => [$this->getJsonSubtitleIncrustator()],
@@ -377,33 +350,19 @@ class DebugController extends AbstractController
             ]
         );
 
-        return $message;
-    }
-
-    private function toVideoSplitter(User $user, Clip $clip): AMQPMessage
-    {
-        $path = sprintf('%s/%s/%s', $user->getId(), $clip->getId(), 'e363934c-837f-49fa-9f4a-55bb9afcfcff_processed.mp4');
-        $stream = fopen('/app/public/debug/e363934c-837f-49fa-9f4a-55bb9afcfcff_processed_video_splitter.mp4', 'r');
-        $this->awsStorage->writeStream($path, $stream, [
-            'visibility' => 'public',
+        $clip->setStatuses([
+            ClipStatus::name(ClipStatus::UPLOADED),
+            ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_PENDING),
+            ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_COMPLETE),
+            ClipStatus::name(ClipStatus::SUBTITLE_GENERATOR_PENDING),
+            ClipStatus::name(ClipStatus::SUBTITLE_GENERATOR_COMPLETE),
+            ClipStatus::name(ClipStatus::SUBTITLE_MERGER_PENDING),
+            ClipStatus::name(ClipStatus::SUBTITLE_MERGER_COMPLETE),
+            ClipStatus::name(ClipStatus::SUBTITLE_TRANSFORMER_PENDING),
+            ClipStatus::name(ClipStatus::SUBTITLE_TRANSFORMER_COMPLETE),
         ]);
+        $clip->setStatus(ClipStatus::name(ClipStatus::SUBTITLE_INCRUSTATOR_PENDING));
 
-        $messageData = json_encode([
-            'task' => 'tasks.process_message',
-            'args' => [$this->getJsonVideoSplitter()],
-            'queue' => 'video_splitter',
-        ]);
-
-        $message = new AMQPMessage($messageData,
-            [
-                'content_type' => 'application/json',
-                'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
-                'headers' => [
-                    'type' => 'video_splitter',
-                    'Content-Type' => 'application/json',
-                ],
-            ]
-        );
 
         return $message;
     }
@@ -435,7 +394,7 @@ class DebugController extends AbstractController
 
     private function getJsonSubtitleIncrustator(): string
     {
-        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"e363934c-837f-49fa-9f4a-55bb9afcfcff.srt","ass":"e363934c-837f-49fa-9f4a-55bb9afcfcff.ass","subtitles":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt"],"audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]},"status":"VIDEO_FORMATTER_COMPLETE","configuration":{"id":"4dd6c05b-0dd6-4ef0-bcb3-7feccb330641","subtitleFont":"ARIAL","subtitleSize":16,"subtitleColor":"#FFFFFF","subtitleBold":"0","subtitleItalic":"0","subtitleUnderline":"0","subtitleOutlineColor":"#000000","subtitleOutlineThickness":2,"subtitleShadow":2,"subtitleShadowColor":"#000000","format":"ORIGINAL","split":1},"processedVideo":{"id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff_processed.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"e363934c-837f-49fa-9f4a-55bb9afcfcff.srt","ass":"e363934c-837f-49fa-9f4a-55bb9afcfcff.ass","subtitles":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt"],"audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]}}}';
+        return '{"clip":{"id":"e363934c-837f-49fa-9f4a-55bb9afcfcff","userId":"da59434f-602f-4d39-879c-eb0950812737","originalVideo":{"originalName":"video.mp4","id":"464f7205-9d37-41b2-bb78-c2f652d7fc33","name":"e363934c-837f-49fa-9f4a-55bb9afcfcff.mp4","mimeType":"video/mp4","size":"71541180","length":"1449","subtitle":"e363934c-837f-49fa-9f4a-55bb9afcfcff.srt","ass":"e363934c-837f-49fa-9f4a-55bb9afcfcff.ass","subtitles":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.srt","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.srt"],"audios":["e363934c-837f-49fa-9f4a-55bb9afcfcff_1.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_2.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_3.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_4.wav","e363934c-837f-49fa-9f4a-55bb9afcfcff_5.wav"]},"status":"VIDEO_FORMATTER_COMPLETE","configuration":{"id":"4dd6c05b-0dd6-4ef0-bcb3-7feccb330641","subtitleFont":"ARIAL","subtitleSize":16,"subtitleColor":"#FFFFFF","subtitleBold":"0","subtitleItalic":"0","subtitleUnderline":"0","subtitleOutlineColor":"#000000","subtitleOutlineThickness":2,"subtitleShadow":2,"subtitleShadowColor":"#000000","format":"ORIGINAL","split":1}}}';
     }
 
     private function getJsonVideoSplitter(): string
