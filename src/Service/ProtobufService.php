@@ -10,12 +10,12 @@ use App\Protobuf\Configuration as ProtobufConfiguration;
 use App\Protobuf\Video as ProtobufVideo;
 use App\Repository\ClipRepository;
 use App\Repository\UserRepository;
+use Symfony\Component\Uid\Uuid;
 
 class ProtobufService
 {
     public function __construct(
         private ClipRepository $clipRepository,
-        private UserRepository $userRepository,
     ) {
     }
 
@@ -33,12 +33,6 @@ class ProtobufService
 
     public function getClip(ProtobufClip $protobuf): Clip
     {
-        $user = $this->userRepository->findOneBy(['id' => $protobuf->getUserId()]);
-
-        if (null === $user) {
-            throw new \RuntimeException('User not found');
-        }
-
         $clip = $this->transformProtobufToClip($protobuf);
 
         $originalVideo = $this->transformProtobufToVideo($clip->getOriginalVideo(), $protobuf->getOriginalVideo());
@@ -90,6 +84,7 @@ class ProtobufService
     {
         if (null === $video) {
             $video = new Video(
+                Uuid::fromString($protobufVideo->getId()),
                 $protobufVideo->getOriginalName(),
                 $protobufVideo->getName(),
                 $protobufVideo->getMimeType(),

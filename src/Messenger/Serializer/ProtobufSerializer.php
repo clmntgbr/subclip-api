@@ -46,6 +46,12 @@ class ProtobufSerializer implements SerializerInterface
             throw new \InvalidArgumentException(sprintf('Message must be an instance of %s, %s given', Message::class, get_class($message)));
         }
 
+        $service = $message->getService();
+
+        if (empty($service)) {
+            $service = get_class($message);
+        }
+
         return [
             'body' => json_encode([
                 'task' => 'tasks.process_message',
@@ -53,7 +59,7 @@ class ProtobufSerializer implements SerializerInterface
                 'queue' => 'microservices',
             ]),
             'headers' => [
-                'type' => $message->getService(),
+                'type' => $service,
                 'Content-Type' => 'application/json',
             ],
         ];
