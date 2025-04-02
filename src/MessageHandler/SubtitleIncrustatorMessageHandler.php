@@ -52,9 +52,18 @@ final class SubtitleIncrustatorMessageHandler
                 }
             }
 
+            if (!$this->clipStateMachine->can($clip, 'process_video_formatter')) {
+                return;
+            }
+
+            $this->clipStateMachine->apply($clip, 'process_video_formatter');
+            $this->clipRepository->save($clip);
+
+            $this->messageBus->dispatch(new TaskMessage($clip->getId(), 'video_formatter'));
+
             return;
         } catch (\Exception $e) {
-            $this->clipStateMachine->apply($clip, 'subtitle_incrustator_failure');
+            $this->clipStateMachine->apply($clip, 'video_formatter_failure');
             $this->clipRepository->save($clip);
         }
     }

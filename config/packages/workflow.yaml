@@ -25,6 +25,9 @@ framework:
                 - SUBTITLE_INCRUSTATOR_PENDING
                 - SUBTITLE_INCRUSTATOR_COMPLETE
                 - SUBTITLE_INCRUSTATOR_ERROR
+                - VIDEO_FORMATTER_PENDING
+                - VIDEO_FORMATTER_COMPLETE
+                - VIDEO_FORMATTER_ERROR
             transitions:
                 process_sound_extractor:
                     from: UPLOADED
@@ -75,3 +78,13 @@ framework:
                 subtitle_incrustator_failure:
                     from: SUBTITLE_INCRUSTATOR_PENDING
                     to: SUBTITLE_INCRUSTATOR_ERROR
+
+                process_video_formatter:
+                    from: SUBTITLE_INCRUSTATOR_COMPLETE
+                    to: VIDEO_FORMATTER_PENDING
+                video_formatter_success:
+                    from: VIDEO_FORMATTER_PENDING
+                    to: VIDEO_FORMATTER_COMPLETE
+                video_formatter_failure:
+                    from: VIDEO_FORMATTER_PENDING
+                    to: VIDEO_FORMATTER_ERROR
