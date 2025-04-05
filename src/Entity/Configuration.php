@@ -75,6 +75,10 @@ class Configuration
     #[Groups([CLIP_READ])]
     private int $split;
 
+    #[ORM\Column(type: Types::FLOAT)]
+    #[Groups([CLIP_READ])]
+    private float $marginV;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -90,6 +94,7 @@ class Configuration
         $this->subtitleShadowColor = '#000000';
         $this->format = VideoFormatStyle::name(VideoFormatStyle::ORIGINAL);
         $this->split = 1;
+        $this->marginV = 0;
     }
 
     public function getId(): ?Uuid
@@ -120,6 +125,11 @@ class Configuration
     public function getSubtitleItalic(): string
     {
         return $this->subtitleItalic;
+    }
+
+    public function getMarginV(): float
+    {
+        return $this->marginV;
     }
 
     public function getSubtitleUnderline(): string
@@ -167,6 +177,13 @@ class Configuration
     public function setSubtitleFont(string $subtitleFont): self
     {
         $this->subtitleFont = $subtitleFont;
+
+        return $this;
+    }
+
+    public function setMarginV(float $marginV): self
+    {
+        $this->marginV = $marginV;
 
         return $this;
     }

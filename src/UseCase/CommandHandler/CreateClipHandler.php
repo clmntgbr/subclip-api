@@ -5,15 +5,14 @@ namespace App\UseCase\CommandHandler;
 use App\Entity\Clip;
 use App\Entity\Configuration;
 use App\Entity\Video;
-use App\UseCase\Command\CreateClip;
-use App\UseCase\Command\CreateVideo;
 use App\Message\TaskMessage;
 use App\Repository\ClipRepository;
 use App\Repository\UserRepository;
 use App\Repository\VideoRepository;
+use App\UseCase\Command\CreateClip;
+use App\UseCase\Command\CreateVideo;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Workflow\WorkflowInterface;
 

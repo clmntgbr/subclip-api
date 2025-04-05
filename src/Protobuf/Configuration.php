@@ -22,9 +22,9 @@ class Configuration extends \Google\Protobuf\Internal\Message
      */
     protected $subtitleFont = '';
     /**
-     * Generated from protobuf field <code>int64 subtitleSize = 3;</code>
+     * Generated from protobuf field <code>string subtitleSize = 3;</code>
      */
-    protected $subtitleSize = 0;
+    protected $subtitleSize = '';
     /**
      * Generated from protobuf field <code>string subtitleColor = 4;</code>
      */
@@ -46,13 +46,13 @@ class Configuration extends \Google\Protobuf\Internal\Message
      */
     protected $subtitleOutlineColor = '';
     /**
-     * Generated from protobuf field <code>int64 subtitleOutlineThickness = 9;</code>
+     * Generated from protobuf field <code>string subtitleOutlineThickness = 9;</code>
      */
-    protected $subtitleOutlineThickness = 0;
+    protected $subtitleOutlineThickness = '';
     /**
-     * Generated from protobuf field <code>int64 subtitleShadow = 10;</code>
+     * Generated from protobuf field <code>string subtitleShadow = 10;</code>
      */
-    protected $subtitleShadow = 0;
+    protected $subtitleShadow = '';
     /**
      * Generated from protobuf field <code>string subtitleShadowColor = 11;</code>
      */
@@ -62,9 +62,13 @@ class Configuration extends \Google\Protobuf\Internal\Message
      */
     protected $format = '';
     /**
-     * Generated from protobuf field <code>int64 split = 13;</code>
+     * Generated from protobuf field <code>string split = 13;</code>
      */
-    protected $split = 0;
+    protected $split = '';
+    /**
+     * Generated from protobuf field <code>string marginV = 14;</code>
+     */
+    protected $marginV = '';
 
     /**
      * Constructor.
@@ -74,17 +78,18 @@ class Configuration extends \Google\Protobuf\Internal\Message
      *
      *     @type string $id
      *     @type string $subtitleFont
-     *     @type int|string $subtitleSize
+     *     @type string $subtitleSize
      *     @type string $subtitleColor
      *     @type string $subtitleBold
      *     @type string $subtitleItalic
      *     @type string $subtitleUnderline
      *     @type string $subtitleOutlineColor
-     *     @type int|string $subtitleOutlineThickness
-     *     @type int|string $subtitleShadow
+     *     @type string $subtitleOutlineThickness
+     *     @type string $subtitleShadow
      *     @type string $subtitleShadowColor
      *     @type string $format
-     *     @type int|string $split
+     *     @type string $split
+     *     @type string $marginV
      * }
      */
     public function __construct($data = NULL) {
@@ -137,8 +142,8 @@ class Configuration extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>int64 subtitleSize = 3;</code>
-     * @return int|string
+     * Generated from protobuf field <code>string subtitleSize = 3;</code>
+     * @return string
      */
     public function getSubtitleSize()
     {
@@ -146,13 +151,13 @@ class Configuration extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>int64 subtitleSize = 3;</code>
-     * @param int|string $var
+     * Generated from protobuf field <code>string subtitleSize = 3;</code>
+     * @param string $var
      * @return $this
      */
     public function setSubtitleSize($var)
     {
-        GPBUtil::checkInt64($var);
+        GPBUtil::checkString($var, True);
         $this->subtitleSize = $var;
 
         return $this;
@@ -269,8 +274,8 @@ class Configuration extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>int64 subtitleOutlineThickness = 9;</code>
-     * @return int|string
+     * Generated from protobuf field <code>string subtitleOutlineThickness = 9;</code>
+     * @return string
      */
     public function getSubtitleOutlineThickness()
     {
@@ -278,21 +283,21 @@ class Configuration extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>int64 subtitleOutlineThickness = 9;</code>
-     * @param int|string $var
+     * Generated from protobuf field <code>string subtitleOutlineThickness = 9;</code>
+     * @param string $var
      * @return $this
      */
     public function setSubtitleOutlineThickness($var)
     {
-        GPBUtil::checkInt64($var);
+        GPBUtil::checkString($var, True);
         $this->subtitleOutlineThickness = $var;
 
         return $this;
     }
 
     /**
-     * Generated from protobuf field <code>int64 subtitleShadow = 10;</code>
-     * @return int|string
+     * Generated from protobuf field <code>string subtitleShadow = 10;</code>
+     * @return string
      */
     public function getSubtitleShadow()
     {
@@ -300,13 +305,13 @@ class Configuration extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>int64 subtitleShadow = 10;</code>
-     * @param int|string $var
+     * Generated from protobuf field <code>string subtitleShadow = 10;</code>
+     * @param string $var
      * @return $this
      */
     public function setSubtitleShadow($var)
     {
-        GPBUtil::checkInt64($var);
+        GPBUtil::checkString($var, True);
         $this->subtitleShadow = $var;
 
         return $this;
@@ -357,8 +362,8 @@ class Configuration extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>int64 split = 13;</code>
-     * @return int|string
+     * Generated from protobuf field <code>string split = 13;</code>
+     * @return string
      */
     public function getSplit()
     {
@@ -366,14 +371,36 @@ class Configuration extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>int64 split = 13;</code>
-     * @param int|string $var
+     * Generated from protobuf field <code>string split = 13;</code>
+     * @param string $var
      * @return $this
      */
     public function setSplit($var)
     {
-        GPBUtil::checkInt64($var);
+        GPBUtil::checkString($var, True);
         $this->split = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>string marginV = 14;</code>
+     * @return string
+     */
+    public function getMarginV()
+    {
+        return $this->marginV;
+    }
+
+    /**
+     * Generated from protobuf field <code>string marginV = 14;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setMarginV($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->marginV = $var;
 
         return $this;
     }

@@ -4,7 +4,6 @@ namespace App\MessageHandler;
 
 use App\Message\TaskMessage;
 use App\Protobuf\ClipStatus;
-use App\Protobuf\SubtitleMergerMessage;
 use App\Protobuf\SubtitleTransformerMessage;
 use App\Repository\ClipRepository;
 use App\Service\ProtobufService;
@@ -51,14 +50,14 @@ final class SubtitleTransformerMessageHandler
                 }
             }
 
-            if (!$this->clipStateMachine->can($clip, 'process_subtitle_incrustator')) {
+            if (!$this->clipStateMachine->can($clip, 'process_video_formatter')) {
                 return;
             }
 
-            $this->clipStateMachine->apply($clip, 'process_subtitle_incrustator');
+            $this->clipStateMachine->apply($clip, 'process_video_formatter');
             $this->clipRepository->save($clip);
 
-            $this->messageBus->dispatch(new TaskMessage($clip->getId(), 'subtitle_incrustator'));
+            $this->messageBus->dispatch(new TaskMessage($clip->getId(), 'video_formatter'));
 
             return;
         } catch (\Exception $e) {

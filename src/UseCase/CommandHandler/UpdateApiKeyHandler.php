@@ -3,8 +3,8 @@
 namespace App\UseCase\CommandHandler;
 
 use App\Entity\ApiKey;
-use App\UseCase\Command\UpdateApiKey;
 use App\Repository\UserRepository;
+use App\UseCase\Command\UpdateApiKey;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
@@ -19,7 +19,7 @@ final class UpdateApiKeyHandler
     {
         $user = $this->userRepository->findOneBy(['id' => $message->userId->__toString()]);
 
-        if ($user === null) {
+        if (null === $user) {
             return;
         }
 

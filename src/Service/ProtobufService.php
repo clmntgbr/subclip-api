@@ -9,7 +9,6 @@ use App\Protobuf\Clip as ProtobufClip;
 use App\Protobuf\Configuration as ProtobufConfiguration;
 use App\Protobuf\Video as ProtobufVideo;
 use App\Repository\ClipRepository;
-use App\Repository\UserRepository;
 use Symfony\Component\Uid\Uuid;
 
 class ProtobufService
@@ -26,8 +25,8 @@ class ProtobufService
         $protobufConfiguration = $this->transformConfigurationToProtobuf($clip->getConfiguration());
 
         if ($clip->getProcessedVideo()) {
-           $protobufProcessedVideo = $this->transformVideoToProtobuf($clip->getProcessedVideo());
-           $protobufClip->setProcessedVideo($protobufProcessedVideo);
+            $protobufProcessedVideo = $this->transformVideoToProtobuf($clip->getProcessedVideo());
+            $protobufClip->setProcessedVideo($protobufProcessedVideo);
         }
 
         $protobufClip->setOriginalVideo($protobufOriginalVideo);
@@ -223,6 +222,10 @@ class ProtobufService
             $configuration->setSubtitleFont($protobufConfiguration->getSubtitleFont());
         }
 
+        if ($protobufConfiguration->getMarginV()) {
+            $configuration->setMarginV($protobufConfiguration->getMarginV());
+        }
+
         if ($protobufConfiguration->getSubtitleItalic()) {
             $configuration->setSubtitleItalic($protobufConfiguration->getSubtitleItalic());
         }
@@ -262,6 +265,7 @@ class ProtobufService
         $protobuf->setSubtitleFont($configuration->getSubtitleFont());
         $protobuf->setSubtitleSize($configuration->getSubtitleSize());
         $protobuf->setFormat($configuration->getFormat());
+        $protobuf->setMarginV($configuration->getMarginV());
         $protobuf->setSplit($configuration->getSplit());
         $protobuf->setSubtitleBold($configuration->getSubtitleBold());
         $protobuf->setSubtitleColor($configuration->getSubtitleColor());

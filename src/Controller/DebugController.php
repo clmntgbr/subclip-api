@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Dto\StockOrder;
 use App\Entity\Clip;
 use App\Entity\Configuration;
 use App\Entity\User;
@@ -14,6 +15,7 @@ use League\Flysystem\FilesystemOperator;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use stdClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,8 +55,8 @@ class DebugController extends AbstractController
             'subtitle_generator' => $this->toSubtitleGenerator($clip),
             'subtitle_merger' => $this->toSubtitleMerger($clip),
             'subtitle_transformer' => $this->toSubtitleTransformer($clip),
-            'subtitle_incrustator' => $this->toSubtitleIncrustator($clip),
             'video_formatter' => $this->toVideoFormatter($clip),
+            'subtitle_incrustator' => $this->toSubtitleIncrustator($clip),
             default => throw new \Exception('This service does not exist.'),
         };
 
@@ -337,43 +339,6 @@ class DebugController extends AbstractController
         return $message;
     }
 
-    private function toSubtitleIncrustator(Clip $clip): AMQPMessage
-    {
-        $messageData = json_encode([
-            'task' => 'tasks.process_message',
-            'args' => [$this->getJsonSubtitleIncrustator()],
-            'queue' => 'subtitle_incrustator',
-        ]);
-
-        $message = new AMQPMessage($messageData,
-            [
-                'content_type' => 'application/json',
-                'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
-                'headers' => [
-                    'type' => 'subtitle_incrustator',
-                    'Content-Type' => 'application/json',
-                ],
-            ]
-        );
-
-        $clip->setProcessedVideo(null);
-        $clip->setStatuses([
-            ClipStatus::name(ClipStatus::UPLOADED),
-            ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_PENDING),
-            ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_COMPLETE),
-            ClipStatus::name(ClipStatus::SUBTITLE_GENERATOR_PENDING),
-            ClipStatus::name(ClipStatus::SUBTITLE_GENERATOR_COMPLETE),
-            ClipStatus::name(ClipStatus::SUBTITLE_MERGER_PENDING),
-            ClipStatus::name(ClipStatus::SUBTITLE_MERGER_COMPLETE),
-            ClipStatus::name(ClipStatus::SUBTITLE_TRANSFORMER_PENDING),
-            ClipStatus::name(ClipStatus::SUBTITLE_TRANSFORMER_COMPLETE),
-        ]);
-        $clip->setStatus(ClipStatus::name(ClipStatus::SUBTITLE_INCRUSTATOR_PENDING));
-
-
-        return $message;
-    }
-
     private function toVideoFormatter(Clip $clip): AMQPMessage
     {
         $messageData = json_encode([
@@ -393,6 +358,63 @@ class DebugController extends AbstractController
             ]
         );
 
+        $processedVideo = $clip->getProcessedVideo();
+        
+        if (null === $processedVideo) {
+            $processedVideo = new Video(
+                uuid::fromString('fe6c8eed-f435-4b00-b9dd-3bf97e9e4eee'),
+                $clip->getOriginalVideo()->getOriginalName(),
+                $clip->getOriginalVideo()->getName(),
+                $clip->getOriginalVideo()->getMimeType(),
+                $clip->getOriginalVideo()->getSize(),
+            );
+        }
+
+        $processedVideo->setAss($clip->getOriginalVideo()->getAss());
+        $processedVideo->setSubtitle($clip->getOriginalVideo()->getSubtitle());
+        $clip->setProcessedVideo($processedVideo);
+        
+        $clip->setStatuses([
+            ClipStatus::name(ClipStatus::UPLOADED),
+            ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_PENDING),
+            ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_COMPLETE),
+            ClipStatus::name(ClipStatus::SUBTITLE_GENERATOR_PENDING),
+            ClipStatus::name(ClipStatus::SUBTITLE_GENERATOR_COMPLETE),
+            ClipStatus::name(ClipStatus::SUBTITLE_MERGER_PENDING),
+            ClipStatus::name(ClipStatus::SUBTITLE_MERGER_COMPLETE),
+            ClipStatus::name(ClipStatus::SUBTITLE_TRANSFORMER_PENDING),
+            ClipStatus::name(ClipStatus::SUBTITLE_TRANSFORMER_COMPLETE),
+        ]);
+        $clip->setStatus(ClipStatus::name(ClipStatus::VIDEO_FORMATTER_PENDING));
+
+        return $message;
+    }
+
+    private function toSubtitleIncrustator(Clip $clip): AMQPMessage
+    {
+        $messageData = json_encode([
+            'task' => 'tasks.process_message',
+            'args' => [$this->getJsonSubtitleIncrustator()],
+            'queue' => 'subtitle_incrustator',
+        ]);
+
+        $message = new AMQPMessage($messageData,
+            [
+                'content_type' => 'application/json',
+                'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
+                'headers' => [
+                    'type' => 'subtitle_incrustator',
+                    'Content-Type' => 'application/json',
+                ],
+            ]
+        );
+
+        $path = sprintf('%s/%s/%s', $clip->getUser()->getId(), $clip->getId(), '8e90c18c-da70-4e1b-8671-30ce14851cd2_processed.mp4');
+        $stream = fopen('/app/public/debug/8e90c18c-da70-4e1b-8671-30ce14851cd2_subtitle_incrustator.mp4', 'r');
+        $this->awsStorage->writeStream($path, $stream, [
+            'visibility' => 'public',
+        ]);
+
         $clip->setProcessedVideo(null);
         $clip->setStatuses([
             ClipStatus::name(ClipStatus::UPLOADED),
@@ -404,11 +426,10 @@ class DebugController extends AbstractController
             ClipStatus::name(ClipStatus::SUBTITLE_MERGER_COMPLETE),
             ClipStatus::name(ClipStatus::SUBTITLE_TRANSFORMER_PENDING),
             ClipStatus::name(ClipStatus::SUBTITLE_TRANSFORMER_COMPLETE),
-            ClipStatus::name(ClipStatus::SUBTITLE_INCRUSTATOR_PENDING),
-            ClipStatus::name(ClipStatus::SUBTITLE_INCRUSTATOR_COMPLETE),
+            ClipStatus::name(ClipStatus::VIDEO_FORMATTER_PENDING),
+            ClipStatus::name(ClipStatus::VIDEO_FORMATTER_COMPLETE),
         ]);
-        $clip->setStatus(ClipStatus::name(ClipStatus::VIDEO_FORMATTER_PENDING));
-
+        $clip->setStatus(ClipStatus::name(ClipStatus::SUBTITLE_INCRUSTATOR_PENDING));
 
         return $message;
     }
@@ -416,292 +437,298 @@ class DebugController extends AbstractController
     private function getJsonSoundExtractor(): string
     {
         return json_encode([
-            "clip" => [
-                "id" => "8e90c18c-da70-4e1b-8671-30ce14851cd2",
-                "userId" => "da59434f-602f-4d39-879c-eb0950812737",
-                "status" => "SOUND_EXTRACTOR_PENDING",
-                "originalVideo" => [
-                    "id" => "87bad469-33bd-4c4d-8a83-08142581a31d",
-                    "originalName" => "video1.mp4",
-                    "name" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4",
-                    "mimeType" => "video/mp4",
-                    "size" => "71541180",
+            'clip' => [
+                'id' => '8e90c18c-da70-4e1b-8671-30ce14851cd2',
+                'userId' => 'da59434f-602f-4d39-879c-eb0950812737',
+                'status' => 'SOUND_EXTRACTOR_PENDING',
+                'originalVideo' => [
+                    'id' => '87bad469-33bd-4c4d-8a83-08142581a31d',
+                    'originalName' => 'video1.mp4',
+                    'name' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4',
+                    'mimeType' => 'video/mp4',
+                    'size' => '71541180',
                 ],
-                "configuration" => [
-                    "id" => "249fe1bc-a8f0-4bea-8901-c7afe66fd3cf",
-                    "subtitleFont" => "ARIAL",
-                    "subtitleSize" => "16",
-                    "subtitleColor" => "#FFFFFF",
-                    "subtitleBold" => "0",
-                    "subtitleItalic" => "0",
-                    "subtitleUnderline" => "0",
-                    "subtitleOutlineColor" => "#000000",
-                    "subtitleOutlineThickness" => "2",
-                    "subtitleShadow" => "2",
-                    "subtitleShadowColor" => "#000000",
-                    "format" => "ORIGINAL",
-                    "split" => "1",
+                'configuration' => [
+                    'id' => '249fe1bc-a8f0-4bea-8901-c7afe66fd3cf',
+                    'subtitleFont' => 'ARIAL',
+                    'subtitleSize' => '14',
+                    'subtitleColor' => '#FFFFFF',
+                    'subtitleBold' => '0',
+                    'subtitleItalic' => '0',
+                    'subtitleUnderline' => '0',
+                    'subtitleOutlineColor' => '#000000',
+                    'subtitleOutlineThickness' => '2',
+                    'subtitleShadow' => '2',
+                    'subtitleShadowColor' => '#000000',
+                    'format' => 'ZOOMED_916',
+                    'split' => '1',
+                    'marginV' => '50',
                 ],
             ],
-            "service" => "sound_extractor",
+            'service' => 'sound_extractor',
         ]);
     }
 
     private function getJsonSubtitleGenerator(): string
     {
         return json_encode([
-            "clip" => [
-                "id" => "8e90c18c-da70-4e1b-8671-30ce14851cd2",
-                "userId" => "da59434f-602f-4d39-879c-eb0950812737",
-                "status" => "SUBTITLE_GENERATOR_PENDING",
-                "originalVideo" => [
-                    "id" => "87bad469-33bd-4c4d-8a83-08142581a31d",
-                    "originalName" => "video1.mp4",
-                    "name" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4",
-                    "mimeType" => "video/mp4",
-                    "size" => "71541180",
-                    "length" => "1449",
-                    "audios" => [
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_1.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_2.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_3.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_4.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_5.wav",
+            'clip' => [
+                'id' => '8e90c18c-da70-4e1b-8671-30ce14851cd2',
+                'userId' => 'da59434f-602f-4d39-879c-eb0950812737',
+                'status' => 'SUBTITLE_GENERATOR_PENDING',
+                'originalVideo' => [
+                    'id' => '87bad469-33bd-4c4d-8a83-08142581a31d',
+                    'originalName' => 'video1.mp4',
+                    'name' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4',
+                    'mimeType' => 'video/mp4',
+                    'size' => '71541180',
+                    'length' => '1449',
+                    'audios' => [
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_1.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_2.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_3.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_4.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_5.wav',
                     ],
                 ],
-                "cover" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.jpg",
-                "configuration" => [
-                    "id" => "249fe1bc-a8f0-4bea-8901-c7afe66fd3cf",
-                    "subtitleFont" => "ARIAL",
-                    "subtitleSize" => "16",
-                    "subtitleColor" => "#FFFFFF",
-                    "subtitleBold" => "0",
-                    "subtitleItalic" => "0",
-                    "subtitleUnderline" => "0",
-                    "subtitleOutlineColor" => "#000000",
-                    "subtitleOutlineThickness" => "2",
-                    "subtitleShadow" => "2",
-                    "subtitleShadowColor" => "#000000",
-                    "format" => "ORIGINAL",
-                    "split" => "1",
+                'cover' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.jpg',
+                'configuration' => [
+                    'id' => '249fe1bc-a8f0-4bea-8901-c7afe66fd3cf',
+                    'subtitleFont' => 'ARIAL',
+                    'subtitleSize' => '14',
+                    'subtitleColor' => '#FFFFFF',
+                    'subtitleBold' => '0',
+                    'subtitleItalic' => '0',
+                    'subtitleUnderline' => '0',
+                    'subtitleOutlineColor' => '#000000',
+                    'subtitleOutlineThickness' => '2',
+                    'subtitleShadow' => '2',
+                    'subtitleShadowColor' => '#000000',
+                    'format' => 'ZOOMED_916',
+                    'split' => '1',
+                    'marginV' => '50',
                 ],
             ],
-            "service" => "subtitle_generator",
+            'service' => 'subtitle_generator',
         ]);
     }
 
     private function getJsonSubtitleMerger(): string
     {
         return json_encode([
-            "clip" => [
-                "id" => "8e90c18c-da70-4e1b-8671-30ce14851cd2",
-                "userId" => "da59434f-602f-4d39-879c-eb0950812737",
-                "status" => "SUBTITLE_MERGER_PENDING",
-                "originalVideo" => [
-                    "id" => "87bad469-33bd-4c4d-8a83-08142581a31d",
-                    "originalName" => "video1.mp4",
-                    "name" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4",
-                    "mimeType" => "video/mp4",
-                    "size" => "71541180",
-                    "length" => "1449",
-                    "subtitles" => [
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_1.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_2.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_3.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_4.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_5.srt",
+            'clip' => [
+                'id' => '8e90c18c-da70-4e1b-8671-30ce14851cd2',
+                'userId' => 'da59434f-602f-4d39-879c-eb0950812737',
+                'status' => 'SUBTITLE_MERGER_PENDING',
+                'originalVideo' => [
+                    'id' => '87bad469-33bd-4c4d-8a83-08142581a31d',
+                    'originalName' => 'video1.mp4',
+                    'name' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4',
+                    'mimeType' => 'video/mp4',
+                    'size' => '71541180',
+                    'length' => '1449',
+                    'subtitles' => [
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_1.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_2.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_3.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_4.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_5.srt',
                     ],
-                    "audios" => [
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_1.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_2.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_3.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_4.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_5.wav",
+                    'audios' => [
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_1.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_2.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_3.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_4.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_5.wav',
                     ],
                 ],
-                "cover" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.jpg",
-                "configuration" => [
-                    "id" => "249fe1bc-a8f0-4bea-8901-c7afe66fd3cf",
-                    "subtitleFont" => "ARIAL",
-                    "subtitleSize" => "16",
-                    "subtitleColor" => "#FFFFFF",
-                    "subtitleBold" => "0",
-                    "subtitleItalic" => "0",
-                    "subtitleUnderline" => "0",
-                    "subtitleOutlineColor" => "#000000",
-                    "subtitleOutlineThickness" => "2",
-                    "subtitleShadow" => "2",
-                    "subtitleShadowColor" => "#000000",
-                    "format" => "ORIGINAL",
-                    "split" => "1",
+                'cover' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.jpg',
+                'configuration' => [
+                    'id' => '249fe1bc-a8f0-4bea-8901-c7afe66fd3cf',
+                    'subtitleFont' => 'ARIAL',
+                    'subtitleSize' => '14',
+                    'subtitleColor' => '#FFFFFF',
+                    'subtitleBold' => '0',
+                    'subtitleItalic' => '0',
+                    'subtitleUnderline' => '0',
+                    'subtitleOutlineColor' => '#000000',
+                    'subtitleOutlineThickness' => '2',
+                    'subtitleShadow' => '2',
+                    'subtitleShadowColor' => '#000000',
+                    'format' => 'ZOOMED_916',
+                    'split' => '1',
+                    'marginV' => '50',
                 ],
             ],
-            "service" => "subtitle_merger",
+            'service' => 'subtitle_merger',
         ]);
     }
 
     private function getJsonSubtitleTransformer(): string
     {
         return json_encode([
-            "clip" => [
-                "id" => "8e90c18c-da70-4e1b-8671-30ce14851cd2",
-                "userId" => "da59434f-602f-4d39-879c-eb0950812737",
-                "status" => "SUBTITLE_TRANSFORMER_PENDING",
-                "originalVideo" => [
-                    "id" => "87bad469-33bd-4c4d-8a83-08142581a31d",
-                    "originalName" => "video1.mp4",
-                    "name" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4",
-                    "mimeType" => "video/mp4",
-                    "size" => "71541180",
-                    "length" => "1449",
-                    "subtitle" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.srt",
-                    "subtitles" => [
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_1.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_2.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_3.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_4.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_5.srt",
+            'clip' => [
+                'id' => '8e90c18c-da70-4e1b-8671-30ce14851cd2',
+                'userId' => 'da59434f-602f-4d39-879c-eb0950812737',
+                'status' => 'SUBTITLE_TRANSFORMER_PENDING',
+                'originalVideo' => [
+                    'id' => '87bad469-33bd-4c4d-8a83-08142581a31d',
+                    'originalName' => 'video1.mp4',
+                    'name' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4',
+                    'mimeType' => 'video/mp4',
+                    'size' => '71541180',
+                    'length' => '1449',
+                    'subtitle' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.srt',
+                    'subtitles' => [
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_1.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_2.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_3.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_4.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_5.srt',
                     ],
-                    "audios" => [
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_1.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_2.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_3.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_4.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_5.wav",
+                    'audios' => [
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_1.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_2.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_3.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_4.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_5.wav',
                     ],
                 ],
-                "cover" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.jpg",
-                "configuration" => [
-                    "id" => "249fe1bc-a8f0-4bea-8901-c7afe66fd3cf",
-                    "subtitleFont" => "ARIAL",
-                    "subtitleSize" => "16",
-                    "subtitleColor" => "#FFFFFF",
-                    "subtitleBold" => "0",
-                    "subtitleItalic" => "0",
-                    "subtitleUnderline" => "0",
-                    "subtitleOutlineColor" => "#000000",
-                    "subtitleOutlineThickness" => "2",
-                    "subtitleShadow" => "2",
-                    "subtitleShadowColor" => "#000000",
-                    "format" => "ORIGINAL",
-                    "split" => "1",
+                'cover' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.jpg',
+                'configuration' => [
+                    'id' => '249fe1bc-a8f0-4bea-8901-c7afe66fd3cf',
+                    'subtitleFont' => 'ARIAL',
+                    'subtitleSize' => '14',
+                    'subtitleColor' => '#FFFFFF',
+                    'subtitleBold' => '0',
+                    'subtitleItalic' => '0',
+                    'subtitleUnderline' => '0',
+                    'subtitleOutlineColor' => '#000000',
+                    'subtitleOutlineThickness' => '2',
+                    'subtitleShadow' => '2',
+                    'subtitleShadowColor' => '#000000',
+                    'format' => 'ZOOMED_916',
+                    'split' => '1',
+                    'marginV' => '50',
                 ],
             ],
-            "service" => "subtitle_transformer",
+            'service' => 'subtitle_transformer',
         ]);
     }
 
     private function getJsonSubtitleIncrustator(): string
     {
         return json_encode([
-            "clip" => [
-                "id" => "8e90c18c-da70-4e1b-8671-30ce14851cd2",
-                "userId" => "da59434f-602f-4d39-879c-eb0950812737",
-                "status" => "SUBTITLE_INCRUSTATOR_PENDING",
-                "originalVideo" => [
-                    "id" => "87bad469-33bd-4c4d-8a83-08142581a31d",
-                    "originalName" => "video1.mp4",
-                    "name" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4",
-                    "mimeType" => "video/mp4",
-                    "size" => "71541180",
-                    "length" => "1449",
-                    "subtitle" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.srt",
-                    "ass" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.ass",
-                    "subtitles" => [
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_1.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_2.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_3.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_4.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_5.srt",
+            'clip' => [
+                'id' => '8e90c18c-da70-4e1b-8671-30ce14851cd2',
+                'userId' => 'da59434f-602f-4d39-879c-eb0950812737',
+                'status' => 'SUBTITLE_INCRUSTATOR_PENDING',
+                'originalVideo' => [
+                    'id' => '87bad469-33bd-4c4d-8a83-08142581a31d',
+                    'originalName' => 'video1.mp4',
+                    'name' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4',
+                    'mimeType' => 'video/mp4',
+                    'size' => '71541180',
+                    'length' => '1449',
+                    'subtitle' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.srt',
+                    'ass' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.ass',
+                    'subtitles' => [
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_1.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_2.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_3.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_4.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_5.srt',
                     ],
-                    "audios" => [
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_1.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_2.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_3.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_4.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_5.wav",
+                    'audios' => [
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_1.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_2.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_3.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_4.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_5.wav',
                     ],
                 ],
-                "cover" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.jpg",
-                "configuration" => [
-                    "id" => "249fe1bc-a8f0-4bea-8901-c7afe66fd3cf",
-                    "subtitleFont" => "ARIAL",
-                    "subtitleSize" => "16",
-                    "subtitleColor" => "#FFFFFF",
-                    "subtitleBold" => "0",
-                    "subtitleItalic" => "0",
-                    "subtitleUnderline" => "0",
-                    "subtitleOutlineColor" => "#000000",
-                    "subtitleOutlineThickness" => "2",
-                    "subtitleShadow" => "2",
-                    "subtitleShadowColor" => "#000000",
-                    "format" => "ORIGINAL",
-                    "split" => "1",
+                'cover' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.jpg',
+                'configuration' => [
+                    'id' => '249fe1bc-a8f0-4bea-8901-c7afe66fd3cf',
+                    'subtitleFont' => 'ARIAL',
+                    'subtitleSize' => '14',
+                    'subtitleColor' => '#FFFFFF',
+                    'subtitleBold' => '0',
+                    'subtitleItalic' => '0',
+                    'subtitleUnderline' => '0',
+                    'subtitleOutlineColor' => '#000000',
+                    'subtitleOutlineThickness' => '2',
+                    'subtitleShadow' => '2',
+                    'subtitleShadowColor' => '#000000',
+                    'format' => 'ZOOMED_916',
+                    'split' => '1',
+                    'marginV' => '50',
                 ],
             ],
-            "service" => "subtitle_incrustator",
+            'service' => 'subtitle_incrustator',
         ]);
     }
 
     private function getJsonVideoFormatter(): string
     {
         return json_encode([
-            "clip" => [
-                "id" => "8e90c18c-da70-4e1b-8671-30ce14851cd2",
-                "userId" => "da59434f-602f-4d39-879c-eb0950812737",
-                "status" => "VIDEO_FORMATTER_PENDING",
-                "originalVideo" => [
-                    "id" => "87bad469-33bd-4c4d-8a83-08142581a31d",
-                    "originalName" => "video1.mp4",
-                    "name" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4",
-                    "mimeType" => "video/mp4",
-                    "size" => "71541180",
-                    "length" => "1449",
-                    "subtitle" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.srt",
-                    "ass" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.ass",
-                    "subtitles" => [
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_1.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_2.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_3.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_4.srt",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_5.srt",
+            'clip' => [
+                'id' => '8e90c18c-da70-4e1b-8671-30ce14851cd2',
+                'userId' => 'da59434f-602f-4d39-879c-eb0950812737',
+                'status' => 'VIDEO_FORMATTER_PENDING',
+                'originalVideo' => [
+                    'id' => '87bad469-33bd-4c4d-8a83-08142581a31d',
+                    'originalName' => 'video1.mp4',
+                    'name' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4',
+                    'mimeType' => 'video/mp4',
+                    'size' => '71541180',
+                    'length' => '1449',
+                    'subtitle' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.srt',
+                    'ass' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.ass',
+                    'subtitles' => [
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_1.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_2.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_3.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_4.srt',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_5.srt',
                     ],
-                    "audios" => [
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_1.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_2.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_3.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_4.wav",
-                        "8e90c18c-da70-4e1b-8671-30ce14851cd2_5.wav",
+                    'audios' => [
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_1.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_2.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_3.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_4.wav',
+                        '8e90c18c-da70-4e1b-8671-30ce14851cd2_5.wav',
                     ],
                 ],
-                "cover" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.jpg",
-                "configuration" => [
-                    "id" => "164a482e-aee8-4184-821e-0edca831b1d0",
-                    "subtitleFont" => "ARIAL",
-                    "subtitleSize" => "16",
-                    "subtitleColor" => "#FFFFFF",
-                    "subtitleBold" => "0",
-                    "subtitleItalic" => "0",
-                    "subtitleUnderline" => "0",
-                    "subtitleOutlineColor" => "#000000",
-                    "subtitleOutlineThickness" => "2",
-                    "subtitleShadow" => "2",
-                    "subtitleShadowColor" => "#000000",
-                    "format" => "ORIGINAL",
-                    "split" => "1",
+                'cover' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.jpg',
+                'configuration' => [
+                    'id' => '164a482e-aee8-4184-821e-0edca831b1d0',
+                    'subtitleFont' => 'ARIAL',
+                    'subtitleSize' => '14',
+                    'subtitleColor' => '#FFFFFF',
+                    'subtitleBold' => '0',
+                    'subtitleItalic' => '0',
+                    'subtitleUnderline' => '0',
+                    'subtitleOutlineColor' => '#000000',
+                    'subtitleOutlineThickness' => '2',
+                    'subtitleShadow' => '2',
+                    'subtitleShadowColor' => '#000000',
+                    'format' => 'ZOOMED_916',
+                    'split' => '1',
+                    'marginV' => '50',
                 ],
-                "processedVideo" => [
-                    "id" => "fe6c8eed-f435-4b00-b9dd-3bf97e9e4eee",
-                    "originalName" => "video1.mp4",
-                    "name" => "8e90c18c-da70-4e1b-8671-30ce14851cd2_processed.mp4",
-                    "mimeType" => "video/mp4",
-                    "size" => "71541180",
-                    "length" => "1449",
-                    "subtitle" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.srt",
-                    "ass" => "8e90c18c-da70-4e1b-8671-30ce14851cd2.ass",
+                'processedVideo' => [
+                    'id' => 'fe6c8eed-f435-4b00-b9dd-3bf97e9e4eee',
+                    'originalName' => 'video1.mp4',
+                    'name' => '8e90c18c-da70-4e1b-8671-30ce14851cd2_processed.mp4',
+                    'mimeType' => 'video/mp4',
+                    'size' => '71541180',
+                    'length' => '1449',
+                    'subtitle' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.srt',
+                    'ass' => '8e90c18c-da70-4e1b-8671-30ce14851cd2.ass',
                 ],
             ],
-            "service" => "video_formatter",
+            'service' => 'video_formatter',
         ]);
     }
 

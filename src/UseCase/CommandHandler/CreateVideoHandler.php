@@ -3,8 +3,8 @@
 namespace App\UseCase\CommandHandler;
 
 use App\Entity\Video;
-use App\UseCase\Command\CreateVideo;
 use App\Repository\VideoRepository;
+use App\UseCase\Command\CreateVideo;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]

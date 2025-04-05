@@ -18,10 +18,10 @@ framework:
                             binding_keys: [subtitle_merger]
                         subtitle_transformer:
                             binding_keys: [subtitle_transformer]
-                        subtitle_incrustator:
-                            binding_keys: [subtitle_incrustator]
                         video_formatter:
                             binding_keys: [video_formatter]
+                        subtitle_incrustator:
+                            binding_keys: [subtitle_incrustator]
                         video_incrustator:
                             binding_keys: [video_incrustator]
                         video_splitter:
@@ -43,4 +43,5 @@ framework:
             'App\Protobuf\SubtitleGeneratorMessage': microservices
             'App\Protobuf\SubtitleMergerMessage': microservices
             'App\Protobuf\SubtitleTransformerMessage': microservices
+            'App\Protobuf\VideoFormatterMessage': microservices
             'App\Protobuf\SubtitleIncrustatorMessage': microservices

@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Dto\GetToken;
 use App\Entity\User;
-use App\UseCase\Command\UpdateApiKey;
 use App\Repository\UserRepository;
+use App\UseCase\Command\UpdateApiKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

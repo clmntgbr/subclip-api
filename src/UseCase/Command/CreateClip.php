@@ -2,7 +2,6 @@
 
 namespace App\UseCase\Command;
 
-use App\Entity\User;
 use Symfony\Component\Uid\Uuid;
 
 final class CreateClip

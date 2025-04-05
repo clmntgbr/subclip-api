@@ -3,8 +3,8 @@
 namespace App\UseCase\CommandHandler;
 
 use App\Entity\ApiKey;
-use App\UseCase\Command\RemoveApiKey;
 use App\Repository\ApiKeyRepository;
+use App\UseCase\Command\RemoveApiKey;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]

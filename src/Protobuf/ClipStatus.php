@@ -64,29 +64,29 @@ class ClipStatus
      */
     const SUBTITLE_TRANSFORMER_ERROR = 12;
     /**
-     * Generated from protobuf enum <code>SUBTITLE_INCRUSTATOR_PENDING = 13;</code>
+     * Generated from protobuf enum <code>VIDEO_FORMATTER_PENDING = 13;</code>
      */
-    const SUBTITLE_INCRUSTATOR_PENDING = 13;
+    const VIDEO_FORMATTER_PENDING = 13;
     /**
-     * Generated from protobuf enum <code>SUBTITLE_INCRUSTATOR_COMPLETE = 14;</code>
+     * Generated from protobuf enum <code>VIDEO_FORMATTER_COMPLETE = 14;</code>
      */
-    const SUBTITLE_INCRUSTATOR_COMPLETE = 14;
+    const VIDEO_FORMATTER_COMPLETE = 14;
     /**
-     * Generated from protobuf enum <code>SUBTITLE_INCRUSTATOR_ERROR = 15;</code>
+     * Generated from protobuf enum <code>VIDEO_FORMATTER_ERROR = 15;</code>
      */
-    const SUBTITLE_INCRUSTATOR_ERROR = 15;
+    const VIDEO_FORMATTER_ERROR = 15;
     /**
-     * Generated from protobuf enum <code>VIDEO_FORMATTER_PENDING = 16;</code>
+     * Generated from protobuf enum <code>SUBTITLE_INCRUSTATOR_PENDING = 16;</code>
      */
-    const VIDEO_FORMATTER_PENDING = 16;
+    const SUBTITLE_INCRUSTATOR_PENDING = 16;
     /**
-     * Generated from protobuf enum <code>VIDEO_FORMATTER_COMPLETE = 17;</code>
+     * Generated from protobuf enum <code>SUBTITLE_INCRUSTATOR_COMPLETE = 17;</code>
      */
-    const VIDEO_FORMATTER_COMPLETE = 17;
+    const SUBTITLE_INCRUSTATOR_COMPLETE = 17;
     /**
-     * Generated from protobuf enum <code>VIDEO_FORMATTER_ERROR = 18;</code>
+     * Generated from protobuf enum <code>SUBTITLE_INCRUSTATOR_ERROR = 18;</code>
      */
-    const VIDEO_FORMATTER_ERROR = 18;
+    const SUBTITLE_INCRUSTATOR_ERROR = 18;
     /**
      * Generated from protobuf enum <code>VIDEO_SPLITTER_PENDING = 19;</code>
      */
@@ -134,12 +134,12 @@ class ClipStatus
         self::SUBTITLE_TRANSFORMER_PENDING => 'SUBTITLE_TRANSFORMER_PENDING',
         self::SUBTITLE_TRANSFORMER_COMPLETE => 'SUBTITLE_TRANSFORMER_COMPLETE',
         self::SUBTITLE_TRANSFORMER_ERROR => 'SUBTITLE_TRANSFORMER_ERROR',
-        self::SUBTITLE_INCRUSTATOR_PENDING => 'SUBTITLE_INCRUSTATOR_PENDING',
-        self::SUBTITLE_INCRUSTATOR_COMPLETE => 'SUBTITLE_INCRUSTATOR_COMPLETE',
-        self::SUBTITLE_INCRUSTATOR_ERROR => 'SUBTITLE_INCRUSTATOR_ERROR',
         self::VIDEO_FORMATTER_PENDING => 'VIDEO_FORMATTER_PENDING',
         self::VIDEO_FORMATTER_COMPLETE => 'VIDEO_FORMATTER_COMPLETE',
         self::VIDEO_FORMATTER_ERROR => 'VIDEO_FORMATTER_ERROR',
+        self::SUBTITLE_INCRUSTATOR_PENDING => 'SUBTITLE_INCRUSTATOR_PENDING',
+        self::SUBTITLE_INCRUSTATOR_COMPLETE => 'SUBTITLE_INCRUSTATOR_COMPLETE',
+        self::SUBTITLE_INCRUSTATOR_ERROR => 'SUBTITLE_INCRUSTATOR_ERROR',
         self::VIDEO_SPLITTER_PENDING => 'VIDEO_SPLITTER_PENDING',
         self::VIDEO_SPLITTER_COMPLETE => 'VIDEO_SPLITTER_COMPLETE',
         self::VIDEO_SPLITTER_ERROR => 'VIDEO_SPLITTER_ERROR',
