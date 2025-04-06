@@ -103,6 +103,9 @@ class DebugController extends AbstractController
             71541180
         );
 
+        $video->setAss('8e90c18c-da70-4e1b-8671-30ce14851cd2.ass');
+        $video->setSubtitle('8e90c18c-da70-4e1b-8671-30ce14851cd2.srt');
+
         $video->setId($id);
 
         return $video;
@@ -460,7 +463,7 @@ class DebugController extends AbstractController
                     'subtitleOutlineThickness' => '2',
                     'subtitleShadow' => '2',
                     'subtitleShadowColor' => '#000000',
-                    'format' => 'ZOOMED_916',
+                    'format' => 'NORMAL_916_WITH_BORDERS',
                     'split' => '1',
                     'marginV' => '50',
                 ],
@@ -504,7 +507,7 @@ class DebugController extends AbstractController
                     'subtitleOutlineThickness' => '2',
                     'subtitleShadow' => '2',
                     'subtitleShadowColor' => '#000000',
-                    'format' => 'ZOOMED_916',
+                    'format' => 'NORMAL_916_WITH_BORDERS',
                     'split' => '1',
                     'marginV' => '50',
                 ],
@@ -555,7 +558,7 @@ class DebugController extends AbstractController
                     'subtitleOutlineThickness' => '2',
                     'subtitleShadow' => '2',
                     'subtitleShadowColor' => '#000000',
-                    'format' => 'ZOOMED_916',
+                    'format' => 'NORMAL_916_WITH_BORDERS',
                     'split' => '1',
                     'marginV' => '50',
                 ],
@@ -607,7 +610,7 @@ class DebugController extends AbstractController
                     'subtitleOutlineThickness' => '2',
                     'subtitleShadow' => '2',
                     'subtitleShadowColor' => '#000000',
-                    'format' => 'ZOOMED_916',
+                    'format' => 'NORMAL_916_WITH_BORDERS',
                     'split' => '1',
                     'marginV' => '50',
                 ],
@@ -660,7 +663,7 @@ class DebugController extends AbstractController
                     'subtitleOutlineThickness' => '2',
                     'subtitleShadow' => '2',
                     'subtitleShadowColor' => '#000000',
-                    'format' => 'ZOOMED_916',
+                    'format' => 'NORMAL_916_WITH_BORDERS',
                     'split' => '1',
                     'marginV' => '50',
                 ],
@@ -713,7 +716,7 @@ class DebugController extends AbstractController
                     'subtitleOutlineThickness' => '2',
                     'subtitleShadow' => '2',
                     'subtitleShadowColor' => '#000000',
-                    'format' => 'ZOOMED_916',
+                    'format' => 'NORMAL_916_WITH_BORDERS',
                     'split' => '1',
                     'marginV' => '50',
                 ],
