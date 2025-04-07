@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\GetToken;
+use App\Model\GetToken;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\UseCase\Command\UpdateApiKey;
@@ -40,7 +40,10 @@ class SecurityController extends AbstractController
 
         $plainToken = bin2hex(random_bytes(32));
 
-        $this->messageBus->dispatch(new UpdateApiKey($user->getId(), $plainToken));
+        $this->messageBus->dispatch(new UpdateApiKey(
+            userId: $user->getId(), 
+            token: $plainToken
+        ));
 
         return new JsonResponse(data: ['token' => $plainToken], status: Response::HTTP_OK);
     }

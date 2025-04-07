@@ -44,7 +44,7 @@ class ApiAuthenticator extends AbstractAuthenticator
         }
 
         if ($apiKey->getExpireAt() < new \DateTimeImmutable()) {
-            $this->messageBus->dispatch(new RemoveApiKey($apiKey->getId()));
+            $this->messageBus->dispatch(new RemoveApiKey(apiKey: $apiKey->getId()));
             throw new AuthenticationException();
         }
 
@@ -55,7 +55,7 @@ class ApiAuthenticator extends AbstractAuthenticator
         }
 
         return new SelfValidatingPassport(
-            new UserBadge($user->getId()->__toString())
+            userBadge: new UserBadge(userIdentifier: $user->getId()->__toString())
         );
     }
 

@@ -10,6 +10,6 @@ class EmailProvider
     {
         $email = str_replace('\\', '', $email);
 
-        return new Email($email);
+        return new Email(value: $email);
     }
 }

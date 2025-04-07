@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Dto\StockOrder;
 use App\Entity\Clip;
 use App\Entity\Configuration;
 use App\Entity\User;
@@ -15,7 +14,6 @@ use League\Flysystem\FilesystemOperator;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-use stdClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -96,11 +94,11 @@ class DebugController extends AbstractController
         }
 
         $video = new Video(
-            Uuid::fromString($id),
-            'video.mp4',
-            '8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4',
-            'video/mp4',
-            71541180
+            videoId: Uuid::fromString($id),
+            originalName: 'video.mp4',
+            name: '8e90c18c-da70-4e1b-8671-30ce14851cd2.mp4',
+            mimeType: 'video/mp4',
+            size: 71541180
         );
 
         $video->setAss('8e90c18c-da70-4e1b-8671-30ce14851cd2.ass');
@@ -120,10 +118,10 @@ class DebugController extends AbstractController
         }
 
         $clip = new Clip(
-            $user,
-            Uuid::fromString($id),
-            $video,
-            new Configuration(),
+            user: $user,
+            clipId: Uuid::fromString($id),
+            originalVideo: $video,
+            configuration: new Configuration(),
         );
 
         return $clip;
@@ -362,21 +360,21 @@ class DebugController extends AbstractController
         );
 
         $processedVideo = $clip->getProcessedVideo();
-        
+
         if (null === $processedVideo) {
             $processedVideo = new Video(
-                uuid::fromString('fe6c8eed-f435-4b00-b9dd-3bf97e9e4eee'),
-                $clip->getOriginalVideo()->getOriginalName(),
-                $clip->getOriginalVideo()->getName(),
-                $clip->getOriginalVideo()->getMimeType(),
-                $clip->getOriginalVideo()->getSize(),
+                videoId: Uuid::fromString('fe6c8eed-f435-4b00-b9dd-3bf97e9e4eee'),
+                originalName: $clip->getOriginalVideo()->getOriginalName(),
+                name: $clip->getOriginalVideo()->getName(),
+                mimeType: $clip->getOriginalVideo()->getMimeType(),
+                size: $clip->getOriginalVideo()->getSize(),
             );
         }
 
         $processedVideo->setAss($clip->getOriginalVideo()->getAss());
         $processedVideo->setSubtitle($clip->getOriginalVideo()->getSubtitle());
         $clip->setProcessedVideo($processedVideo);
-        
+
         $clip->setStatuses([
             ClipStatus::name(ClipStatus::UPLOADED),
             ClipStatus::name(ClipStatus::SOUND_EXTRACTOR_PENDING),

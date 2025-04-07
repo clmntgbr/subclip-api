@@ -18,11 +18,11 @@ final class CreateVideoHandler
     public function __invoke(CreateVideo $message): void
     {
         $video = new Video(
-            $message->videoId,
-            $message->originalName,
-            $message->name,
-            $message->mimeType,
-            $message->size,
+            videoId: $message->videoId,
+            originalName: $message->originalName,
+            name: $message->name,
+            mimeType: $message->mimeType,
+            size: $message->size,
         );
 
         $this->videoRepository->save($video);

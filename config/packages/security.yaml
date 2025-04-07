@@ -19,6 +19,7 @@ security:
             stateless: true
             provider: api_provider
     access_control:
+        - { path: ^/api/tiktok/callback, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/api/token, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/api/status, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/api, roles: ROLE_USER }

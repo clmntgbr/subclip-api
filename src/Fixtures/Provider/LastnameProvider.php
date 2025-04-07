@@ -10,6 +10,6 @@ class LastnameProvider
     {
         $lastname = str_replace('\\', '', $lastname);
 
-        return new Lastname($lastname);
+        return new Lastname(value: $lastname);
     }
 }

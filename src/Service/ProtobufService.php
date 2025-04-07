@@ -88,11 +88,11 @@ class ProtobufService
     {
         if (null === $video) {
             $video = new Video(
-                Uuid::fromString($protobufVideo->getId()),
-                $protobufVideo->getOriginalName(),
-                $protobufVideo->getName(),
-                $protobufVideo->getMimeType(),
-                $protobufVideo->getSize(),
+                videoId: Uuid::fromString($protobufVideo->getId()),
+                originalName: $protobufVideo->getOriginalName(),
+                name: $protobufVideo->getName(),
+                mimeType: $protobufVideo->getMimeType(),
+                size: $protobufVideo->getSize(),
             );
         }
 

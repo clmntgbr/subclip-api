@@ -11,8 +11,11 @@ use App\Entity\ValueObject\Lastname;
 use App\Entity\ValueObject\Password;
 use App\Entity\ValueObject\PlainPassword;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Embedded;
+use Doctrine\ORM\Mapping\OneToMany;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -30,7 +33,7 @@ const USER_WRITE = 'user.write';
     operations: [
         new Get(
             uriTemplate: '/me',
-            normalizationContext: ['skip_null_values' => false, 'groups' => [USER_READ]],
+            normalizationContext: ['skip_null_values' => false, 'groups' => [USER_READ, SOCIAL_ACCOUNT_READ]],
         ),
     ]
 )]
@@ -45,6 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Uuid $id;
 
     #[Embedded(class: Email::class, columnPrefix: false)]
+    #[Groups([USER_READ])]
     private Email $email;
 
     #[Embedded(class: Password::class, columnPrefix: false)]
@@ -58,14 +62,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[Embedded(class: Lastname::class, columnPrefix: false)]
+    #[Groups([USER_READ])]
     private Lastname $lastname;
 
     #[Embedded(class: Firstname::class, columnPrefix: false)]
+    #[Groups([USER_READ])]
     private Firstname $firstname;
+
+    #[ORM\Column(name: 'state', type: Types::STRING, length: 180, nullable: true, unique: true)]
+    private string $state;
 
     #[ORM\OneToOne(targetEntity: ApiKey::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(name: 'api_key_id', referencedColumnName: 'id', nullable: true)]
     private ?ApiKey $apiKey = null;
+
+    #[OneToMany(targetEntity: SocialAccount::class, mappedBy: 'user')]
+    #[Groups([USER_READ])]
+    private Collection $socialAccounts;
 
     public function __construct()
     {
@@ -169,27 +182,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[Groups([USER_READ])]
-    #[SerializedName('email')]
-    public function getApiEmail()
-    {
-        return $this->email->__toString();
-    }
-
-    #[Groups([USER_READ])]
-    #[SerializedName('firstname')]
-    public function getApiFirstname()
-    {
-        return $this->firstname->__toString();
-    }
-
-    #[Groups([USER_READ])]
-    #[SerializedName('lastname')]
-    public function getApiLastname()
-    {
-        return $this->lastname->__toString();
-    }
-
     public function getEmail(): Email
     {
         return $this->email;
@@ -200,5 +192,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->email = $email;
 
         return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(string $state): static
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    public function getSocialAccounts(): Collection
+    {
+        return $this->socialAccounts;
     }
 }

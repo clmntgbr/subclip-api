@@ -4,7 +4,6 @@ namespace App\MessageHandler;
 
 use App\Message\TaskMessage;
 use App\Protobuf\ClipStatus;
-use App\Protobuf\SubtitleTransformerMessage;
 use App\Protobuf\VideoFormatterMessage;
 use App\Repository\ClipRepository;
 use App\Service\ProtobufService;
@@ -58,7 +57,7 @@ final class VideoFormatterMessageHandler
             $this->clipStateMachine->apply($clip, 'process_subtitle_incrustator');
             $this->clipRepository->save($clip);
 
-            $this->messageBus->dispatch(new TaskMessage($clip->getId(), 'subtitle_incrustator'));
+            $this->messageBus->dispatch(new TaskMessage(clipId: $clip->getId(), service: 'subtitle_incrustator'));
 
             return;
         } catch (\Exception $e) {

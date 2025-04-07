@@ -52,7 +52,7 @@ readonly class UserEvent
     private function hashPassword(User $user): void
     {
         if ($user->getPlainPassword()) {
-            $password = new Password($this->userPasswordHasher->hashPassword($user, $user->getPlainPassword()->__toString()));
+            $password = new Password(value: $this->userPasswordHasher->hashPassword($user, $user->getPlainPassword()->__toString()));
             $user->setPassword($password);
         }
 

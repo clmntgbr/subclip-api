@@ -39,11 +39,11 @@ final class CreateClipHandler
         $videoId = Uuid::v4();
 
         $this->messageBus->dispatch(new CreateVideo(
-            $videoId,
-            $message->originalName,
-            $message->name,
-            $message->mimeType,
-            $message->size,
+            videoId: $videoId,
+            originalName: $message->originalName,
+            name: $message->name,
+            mimeType: $message->mimeType,
+            size: $message->size,
         ));
 
         /** @var ?Video $video */
@@ -53,16 +53,21 @@ final class CreateClipHandler
             throw new \InvalidArgumentException(sprintf('Video does not exist with id %s', $$videoId->__toString()));
         }
 
-        $clip = new Clip($user, $message->clipId, $video, new Configuration());
+        $clip = new Clip(
+            user: $user, 
+            clipId: $message->clipId, 
+            originalVideo: $video, 
+            configuration: new Configuration(),
+        );
 
         if (!$this->clipStateMachine->can($clip, 'process_sound_extractor')) {
-            throw new \RuntimeException('Clip is not in a valid state to process sound');
+            throw new \RuntimeException(message: 'Clip is not in a valid state to process sound');
         }
 
         $this->clipStateMachine->apply($clip, 'process_sound_extractor');
         $this->clipRepository->save($clip);
 
-        $this->messageBus->dispatch(new TaskMessage($clip->getId(), 'sound_extractor'));
+        $this->messageBus->dispatch(new TaskMessage(clipId: $clip->getId(), service: 'sound_extractor'));
 
         return;
     }

@@ -57,7 +57,7 @@ final class SubtitleTransformerMessageHandler
             $this->clipStateMachine->apply($clip, 'process_video_formatter');
             $this->clipRepository->save($clip);
 
-            $this->messageBus->dispatch(new TaskMessage($clip->getId(), 'video_formatter'));
+            $this->messageBus->dispatch(new TaskMessage(clipId: $clip->getId(), service: 'video_formatter'));
 
             return;
         } catch (\Exception $e) {

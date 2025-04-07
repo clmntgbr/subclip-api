@@ -57,7 +57,7 @@ final class SubtitleMergerMessageHandler
             $this->clipStateMachine->apply($clip, 'process_subtitle_transformer');
             $this->clipRepository->save($clip);
 
-            $this->messageBus->dispatch(new TaskMessage($clip->getId(), 'subtitle_transformer'));
+            $this->messageBus->dispatch(new TaskMessage(clipId: $clip->getId(), service: 'subtitle_transformer'));
 
             return;
         } catch (\Exception $e) {

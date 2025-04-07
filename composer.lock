@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3eda50a2aa5ded8c7fd6e8a2b8ea189a",
+    "content-hash": "f3a2a62c5f4b08524145b2444f1623e3",
     "packages": [
         {
             "name": "api-platform/doctrine-common",
@@ -2883,6 +2883,43 @@
                 }
             ],
             "time": "2025-02-24T22:12:57+00:00"
+        },
+        {
+            "name": "gimucco/tiktok-loginkit",
+            "version": "v0.6.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/andreaolivato/TikTok-LoginKit-PHP.git",
+                "reference": "1060fde38f9c790f2c8b0fd332313c39adda291d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/andreaolivato/TikTok-LoginKit-PHP/zipball/1060fde38f9c790f2c8b0fd332313c39adda291d",
+                "reference": "1060fde38f9c790f2c8b0fd332313c39adda291d",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "gimucco\\TikTokLoginKit\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Andrea Olivato",
+                    "email": "andrea@olivato.me"
+                }
+            ],
+            "description": "TikTok Login Kit for Web in PHP",
+            "support": {
+                "issues": "https://github.com/andreaolivato/TikTok-LoginKit-PHP/issues",
+                "source": "https://github.com/andreaolivato/TikTok-LoginKit-PHP/tree/v0.6.6"
+            },
+            "time": "2024-02-27T22:47:06+00:00"
         },
         {
             "name": "google/protobuf",

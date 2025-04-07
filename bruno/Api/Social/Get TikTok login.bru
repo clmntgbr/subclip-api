@@ -1,0 +1,25 @@
+meta {
+  name: Get TikTok login
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{api_url}}api/tiktok/login
+  body: none
+  auth: apikey
+}
+
+auth:apikey {
+  key: X-API-KEY
+  value: {{token}}
+  placement: header
+}
+
+body:json {
+  { "email": "clement@gmail.com", "password": "clement" }
+}
+
+script:post-response {
+  bru.setEnvVar("token", res.body.token);
+}

@@ -57,7 +57,7 @@ final class SoundExtractorMessageHandler
             $this->clipStateMachine->apply($clip, 'process_subtitle_generator');
             $this->clipRepository->save($clip);
 
-            $this->messageBus->dispatch(new TaskMessage($clip->getId(), 'subtitle_generator'));
+            $this->messageBus->dispatch(new TaskMessage(clipId: $clip->getId(), service: 'subtitle_generator'));
 
             return;
         } catch (\Exception $e) {

@@ -53,7 +53,7 @@ class ApiKey
     public function setToken(string $token): static
     {
         $token = hash('sha256', $token);
-        $this->token = new Token($token);
+        $this->token = new Token(value: $token);
 
         return $this;
     }

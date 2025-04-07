@@ -6,6 +6,9 @@ services:
         autoconfigure: true
         bind:
             string $rabbitMqTransportDsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+            string $tiktokClientKey: '%env(TIKTOK_CLIENT_KEY)%'
+            string $tiktokClientSecret: '%env(TIKTOK_CLIENT_SECRET)%'
+            string $tiktokRedirectUri: '%env(TIKTOK_REDIRECT_URI)%'
 
     App\:
         resource: '../src/'
@@ -35,3 +38,6 @@ services:
                 credentials:
                     key: '%env(S3_ACCESS_KEY)%'
                     secret: '%env(S3_SECRET_KEY)%'
+
+    App\Serializer\ValueObjectNormalizer:
+        tags: [serializer.normalizer]

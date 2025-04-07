@@ -10,6 +10,6 @@ class PlainPasswordProvider
     {
         $password = str_replace('\\', '', $password);
 
-        return new PlainPassword($password);
+        return new PlainPassword(value: $password);
     }
 }

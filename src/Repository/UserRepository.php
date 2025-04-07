@@ -29,7 +29,7 @@ class UserRepository extends AbstractRepository implements PasswordUpgraderInter
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
         }
 
-        $user->setPassword(new Password($newHashedPassword));
+        $user->setPassword(new Password(value: $newHashedPassword));
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }

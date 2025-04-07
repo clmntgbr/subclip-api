@@ -72,12 +72,12 @@ class UploadVideoService
             }
 
             $this->messageBus->dispatch(new CreateClip(
-                $clipId,
-                $user->getId(),
-                $file->getClientOriginalName(),
-                $fileName,
-                $file->getMimeType(),
-                $file->getSize(),
+                clipId: $clipId,
+                userId: $user->getId(),
+                originalName: $file->getClientOriginalName(),
+                name: $fileName,
+                mimeType: $file->getMimeType(),
+                size: $file->getSize(),
             ));
 
             return new JsonResponse([
