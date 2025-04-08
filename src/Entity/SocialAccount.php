@@ -107,6 +107,18 @@ class SocialAccount
         $this->refreshExpireAt = $refreshExpireAt;
     }
 
+    public function updateToken(
+        string $accessToken,
+        ?string $refreshToken = null,
+        ?\DateTime $expireAt = null,
+        ?\DateTime $refreshExpireAt = null,
+    ) {
+        $this->accessToken = new AccessToken(value: $accessToken);
+        $this->refreshToken = new RefreshToken(value: $refreshToken);
+        $this->expireAt = $expireAt;
+        $this->refreshExpireAt = $refreshExpireAt;
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;

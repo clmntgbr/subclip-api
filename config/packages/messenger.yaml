@@ -29,12 +29,25 @@ framework:
                         api:
                             binding_keys: [api]
             sync: 'sync://'
+            async:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                options:
+                    exchange:
+                        name: messages
+                        type: direct
+                    auto_setup: true
+                    queues:
+                        async:
+                            binding_keys: [async]
                 
         routing:
+            App\UseCase\Command\UploadTikTokClip: async
+
             App\UseCase\Command\RemoveApiKey: sync
             App\UseCase\Command\UpdateApiKey: sync
             App\UseCase\Command\CreateClip: sync
             App\UseCase\Command\CreateVideo: sync
+            App\UseCase\Command\UpdateTikTokToken: sync
 
             App\Message\TaskMessage: sync
 

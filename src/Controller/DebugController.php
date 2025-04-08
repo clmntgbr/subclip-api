@@ -11,6 +11,7 @@ use App\Repository\ClipRepository;
 use App\Repository\SocialAccountRepository;
 use App\Repository\UserRepository;
 use App\Repository\VideoRepository;
+use App\UseCase\Command\UploadTikTokClip;
 use League\Flysystem\FilesystemOperator;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -18,6 +19,8 @@ use PhpAmqpLib\Message\AMQPMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
@@ -37,7 +40,27 @@ class DebugController extends AbstractController
         private readonly SerializerInterface $serializer,
         private FilesystemOperator $awsStorage,
         private SocialAccountRepository $socialAccountRepository,
+        private MessageBusInterface $messageBus,
     ) {
+    }
+
+    #[Route('/tiktok', name: 'tiktok', methods: ['GET'])]
+    public function tiktok(): JsonResponse
+    {
+        $clip = $this->clipRepository->findOneBy(['id' => '8e90c18c-da70-4e1b-8671-30ce14851cd2']);
+        $socialAccount = $this->socialAccountRepository->findOneBy(['id' => 'f760f517-ed69-4a70-8487-ec5ba6b821fd']);
+
+        $this->messageBus->dispatch(new UploadTikTokClip(
+            clipId: $clip->getId(),
+            socialAccountId: $socialAccount->getId(),
+        ), [
+            new AmqpStamp('async', 0, []),
+        ]);
+
+        dd($clip);
+        return new JsonResponse(data: [
+            'message' => 'Debug index',
+        ], status: Response::HTTP_OK);
     }
 
     #[Route('/debug/{service}', name: 'debug', methods: ['GET'])]

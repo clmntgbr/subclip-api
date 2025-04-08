@@ -95,3 +95,6 @@ php-stan:
 
 consume:
 	$(PHP) php bin/console messenger:consume microservices --queues=api -vv
+
+consume-async:
+	$(PHP) php bin/console messenger:consume async -vv
