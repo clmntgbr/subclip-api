@@ -16,7 +16,6 @@
         "doctrine/doctrine-fixtures-bundle": ">=4.1.0",
         "doctrine/doctrine-migrations-bundle": ">=3.4.1",
         "doctrine/orm": ">=3.3.2",
-        "gimucco/tiktok-loginkit": "^0.6.6",
         "google/protobuf": "^4.30",
         "hautelook/alice-bundle": ">=2.15.0",
         "league/flysystem-aws-s3-v3": "^3.29",

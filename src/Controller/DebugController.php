@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\Video;
 use App\Protobuf\ClipStatus;
 use App\Repository\ClipRepository;
+use App\Repository\SocialAccountRepository;
 use App\Repository\UserRepository;
 use App\Repository\VideoRepository;
 use League\Flysystem\FilesystemOperator;
@@ -35,6 +36,7 @@ class DebugController extends AbstractController
         private ClipRepository $clipRepository,
         private readonly SerializerInterface $serializer,
         private FilesystemOperator $awsStorage,
+        private SocialAccountRepository $socialAccountRepository,
     ) {
     }
 

@@ -54,9 +54,9 @@ final class CreateClipHandler
         }
 
         $clip = new Clip(
-            user: $user, 
-            clipId: $message->clipId, 
-            originalVideo: $video, 
+            user: $user,
+            clipId: $message->clipId,
+            originalVideo: $video,
             configuration: new Configuration(),
         );
 

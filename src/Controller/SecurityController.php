@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Model\GetToken;
 use App\Entity\User;
+use App\Model\GetToken;
 use App\Repository\UserRepository;
 use App\UseCase\Command\UpdateApiKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,7 +41,7 @@ class SecurityController extends AbstractController
         $plainToken = bin2hex(random_bytes(32));
 
         $this->messageBus->dispatch(new UpdateApiKey(
-            userId: $user->getId(), 
+            userId: $user->getId(),
             token: $plainToken
         ));
 

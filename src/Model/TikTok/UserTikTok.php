@@ -1,6 +1,9 @@
 <?php
+
 namespace App\Model\TikTok;
-class UserTikTok {
+
+class UserTikTok
+{
     private ?string $openId;
     private ?string $unionId;
     private ?string $avatar;
@@ -16,7 +19,8 @@ class UserTikTok {
     private int $numVideos;
     private ?string $handle;
 
-    public function __construct(?string$openId, ?string$unionId, ?string$avatar, ?string$avatarLarger, ?string$displayName, ?string$avatarThumb, ?string$bio, ?string$url, bool $isVerified, int $followers, int $following, int $likes, int $numVideos, ?string$handle) {
+    public function __construct(?string $openId, ?string $unionId, ?string $avatar, ?string $avatarLarger, ?string $displayName, ?string $avatarThumb, ?string $bio, ?string $url, bool $isVerified, int $followers, int $following, int $likes, int $numVideos, ?string $handle)
+    {
         $this->openId = $openId;
         $this->unionId = $unionId;
         $this->avatar = $avatar;
@@ -33,7 +37,8 @@ class UserTikTok {
         $this->handle = $handle;
     }
 
-    public static function fromJson(array $json, bool $getUsernameRemote = false) {
+    public static function fromJson(array $json, bool $getUsernameRemote = false)
+    {
         $data = $json['data']['user'] ?? [];
         $openId = $data['open_id'] ?? null;
         $unionId = $data['union_id'] ?? null;
@@ -73,63 +78,78 @@ class UserTikTok {
         );
     }
 
-    public function getOpenID(): ?string {
+    public function getOpenID(): ?string
+    {
         return $this->openId;
     }
 
-    public function getUnionID(): ?string {
+    public function getUnionID(): ?string
+    {
         return $this->unionId;
     }
 
-    public function getAvatar(): ?string {
+    public function getAvatar(): ?string
+    {
         return $this->avatar;
     }
 
-    public function getAvatarLarger(): ?string {
+    public function getAvatarLarger(): ?string
+    {
         return $this->avatarLarger;
     }
 
-    public function getDisplayName(): ?string {
+    public function getDisplayName(): ?string
+    {
         return $this->displayName;
     }
 
-    public function getAvatarThumb(): ?string {
+    public function getAvatarThumb(): ?string
+    {
         return $this->avatarThumb;
     }
 
-    public function getBio(): ?string {
+    public function getBio(): ?string
+    {
         return $this->bio;
     }
 
-    public function getUrl(): ?string {
+    public function getUrl(): ?string
+    {
         return $this->url;
     }
 
-    public function isVerified(): bool {
+    public function isVerified(): bool
+    {
         return $this->isVerified;
     }
 
-    public function getFollowers(): int {
+    public function getFollowers(): int
+    {
         return $this->followers;
     }
 
-    public function getFollowing(): int {
+    public function getFollowing(): int
+    {
         return $this->following;
     }
 
-    public function getLikes(): int {
+    public function getLikes(): int
+    {
         return $this->likes;
     }
 
-    public function getNumVideos(): int {
+    public function getNumVideos(): int
+    {
         return $this->numVideos;
     }
 
-    public function getHandle(): ?string {
+    public function getHandle(): ?string
+    {
         return $this->handle;
     }
 
-    public function getBestAvatar(): ?string {
+    public function getBestAvatar(): ?string
+    {
         if ($this->getAvatarLarger()) {
             return $this->getAvatarLarger();
         }
@@ -139,10 +159,12 @@ class UserTikTok {
         if ($this->getAvatarThumb()) {
             return $this->getAvatarThumb();
         }
+
         return null;
     }
 
-    private static function getProfileUrl(?string $url): ?string {
+    private static function getProfileUrl(?string $url): ?string
+    {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
@@ -154,10 +176,12 @@ class UserTikTok {
         curl_exec($ch);
         $redirectURL = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
         curl_close($ch);
+
         return $redirectURL;
     }
 
-    private static function parseHandleFromUrl(?string $url): ?string {
+    private static function parseHandleFromUrl(?string $url): ?string
+    {
         preg_match('@www.tiktok.com%2F%40([^%]+)@', $url, $m);
         if ($m && !empty($m[1])) {
             return trim($m[1]);
@@ -166,6 +190,7 @@ class UserTikTok {
         if ($m && !empty($m[1])) {
             return trim($m[1]);
         }
+
         return null;
     }
 }

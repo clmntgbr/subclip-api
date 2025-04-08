@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Model\TikTok;
+
 class TokenTikTok
 {
     private string $accessToken;
@@ -22,8 +24,6 @@ class TokenTikTok
     }
 
     /**
-     * @param array $json
-     *
      * @return TokenTikTok
      *
      * @throws \Exception

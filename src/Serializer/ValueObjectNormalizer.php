@@ -1,8 +1,7 @@
-<?php 
+<?php
 
 namespace App\Serializer;
 
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use App\Entity\ValueObject\AccessToken;
 use App\Entity\ValueObject\Email;
 use App\Entity\ValueObject\Firstname;
@@ -11,6 +10,7 @@ use App\Entity\ValueObject\RefreshToken;
 use App\Entity\ValueObject\SociaAccountId;
 use App\Entity\ValueObject\SocialAccountType;
 use App\Entity\ValueObject\Username;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class ValueObjectNormalizer implements NormalizerInterface
 {

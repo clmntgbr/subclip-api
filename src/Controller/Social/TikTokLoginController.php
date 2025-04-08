@@ -52,7 +52,7 @@ class TikTokLoginController extends AbstractController
         $userTikTok = $this->tikTokService->getUserInfo($tokenTikTok->getAccessToken());
 
         $now = new \DateTime('now');
-        
+
         $expireAt = clone $now;
         $expireAt->modify(sprintf('+%s seconds', $tokenTikTok->getExpiresIn()));
 
@@ -83,6 +83,7 @@ class TikTokLoginController extends AbstractController
         );
 
         $this->socialAccountRepository->save($socialAccount);
+
         return new JsonResponse(data: ['message' => 'TikTok account linked'], status: Response::HTTP_OK);
     }
 }

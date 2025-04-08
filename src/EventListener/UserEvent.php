@@ -5,15 +5,13 @@ namespace App\EventListener;
 use App\Entity\User;
 use App\Entity\ValueObject\Password;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
-use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-#[AsDoctrineListener(event: Events::prePersist, priority: 0, connection: 'default')]
-#[AsDoctrineListener(event: Events::postPersist, priority: 0, connection: 'default')]
-#[AsDoctrineListener(event: Events::preUpdate, priority: 0, connection: 'default')]
+#[AsDoctrineListener(event: Events::prePersist)]
+#[AsDoctrineListener(event: Events::preUpdate)]
 readonly class UserEvent
 {
     public function __construct(
@@ -29,14 +27,6 @@ readonly class UserEvent
         }
 
         $this->hashPassword($entity);
-    }
-
-    public function postPersist(PostPersistEventArgs $postPersistEventArgs): void
-    {
-        $entity = $postPersistEventArgs->getObject();
-        if (!$entity instanceof User) {
-            return;
-        }
     }
 
     public function preUpdate(PreUpdateEventArgs $preUpdateEventArgs): void
