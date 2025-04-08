@@ -17,18 +17,8 @@ class TikTokService
     public const FIELD_U_OPENID = 'open_id';
     public const FIELD_U_UNIONID = 'union_id';
     public const FIELD_U_AVATAR = 'avatar_url';
-    public const FIELD_U_AVATAR_THUMB = 'avatar_url_100';
-    public const FIELD_U_AVATAR_LARGER = 'avatar_large_url';
     public const FIELD_U_DISPLAYNAME = 'display_name';
-    public const FIELD_U_BIO = 'bio_description';
-    public const FIELD_U_URL = 'profile_deep_link';
-    public const FIELD_U_ISVERIFIED = 'is_verified';
-    public const FIELD_U_FOLLOWERS = 'follower_count';
-    public const FIELD_U_FOLLOWING = 'following_count';
-    public const FIELD_U_LIKES = 'likes_count';
-    public const FIELD_U_NUMVIDEOS = 'video_count';
-    public const FIELDS_U_ALL = [self::FIELD_U_OPENID, self::FIELD_U_UNIONID, self::FIELD_U_AVATAR, self::FIELD_U_AVATAR_THUMB, self::FIELD_U_AVATAR_LARGER, self::FIELD_U_DISPLAYNAME, self::FIELD_U_BIO, self::FIELD_U_URL, self::FIELD_U_ISVERIFIED, self::FIELD_U_FOLLOWERS, self::FIELD_U_FOLLOWING, self::FIELD_U_LIKES, self::FIELD_U_NUMVIDEOS];
-
+    
     public function __construct(
         private string $tiktokClientKey,
         private string $tiktokClientSecret,
@@ -70,7 +60,7 @@ class TikTokService
 
     public function getUserInfo(string $accessToken): UserTikTok
     {
-        $url = sprintf(self::BASE_USER_URL, implode(',', [self::FIELD_U_OPENID, self::FIELD_U_UNIONID, self::FIELD_U_AVATAR, self::FIELD_U_DISPLAYNAME]));
+        $url = sprintf(self::BASE_USER_URL, implode(',', [self::FIELD_U_OPENID, self::FIELD_U_UNIONID, self::FIELD_U_AVATAR, self::FIELD_U_DISPLAYNAME,]));
 
         try {
             $response = $this->httpClient->request('GET', $url, [
@@ -83,6 +73,7 @@ class TikTokService
 
             return $user;
         } catch (\Exception $_) {
+            dd($_->getMessage());
         }
 
         throw new TikTokException('TikTok API Error');
