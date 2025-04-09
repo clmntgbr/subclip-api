@@ -55,21 +55,17 @@ final class UploadTikTokClipHandler
 
         $creatorQuery = $this->tikTokService->getCreatorInfo($socialAccount->getAccessToken());
 
+        dump($creatorQuery);
+
         if (!$creatorQuery->hasPrivacyOption(TikTokService::PRIVACY_PUBLIC)) {
 			throw new UploadTikTokClipException('TikTok Error: This Creator cannot publish with the privacy level '.implode(', ', $creatorQuery->getPrivacyOptions()));
 		}
 
-		if ($creatorQuery->areCommentsOff() && !false) {
-			throw new UploadTikTokClipException('TikTok Error: This Creator cannot publish without turning off the Comments');
-		}
+        //FOR NOW, JUST UPLOAD THE ORIGINAL VIDEO FOR TESTING
 
-		if ($creatorQuery->isDuetOff() && !false) {
-			throw new UploadTikTokClipException('TikTok Error: This Creator cannot publish without turning off Duet');
-		}
-
-		if ($creatorQuery->isStitchOff() && !false) {
-			throw new UploadTikTokClipException('TikTok Error: This Creator cannot publish without turning off Stitch');
-		}
+        if ($clip->getOriginalVideo()->getLength() > $creatorQuery->getMaxVideoDuration()) {
+            throw new UploadTikTokClipException('TikTok Error: The video is too long. Max length is '.$clip->getOriginalVideo()->getLength().' seconds');
+        }
 
         $path = sprintf('%s/%s/%s', $clip->getUser()->getId(), $clip->getId()->toString(), $clip->getOriginalVideo()->getName());
         $localPath = sprintf('var/tmp/%s', basename($path));
@@ -89,6 +85,8 @@ final class UploadTikTokClipHandler
         stream_copy_to_stream($stream, $localFile);
         fclose($localFile);
         fclose($stream);
+
+        $this->tikTokService->publish($creatorQuery, $socialAccount->getAccessToken(), $localPath);
         
         dd($creatorQuery);
 

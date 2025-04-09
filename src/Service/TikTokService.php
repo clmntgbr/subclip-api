@@ -141,7 +141,7 @@ class TikTokService
         throw new TikTokException('TikTok API Error');
     }
 
-    public function publish(string $accessToken, string $file): void
+    public function publish(CreatorQueryTikTok $creatorQuery, string $accessToken, string $file): void
     {
         if (!file_exists($file)) {
 			throw new UploadTikTokClipException('TikTok file to be uploaded doesn\'t exist: '.$file);
@@ -151,9 +151,9 @@ class TikTokService
             'post_info' => [
                 'title' => Uuid::v4()->toRfc4122(),
                 'privacy_level' => self::PRIVACY_PUBLIC,
-                'disable_comment' => false,
-                'disable_duet' => false,
-                'disable_stitch' => false,
+                'disable_comment' => $creatorQuery->areCommentsOff(),
+                'disable_duet' => $creatorQuery->isDuetOff(),
+                'disable_stitch' => $creatorQuery->isStitchOff(),
                 'video_cover_timestamp_ms' => 1000,
                 'brand_content_toggle' => false,
                 'brand_organic_toggle' => false,
@@ -166,16 +166,22 @@ class TikTokService
             ]
         ];
 
+        dump($data);
+        dump($accessToken);
+
         try {
             $response = $this->httpClient->request('POST', self::BASE_POST_PUBLISH, [
                 'headers' => [
                     'Authorization' => 'Bearer '.$accessToken,
+                    'Cache-Control' => 'no-cache',
+                    'Content-Type' => 'application/json; charset=UTF-8',
                 ],
-                'body' => $data,
+                'body' => http_build_query($data),
             ]);
 
             dd($response->toArray());
         } catch (\Exception $_) {
+            dd($_);
         }
 
         throw new TikTokException('TikTok API Error');
