@@ -5,10 +5,13 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\VideoRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -64,10 +67,9 @@ class Video
     #[Groups([VIDEO_READ])]
     private array $audios = [];
 
-    #[ManyToOne(targetEntity: VideoPublish::class, cascade: ['persist', 'remove'])]
-    #[JoinColumn(name: 'video_publish_id', referencedColumnName: 'id', nullable: true)]
+    #[OneToMany(targetEntity: VideoPublish::class, mappedBy: 'video', cascade: ['persist', 'remove'])]
     #[Groups([VIDEO_READ])]
-    private ?VideoPublish $videoPublish = null;
+    private Collection $videoPublishes;
 
     public function __construct(
         Uuid $videoId,
@@ -81,6 +83,7 @@ class Video
         $this->name = $name;
         $this->mimeType = $mimeType;
         $this->size = $size;
+        $this->videoPublishes = new Collection();
     }
 
     public function getLength(): ?int
@@ -197,13 +200,6 @@ class Video
         return $this;
     }
 
-    public function setVideoPublish(VideoPublish $videoPublish): self
-    {
-        $this->videoPublish = $videoPublish;
-
-        return $this;
-    }
-
     public function getOriginalName(): ?string
     {
         return $this->originalName;
@@ -212,11 +208,6 @@ class Video
     public function getMimeType(): ?string
     {
         return $this->mimeType;
-    }
-
-    public function getVideoPublish(): ?VideoPublish
-    {
-        return $this->videoPublish;
     }
 
     public function getSize(): int
@@ -239,5 +230,28 @@ class Video
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
+    }
+
+    public function addVideoPublish(VideoPublish $videoPublish): self
+    {
+        if (!$this->videoPublishes->contains($videoPublish)) {
+            $this->videoPublishes[] = $videoPublish;
+        }
+
+        return $this;
+    }
+
+    public function getVideoPublishes(): Collection
+    {
+        return $this->videoPublishes;
+    }
+
+    public function getVideoPublish(SocialAccount $account): ?VideoPublish
+    {
+        $filtered = $this->videoPublishes->filter(function(VideoPublish $videoPublish) use ($account) {
+            return $videoPublish->getSocialAccount()->getId() === $account->getId();
+        });
+        
+        return $filtered->isEmpty() ? null : $filtered->first();
     }
 }

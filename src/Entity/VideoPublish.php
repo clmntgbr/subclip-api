@@ -8,6 +8,8 @@ use App\Protobuf\VideoPublishStatus;
 use App\Repository\VideoPublishRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -38,11 +40,22 @@ class VideoPublish
     #[ORM\Column(type: Types::STRING, nullable: true)]
     private ?string $message;
 
-    public function __construct(?string $publishId = null)
+    #[ManyToOne(targetEntity: Video::class, inversedBy: 'videoPublishes')]
+    #[JoinColumn(name: 'video_id', referencedColumnName: 'id')]
+    private Video $video;
+
+    #[ManyToOne(targetEntity: SocialAccount::class)]
+    #[JoinColumn(name: 'social_account_id', referencedColumnName: 'id')]
+    #[Groups([VIDEO_PUBLISH_READ])]
+    private SocialAccount $socialAccount;
+
+    public function __construct(Video $video, SocialAccount $socialAccount, ?string $publishId = null)
     {
         $this->publishId = $publishId;
         $this->status = VideoPublishStatus::name(VideoPublishStatus::UPLOADING);
         $this->id = Uuid::v4();
+        $this->video = $video;
+        $this->socialAccount = $socialAccount;
     }
 
     public function getId(): Uuid
@@ -63,6 +76,11 @@ class VideoPublish
     public function getMessage(): ?string
     {
         return $this->message;
+    }
+
+    public function getSocialAccount(): SocialAccount
+    {
+        return $this->socialAccount;
     }
 
     public function updateStatusError(?string $errorMessage = null)

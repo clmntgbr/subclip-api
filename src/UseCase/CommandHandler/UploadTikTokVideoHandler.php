@@ -80,7 +80,13 @@ final class UploadTikTokVideoHandler
                 throw new UploadTikTokClipException($publishInfoTikTok->getErrorMessage());
             }
 
-            $video->setVideoPublish(new VideoPublish($publishInfoTikTok->getPublishId()));
+            $videoPublish = new VideoPublish(
+                video: $video, 
+                socialAccount: $socialAccount, 
+                publishId: $publishInfoTikTok->getPublishId()
+            );
+
+            $video->addVideoPublish($videoPublish);
             $this->videoRepository->save($video);
 
             $this->messageBus->dispatch(new UploadTikTokVideoStatus(
@@ -95,6 +101,7 @@ final class UploadTikTokVideoHandler
                 videoId: $video->getId(),
                 status: VideoPublishStatus::name(VideoPublishStatus::ERROR),
                 message: $exception->getMessage(),
+                socialAccountId: $message->socialAccountId,
             ));
         }
     }

@@ -47,7 +47,7 @@ final class UploadTikTokVideoStatusHandler
 
             $publishStatus = $this->tikTokService->getPublishStatus(
                 accessToken: $socialAccount->getAccessToken(),
-                publishId: $video->getVideoPublish()->getPublishId(),
+                publishId: $video->getVideoPublish($socialAccount)?->getPublishId(),
             );
 
             if (in_array($publishStatus->getStatus(), [PublishStatusTikTok::FAILED, PublishStatusTikTok::PUBLISH_COMPLETE])) {
@@ -55,6 +55,7 @@ final class UploadTikTokVideoStatusHandler
                     videoId: $video->getId(),
                     status: $publishStatus->getStatus(),
                     message: $publishStatus->getErrorMessage(),
+                    socialAccountId: $socialAccount->getId(),
                 ));
 
                 return;
@@ -72,6 +73,7 @@ final class UploadTikTokVideoStatusHandler
                 videoId: $video->getId(),
                 status: VideoPublishStatus::name(VideoPublishStatus::ERROR),
                 message: $exception->getMessage(),
+                socialAccountId: $message->socialAccountId,
             ));
         }
     }

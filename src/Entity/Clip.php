@@ -28,10 +28,10 @@ const CLIP_WRITE = 'clip.write';
             controller: UploadVideoAction::class,
         ),
         new GetCollection(
-            normalizationContext: ['skip_null_values' => false, 'groups' => [CLIP_READ, VIDEO_READ, VIDEO_PUBLISH_READ]],
+            normalizationContext: ['skip_null_values' => false, 'groups' => [CLIP_READ, VIDEO_READ, VIDEO_PUBLISH_READ, SOCIAL_ACCOUNT_READ]],
         ),
         new Get(
-            normalizationContext: ['skip_null_values' => false, 'groups' => [CLIP_READ, VIDEO_READ, VIDEO_PUBLISH_READ]],
+            normalizationContext: ['skip_null_values' => false, 'groups' => [CLIP_READ, VIDEO_READ, VIDEO_PUBLISH_READ, SOCIAL_ACCOUNT_READ]],
         ),
     ]
 )]
