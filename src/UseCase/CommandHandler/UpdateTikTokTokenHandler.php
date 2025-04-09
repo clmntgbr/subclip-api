@@ -2,11 +2,8 @@
 
 namespace App\UseCase\CommandHandler;
 
-use App\Entity\ApiKey;
 use App\Repository\SocialAccountRepository;
-use App\Repository\UserRepository;
 use App\Service\TikTokService;
-use App\UseCase\Command\UpdateApiKey;
 use App\UseCase\Command\UpdateTikTokToken;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -38,9 +35,9 @@ final class UpdateTikTokTokenHandler
         $refreshExpireAt->modify(sprintf('+%s seconds', $tokenTikTok->getRefreshExpiresIn()));
 
         $socialAccount->updateToken(
-            accessToken: $tokenTikTok->getAccessToken(), 
-            refreshToken: $tokenTikTok->getRefreshToken(), 
-            expireAt: $expireAt, 
+            accessToken: $tokenTikTok->getAccessToken(),
+            refreshToken: $tokenTikTok->getRefreshToken(),
+            expireAt: $expireAt,
             refreshExpireAt: $refreshExpireAt,
         );
 

@@ -9,6 +9,7 @@ services:
             string $tiktokClientKey: '%env(TIKTOK_CLIENT_KEY)%'
             string $tiktokClientSecret: '%env(TIKTOK_CLIENT_SECRET)%'
             string $tiktokRedirectUri: '%env(TIKTOK_REDIRECT_URI)%'
+            string $apiUrl: '%env(API_URL)%'
 
     App\:
         resource: '../src/'

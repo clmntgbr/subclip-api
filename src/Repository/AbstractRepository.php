@@ -21,6 +21,7 @@ abstract class AbstractRepository extends ServiceEntityRepository
     public function refresh(object $entity): object
     {
         $this->getEntityManager()->refresh($entity);
+
         return $entity;
     }
 }

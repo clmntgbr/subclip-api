@@ -7,6 +7,8 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\VideoRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -58,6 +60,10 @@ class Video
     #[ORM\Column(type: Types::JSON, nullable: false)]
     #[Groups([CLIP_READ])]
     private array $audios = [];
+
+    #[ManyToOne(targetEntity: VideoPublish::class, cascade: ['persist', 'remove'])]
+    #[JoinColumn(name: 'video_publish_id', referencedColumnName: 'id', nullable: true)]
+    private ?VideoPublish $videoPublish = null;
 
     public function __construct(
         Uuid $videoId,
@@ -187,14 +193,26 @@ class Video
         return $this;
     }
 
+    public function setVideoPublish(VideoPublish $videoPublish): self
+    {
+        $this->videoPublish = $videoPublish;
+
+        return $this;
+    }
+
     public function getOriginalName(): ?string
     {
         return $this->originalName;
     }
 
-    public function getMimeType()
+    public function getMimeType(): ?string
     {
         return $this->mimeType;
+    }
+
+    public function getVideoPublish(): ?VideoPublish
+    {
+        return $this->videoPublish;
     }
 
     public function getSize(): int

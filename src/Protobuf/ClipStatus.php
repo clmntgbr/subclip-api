@@ -111,13 +111,21 @@ class ClipStatus
      */
     public const VIDEO_INCRUSTATOR_ERROR = 24;
     /**
-     * Generated from protobuf enum <code>VIDEO_READY = 25;</code>.
+     * Generated from protobuf enum <code>CLIP_READY = 25;</code>.
      */
-    public const VIDEO_READY = 25;
+    public const CLIP_READY = 25;
     /**
-     * Generated from protobuf enum <code>STATUS_ERROR = 26;</code>.
+     * Generated from protobuf enum <code>CLIP_UPLOADING = 26;</code>.
      */
-    public const STATUS_ERROR = 26;
+    public const CLIP_UPLOADING = 26;
+    /**
+     * Generated from protobuf enum <code>CLIP_UPLOADED = 27;</code>.
+     */
+    public const CLIP_UPLOADED = 27;
+    /**
+     * Generated from protobuf enum <code>STATUS_ERROR = 28;</code>.
+     */
+    public const STATUS_ERROR = 28;
 
     private static $valueToName = [
         self::UPLOADED => 'UPLOADED',
@@ -145,7 +153,9 @@ class ClipStatus
         self::VIDEO_INCRUSTATOR_PENDING => 'VIDEO_INCRUSTATOR_PENDING',
         self::VIDEO_INCRUSTATOR_COMPLETE => 'VIDEO_INCRUSTATOR_COMPLETE',
         self::VIDEO_INCRUSTATOR_ERROR => 'VIDEO_INCRUSTATOR_ERROR',
-        self::VIDEO_READY => 'VIDEO_READY',
+        self::CLIP_READY => 'CLIP_READY',
+        self::CLIP_UPLOADING => 'CLIP_UPLOADING',
+        self::CLIP_UPLOADED => 'CLIP_UPLOADED',
         self::STATUS_ERROR => 'STATUS_ERROR',
     ];
 

@@ -33,7 +33,7 @@ final class CreateClipHandler
         $user = $this->userRepository->findOneBy(['id' => $message->userId->__toString()]);
 
         if (null === $user) {
-            throw new \InvalidArgumentException(sprintf('User does not exist with id %s', $message->userId->__toString()));
+            throw new \Exception(sprintf('User does not exist with id [%s]', $message->userId->__toString()));
         }
 
         $videoId = Uuid::v4();
@@ -50,7 +50,7 @@ final class CreateClipHandler
         $video = $this->videoRepository->findOneBy(['id' => $videoId->__toString()]);
 
         if (null === $video) {
-            throw new \InvalidArgumentException(sprintf('Video does not exist with id %s', $$videoId->__toString()));
+            throw new \Exception(sprintf('Video does not exist with id [%s]', $$videoId->__toString()));
         }
 
         $clip = new Clip(
