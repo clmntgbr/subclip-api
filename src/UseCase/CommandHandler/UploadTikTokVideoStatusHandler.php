@@ -64,7 +64,7 @@ final class UploadTikTokVideoStatusHandler
                 videoId: $video->getId(),
                 socialAccountId: $socialAccount->getId(),
                 checkId: uniqid(),
-            ), [new AmqpStamp('async', 0, []), new DelayStamp(20000)]);
+            ), [new AmqpStamp('async'), new DelayStamp(20000)]);
 
             return;
         } catch (\Exception $exception) {

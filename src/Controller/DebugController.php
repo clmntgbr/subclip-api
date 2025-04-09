@@ -53,7 +53,7 @@ class DebugController extends AbstractController
         $this->messageBus->dispatch(new UploadTikTokClip(
             clipId: $clip->getId(),
             socialAccountId: $socialAccount->getId(),
-        ), [new AmqpStamp('async', 0, [])]);
+        ), [new AmqpStamp('async')]);
 
         dd($clip);
 

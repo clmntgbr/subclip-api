@@ -28,10 +28,10 @@ const CLIP_WRITE = 'clip.write';
             controller: UploadVideoAction::class,
         ),
         new GetCollection(
-            normalizationContext: ['skip_null_values' => false, 'groups' => [CLIP_READ]],
+            normalizationContext: ['skip_null_values' => false, 'groups' => [CLIP_READ, VIDEO_READ, VIDEO_PUBLISH_READ]],
         ),
         new Get(
-            normalizationContext: ['skip_null_values' => false, 'groups' => [CLIP_READ]],
+            normalizationContext: ['skip_null_values' => false, 'groups' => [CLIP_READ, VIDEO_READ, VIDEO_PUBLISH_READ]],
         ),
     ]
 )]
@@ -79,6 +79,9 @@ class Clip
     #[ORM\Column(type: Types::JSON, nullable: false)]
     #[Groups([CLIP_READ])]
     private array $statuses = [];
+
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private string $message;
 
     public function __construct(
         User $user,
@@ -192,5 +195,16 @@ class Clip
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
+    }
+
+    public function updateStatusError(?string $errorMessage = null)
+    {
+        $this->message = $errorMessage ?? 'Unknown error';
+        $this->status = ClipStatus::name(ClipStatus::STATUS_ERROR);
+    }
+
+    public function updateStatusUploading()
+    {
+        $this->status = ClipStatus::name(ClipStatus::CLIP_UPLOADING);
     }
 }

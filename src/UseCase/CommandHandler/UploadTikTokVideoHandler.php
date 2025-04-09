@@ -19,6 +19,7 @@ use App\UseCase\Command\UploadTikTokVideoStatus;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 #[AsMessageHandler]
 final class UploadTikTokVideoHandler
@@ -86,7 +87,7 @@ final class UploadTikTokVideoHandler
                 videoId: $video->getId(),
                 socialAccountId: $socialAccount->getId(),
                 checkId: uniqid(),
-            ), [new AmqpStamp('async', 0, [])]);
+            ), [new AmqpStamp('async'), new DelayStamp(10000)]);
 
             return;
         } catch (\Exception $exception) {

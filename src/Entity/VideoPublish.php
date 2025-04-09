@@ -9,7 +9,11 @@ use App\Repository\VideoPublishRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
+
+const VIDEO_PUBLISH_READ = 'video_publish.read';
+const VIDEO_PUBLISH_WRITE = 'video_publish.write';
 
 #[ORM\Entity(repositoryClass: VideoPublishRepository::class)]
 #[ApiResource]
@@ -20,16 +24,19 @@ class VideoPublish
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ApiProperty(identifier: true)]
+    #[Groups([VIDEO_PUBLISH_READ])]
     private Uuid $id;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[Groups([VIDEO_PUBLISH_READ])]
     private ?string $publishId;
 
     #[ORM\Column(type: Types::STRING, nullable: false)]
+    #[Groups([VIDEO_PUBLISH_READ])]
     private string $status;
 
-    #[ORM\Column(type: Types::STRING, nullable: false)]
-    private string $message;
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $message;
 
     public function __construct(?string $publishId = null)
     {
@@ -46,6 +53,16 @@ class VideoPublish
     public function getPublishId(): ?string
     {
         return $this->publishId;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function getMessage(): ?string
+    {
+        return $this->message;
     }
 
     public function updateStatusError(?string $errorMessage = null)

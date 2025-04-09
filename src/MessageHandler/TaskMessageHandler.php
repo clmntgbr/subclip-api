@@ -35,7 +35,7 @@ final class TaskMessageHandler
         $protobufTaskMessage->setService($message->service);
 
         $this->messageBus->dispatch($protobufTaskMessage, [
-            new AmqpStamp($message->service, 0, []),
+            new AmqpStamp($message->service),
         ]);
     }
 }

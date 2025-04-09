@@ -76,7 +76,7 @@ final class UploadTikTokClipHandler
                 areCommentsOff: $creatorQuery->areCommentsOff(),
                 isDuetOff: $creatorQuery->isDuetOff(),
                 isStitchOff: $creatorQuery->isStitchOff(),
-            ), [new AmqpStamp('async', 0, [])]);
+            ), [new AmqpStamp('async')]);
         } catch (\Exception $exception) {
             $this->messageBus->dispatch(new UpdateClipStatus(
                 clipId: $clip->getId(),

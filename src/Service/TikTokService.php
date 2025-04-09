@@ -206,22 +206,22 @@ class TikTokService
         ]);
 
         $response = curl_exec($curl);
-        $err = curl_error($curl);
+        $error = curl_error($curl);
 
         curl_close($curl);
 
-        if ($err) {
-            throw new TikTokException('TikTok Api Error, invalid response '.$err);
+        if ($error) {
+            throw new TikTokException('Invalid response '.$error);
         }
 
         if (!$response) {
-            throw new TikTokException('TikTok Api Error, invalid returned value '.var_export($response, 1));
+            throw new TikTokException('Invalid returned value '.var_export($response, 1));
         }
 
         $response = json_decode($response, true);
 
         if (!$response) {
-            throw new TikTokException('TikTok Api Error, invalid JSON '.$response);
+            throw new TikTokException('Invalid JSON '.$response);
         }
 
         return $response;
@@ -252,22 +252,22 @@ class TikTokService
         ]);
 
         $response = curl_exec($curl);
-        $err = curl_error($curl);
+        $error = curl_error($curl);
 
         curl_close($curl);
 
-        if ($err) {
-            throw new TikTokException('TikTok Api Error, invalid response '.$err);
+        if ($error) {
+            throw new TikTokException('Invalid response '.$error);
         }
 
         if (!$response) {
-            throw new TikTokException('TikTok Api Error, invalid returned value '.var_export($response, 1));
+            throw new TikTokException('Invalid returned value '.var_export($response, 1));
         }
 
         $response = json_decode($response, true);
 
         if (!$response) {
-            throw new TikTokException('TikTok Api Error, invalid JSON '.$response);
+            throw new TikTokException('Invalid JSON '.$response);
         }
 
         return $response;

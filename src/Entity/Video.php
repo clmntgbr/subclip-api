@@ -13,6 +13,9 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
+const VIDEO_READ = 'video.read';
+const VIDEO_WRITE = 'video.write';
+
 #[ORM\Entity(repositoryClass: VideoRepository::class)]
 #[ApiResource]
 class Video
@@ -22,47 +25,48 @@ class Video
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ApiProperty(identifier: true)]
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     private Uuid $id;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     private ?string $originalName = null;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::STRING)]
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     private ?string $mimeType = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     private ?int $size = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     private ?int $length = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     private ?string $subtitle = null;
 
     #[ORM\Column(type: Types::STRING, nullable: true)]
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     private ?string $ass = null;
 
     #[ORM\Column(type: Types::JSON, nullable: false)]
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     private array $subtitles = [];
 
     #[ORM\Column(type: Types::JSON, nullable: false)]
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     private array $audios = [];
 
     #[ManyToOne(targetEntity: VideoPublish::class, cascade: ['persist', 'remove'])]
     #[JoinColumn(name: 'video_publish_id', referencedColumnName: 'id', nullable: true)]
+    #[Groups([VIDEO_READ])]
     private ?VideoPublish $videoPublish = null;
 
     public function __construct(
@@ -225,13 +229,13 @@ class Video
         return $this->id;
     }
 
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    #[Groups([CLIP_READ])]
+    #[Groups([VIDEO_READ])]
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
