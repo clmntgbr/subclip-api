@@ -13,7 +13,7 @@ use App\Repository\SocialAccountRepository;
 use App\Repository\VideoRepository;
 use App\Service\FileService;
 use App\Service\TikTokService;
-use App\UseCase\Command\UpdateVideoStatus;
+use App\UseCase\Command\UpdateVideoPublishStatus;
 use App\UseCase\Command\UploadTikTokVideo;
 use App\UseCase\Command\UploadTikTokVideoStatus;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -69,7 +69,7 @@ final class UploadTikTokVideoHandler
             );
 
             $publishInfoTikTok = $this->tikTokService->publish(
-                accessToken: $socialAccount->getAccessToken(),
+                socialAccount: $socialAccount,
                 file: $localPath,
                 areCommentsOff: $message->areCommentsOff,
                 isDuetOff: $message->isDuetOff,
@@ -91,14 +91,16 @@ final class UploadTikTokVideoHandler
 
             $this->messageBus->dispatch(new UploadTikTokVideoStatus(
                 videoId: $video->getId(),
+                clipId: $clip->getId(),
                 socialAccountId: $socialAccount->getId(),
                 checkId: uniqid(),
             ), [new AmqpStamp('async'), new DelayStamp(10000)]);
 
             return;
         } catch (\Exception $exception) {
-            $this->messageBus->dispatch(new UpdateVideoStatus(
+            $this->messageBus->dispatch(new UpdateVideoPublishStatus(
                 videoId: $video->getId(),
+                clipId: $clip->getId(),
                 status: VideoPublishStatus::name(VideoPublishStatus::ERROR),
                 message: $exception->getMessage(),
                 socialAccountId: $message->socialAccountId,

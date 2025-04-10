@@ -50,7 +50,7 @@ framework:
             App\UseCase\Command\CreateClip: sync
             App\UseCase\Command\CreateVideo: sync
             App\UseCase\Command\UpdateTikTokToken: sync
-            App\UseCase\Command\UpdateVideoStatus: sync
+            App\UseCase\Command\UpdateVideoPublishStatus: sync
             App\UseCase\Command\UpdateClipStatus: sync
 
             App\Message\TaskMessage: sync

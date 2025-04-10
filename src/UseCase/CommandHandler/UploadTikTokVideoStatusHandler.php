@@ -10,7 +10,7 @@ use App\Protobuf\VideoPublishStatus;
 use App\Repository\SocialAccountRepository;
 use App\Repository\VideoRepository;
 use App\Service\TikTokService;
-use App\UseCase\Command\UpdateVideoStatus;
+use App\UseCase\Command\UpdateVideoPublishStatus;
 use App\UseCase\Command\UploadTikTokVideoStatus;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpStamp;
@@ -46,13 +46,14 @@ final class UploadTikTokVideoStatusHandler
             }
 
             $publishStatus = $this->tikTokService->getPublishStatus(
-                accessToken: $socialAccount->getAccessToken(),
+                socialAccount: $socialAccount,
                 publishId: $video->getVideoPublish($socialAccount)?->getPublishId(),
             );
 
             if (in_array($publishStatus->getStatus(), [PublishStatusTikTok::FAILED, PublishStatusTikTok::PUBLISH_COMPLETE])) {
-                $this->messageBus->dispatch(new UpdateVideoStatus(
+                $this->messageBus->dispatch(new UpdateVideoPublishStatus(
                     videoId: $video->getId(),
+                    clipId: $message->clipId,
                     status: $publishStatus->getStatus(),
                     message: $publishStatus->getErrorMessage(),
                     socialAccountId: $socialAccount->getId(),
@@ -64,13 +65,15 @@ final class UploadTikTokVideoStatusHandler
             $this->messageBus->dispatch(new UploadTikTokVideoStatus(
                 videoId: $video->getId(),
                 socialAccountId: $socialAccount->getId(),
+                clipId: $message->clipId,
                 checkId: uniqid(),
             ), [new AmqpStamp('async'), new DelayStamp(20000)]);
 
             return;
         } catch (\Exception $exception) {
-            $this->messageBus->dispatch(new UpdateVideoStatus(
+            $this->messageBus->dispatch(new UpdateVideoPublishStatus(
                 videoId: $video->getId(),
+                clipId: $message->clipId,
                 status: VideoPublishStatus::name(VideoPublishStatus::ERROR),
                 message: $exception->getMessage(),
                 socialAccountId: $message->socialAccountId,

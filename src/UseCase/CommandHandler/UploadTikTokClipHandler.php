@@ -47,17 +47,7 @@ final class UploadTikTokClipHandler
                 throw new UploadTikTokClipException(sprintf('Social Account does not exist with id [%s]', $message->socialAccountId->__toString()));
             }
 
-            if ($socialAccount->getExpireAt() < new \DateTimeImmutable() && $socialAccount->getRefreshExpireAt() < new \DateTimeImmutable()) {
-                throw new UploadTikTokClipException('Tokens are expired');
-            }
-
-            if ($socialAccount->getExpireAt() < new \DateTimeImmutable()) {
-                $this->messageBus->dispatch(new UpdateTikTokToken($socialAccount->getId()));
-                /** @var SocialAccount $socialAccount */
-                $socialAccount = $this->socialAccountRepository->refresh($socialAccount);
-            }
-
-            $creatorQuery = $this->tikTokService->getCreatorInfo($socialAccount->getAccessToken());
+            $creatorQuery = $this->tikTokService->getCreatorInfo($socialAccount);
 
             if (!$creatorQuery->hasPrivacyOption(TikTokService::PRIVACY_PRIVATE)) {
                 throw new UploadTikTokClipException('TikTok Error: This Creator cannot publish with the privacy level '.implode(', ', $creatorQuery->getPrivacyOptions()));

@@ -39,11 +39,11 @@ class FileService
     public function removeLocalFile(string $filePath): bool
     {
         if (!file_exists($filePath)) {
-            throw new \Exception('File does not exist: '.$filePath);
+            return false;
         }
 
         if (!unlink($filePath)) {
-            throw new \Exception('Failed to delete file: '.$filePath);
+            return false;
         }
 
         return true;

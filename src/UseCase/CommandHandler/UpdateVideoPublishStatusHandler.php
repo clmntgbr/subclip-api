@@ -10,19 +10,22 @@ use App\Protobuf\VideoPublishStatus;
 use App\Repository\SocialAccountRepository;
 use App\Repository\VideoRepository;
 use App\Service\TikTokService;
-use App\UseCase\Command\UpdateVideoStatus;
+use App\UseCase\Command\RemoveTemporaryVideo;
+use App\UseCase\Command\UpdateVideoPublishStatus;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsMessageHandler]
-final class UpdateVideoStatusHandler
+final class UpdateVideoPublishStatusHandler
 {
     public function __construct(
         private VideoRepository $videoRepository,
         private SocialAccountRepository $socialAccountRepository,
+        private MessageBusInterface $messageBus,
     ) {
     }
 
-    public function __invoke(UpdateVideoStatus $message): void
+    public function __invoke(UpdateVideoPublishStatus $message): void
     {
         /** @var ?Video $video */
         $video = $this->videoRepository->findOneBy(['id' => $message->videoId->__toString()]);
@@ -49,6 +52,14 @@ final class UpdateVideoStatusHandler
 
         if ($message->status === PublishStatusTikTok::PUBLISH_COMPLETE) {
             $videoPublish->updateStatusPublished($message->message);
+        }
+
+        if (in_array($message->status, [PublishStatusTikTok::PUBLISH_COMPLETE, PublishStatusTikTok::FAILED, VideoPublishStatus::name(VideoPublishStatus::ERROR)])) {
+            $this->messageBus->dispatch(new RemoveTemporaryVideo(
+                videoName: $video->getName(),
+                clipId: $message->clipId,
+                userId: $socialAccount->getUser()->getId(),
+            ));
         }
 
         $video->addVideoPublish($videoPublish);

@@ -2,12 +2,18 @@
 
 namespace App\Service;
 
+use App\Entity\SocialAccount;
+use App\Entity\ValueObject\AccessToken;
 use App\Exception\TikTokException;
+use App\Exception\UploadTikTokClipException;
 use App\Model\TikTok\CreatorQueryTikTok;
 use App\Model\TikTok\PublishInfoTikTok;
 use App\Model\TikTok\PublishStatusTikTok;
 use App\Model\TikTok\TokenTikTok;
 use App\Model\TikTok\UserTikTok;
+use App\Repository\SocialAccountRepository;
+use App\UseCase\Command\UpdateTikTokToken;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Uid\Uuid;
 
 class TikTokService
@@ -36,6 +42,8 @@ class TikTokService
         private string $tiktokClientKey,
         private string $tiktokClientSecret,
         private string $tiktokRedirectUri,
+        private MessageBusInterface $messageBus,
+        private SocialAccountRepository $socialAccountRepository,
     ) {
     }
 
@@ -98,12 +106,12 @@ class TikTokService
         throw new TikTokException('TikTok API Error on refreshToken');
     }
 
-    public function getUserInfo(string $accessToken): UserTikTok
+    public function getUserInfo(SocialAccount $socialAccount): UserTikTok
     {
         $url = sprintf(self::BASE_USER_URL, implode(',', [self::FIELD_U_OPENID, self::FIELD_U_UNIONID, self::FIELD_U_AVATAR, self::FIELD_U_DISPLAYNAME]));
 
         try {
-            $response = $this->getWithAuth($accessToken, $url);
+            $response = $this->getWithAuth($socialAccount, $url);
             $user = UserTikTok::fromJson($response);
 
             return $user;
@@ -112,10 +120,10 @@ class TikTokService
         }
     }
 
-    public function getCreatorInfo(string $accessToken): CreatorQueryTikTok
+    public function getCreatorInfo(SocialAccount $socialAccount): CreatorQueryTikTok
     {
         try {
-            $response = $this->postWithAuth($accessToken, self::BASE_CREATOR_QUERY, []);
+            $response = $this->postWithAuth($socialAccount, self::BASE_CREATOR_QUERY, []);
             $creatorQuery = CreatorQueryTikTok::fromJson($response);
 
             return $creatorQuery;
@@ -124,10 +132,10 @@ class TikTokService
         }
     }
 
-    public function getPublishStatus(string $accessToken, string $publishId): PublishStatusTikTok
+    public function getPublishStatus(SocialAccount $socialAccount, string $publishId): PublishStatusTikTok
     {
         try {
-            $response = $this->postWithAuth($accessToken, self::BASE_PUBLISH_STATUS, ['publish_id' => $publishId]);
+            $response = $this->postWithAuth($socialAccount, self::BASE_PUBLISH_STATUS, ['publish_id' => $publishId]);
             $publishStatusTikTok = PublishStatusTikTok::fromJson($response);
 
             return $publishStatusTikTok;
@@ -137,7 +145,7 @@ class TikTokService
     }
 
     public function publish(
-        string $accessToken,
+        SocialAccount $socialAccount,
         string $file,
         bool $areCommentsOff = false,
         bool $isDuetOff = false,
@@ -161,7 +169,7 @@ class TikTokService
         ];
 
         try {
-            $response = $this->postWithAuth($accessToken, self::BASE_POST_PUBLISH, $data);
+            $response = $this->postWithAuth($socialAccount, self::BASE_POST_PUBLISH, $data);
             $publishInfoTikTok = PublishInfoTikTok::fromJson($response);
 
             return $publishInfoTikTok;
@@ -170,10 +178,12 @@ class TikTokService
         }
     }
 
-    public function postWithAuth(string $accessToken, string $url, array $data): array
+    public function postWithAuth(SocialAccount $socialAccount, string $url, array $data): array
     {
+        $accessToken = $this->checkToken($socialAccount);
+
         $headers = [
-            'Authorization: Bearer '.$accessToken,
+            'Authorization: Bearer '.$accessToken->__toString(),
         ];
 
         return self::post($url, $data, $headers, true);
@@ -227,10 +237,12 @@ class TikTokService
         return $response;
     }
 
-    private function getWithAuth(string $accessToken, string $url): array
+    private function getWithAuth(SocialAccount $socialAccount, string $url): array
     {
+        $accessToken = $this->checkToken($socialAccount);
+
         $headers = [
-            'Authorization: Bearer '.$accessToken,
+            'Authorization: Bearer '.$accessToken->__toString(),
         ];
 
         return self::get($url, $headers);
@@ -271,5 +283,20 @@ class TikTokService
         }
 
         return $response;
+    }
+
+    private function checkToken(SocialAccount $socialAccount): AccessToken
+    {
+        if ($socialAccount->getExpireAt() < new \DateTimeImmutable() && $socialAccount->getRefreshExpireAt() < new \DateTimeImmutable()) {
+            throw new UploadTikTokClipException('Tokens are expired');
+        }
+
+        if ($socialAccount->getExpireAt() < new \DateTimeImmutable()) {
+            $this->messageBus->dispatch(new UpdateTikTokToken($socialAccount->getId()));
+            /** @var SocialAccount $socialAccount */
+            $socialAccount = $this->socialAccountRepository->refresh($socialAccount);
+        }
+
+        return $socialAccount->getAccessToken();
     }
 }

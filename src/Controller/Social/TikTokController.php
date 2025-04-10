@@ -12,18 +12,42 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Uid\Uuid;
 
 #[Route('/api/tiktok', name: 'api_tiktok_')]
-class TikTokLoginController extends AbstractController
+class TikTokController extends AbstractController
 {
     public function __construct(
         private UserRepository $userRepository,
         private SocialAccountRepository $socialAccountRepository,
         private TikTokService $tikTokService,
+        private SerializerInterface $serializer,
     ) {
+    }
+
+    #[Route('/creator-info/{socialAccountId}', name: 'creator-info', methods: ['GET'])]
+    public function getCreatorInfo(#[CurrentUser()] ?User $user, string $socialAccountId): JsonResponse
+    {
+        /** @var ?SocialAccount $socialAccount */
+        $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $socialAccountId]);
+
+        if (null === $socialAccount) {
+            throw new NotFoundHttpException(sprintf('This social account with id [%s] does not exists.', $socialAccountId));
+        }
+
+        if ($socialAccount->getUser()->getId()->toRfc4122() !== $user->getId()->toRfc4122()) {
+            throw new AccessDeniedHttpException(sprintf('This social account with id [%s] is not one of yours.', $socialAccountId));
+        }
+
+        $creatorInfo = $this->tikTokService->getCreatorInfo($socialAccount);
+        $data = $this->serializer->serialize($creatorInfo, 'json');
+
+        return new JsonResponse(data: $data, status: Response::HTTP_OK, json: true);
     }
 
     #[Route('/login', name: 'login', methods: ['GET'])]
@@ -49,7 +73,6 @@ class TikTokLoginController extends AbstractController
         }
 
         $tokenTikTok = $this->tikTokService->getToken($request->query->get('code'));
-        $userTikTok = $this->tikTokService->getUserInfo($tokenTikTok->getAccessToken());
 
         $now = new \DateTime('now');
 
@@ -58,6 +81,24 @@ class TikTokLoginController extends AbstractController
 
         $refreshExpireAt = clone $now;
         $refreshExpireAt->modify(sprintf('+%s seconds', $tokenTikTok->getRefreshExpiresIn()));
+
+        $temporarySocialAccount = new SocialAccount(
+            user: $user,
+            type: SocialAccountType::name(SocialAccountType::TIKTOK),
+            socialAccountId: uniqid(),
+        );
+
+        $temporarySocialAccount->update(
+            username: uniqid(),
+            accessToken: $tokenTikTok->getAccessToken(),
+            scope: $tokenTikTok->getScope(),
+            refreshToken: $tokenTikTok->getRefreshToken(),
+            expireAt: $expireAt,
+            refreshExpireAt: $refreshExpireAt,
+        );
+
+        $temporarySocialAccount->setAccessToken($tokenTikTok->getAccessToken());
+        $userTikTok = $this->tikTokService->getUserInfo($temporarySocialAccount);
 
         /** @var SocialAccount $socialAccount */
         $socialAccount = $this->socialAccountRepository->findOneBy([
@@ -83,7 +124,6 @@ class TikTokLoginController extends AbstractController
         );
 
         $this->socialAccountRepository->save($socialAccount);
-
         return new JsonResponse(data: ['message' => 'TikTok account linked'], status: Response::HTTP_OK);
     }
 }
