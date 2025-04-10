@@ -5,9 +5,11 @@ namespace App\UseCase\CommandHandler;
 use App\Entity\SocialAccount;
 use App\Entity\Video;
 use App\Entity\VideoPublish;
+use App\Model\TikTok\PublishStatusTikTok;
 use App\Protobuf\VideoPublishStatus;
 use App\Repository\SocialAccountRepository;
 use App\Repository\VideoRepository;
+use App\Service\TikTokService;
 use App\UseCase\Command\UpdateVideoStatus;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -41,11 +43,11 @@ final class UpdateVideoStatusHandler
             $videoPublish = $video->getVideoPublish($socialAccount);
         }
 
-        if ($message->status === VideoPublishStatus::name(VideoPublishStatus::ERROR)) {
+        if (in_array($message->status, [PublishStatusTikTok::FAILED, VideoPublishStatus::name(VideoPublishStatus::ERROR)])) {
             $videoPublish->updateStatusError($message->message);
         }
 
-        if ($message->status === VideoPublishStatus::name(VideoPublishStatus::PUBLISHED)) {
+        if ($message->status === PublishStatusTikTok::PUBLISH_COMPLETE) {
             $videoPublish->updateStatusPublished($message->message);
         }
 
