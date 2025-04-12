@@ -10,6 +10,7 @@ use App\Exception\UploadTikTokClipException;
 use App\Protobuf\VideoPublishStatus;
 use App\Repository\ClipRepository;
 use App\Repository\SocialAccountRepository;
+use App\Repository\VideoPublishRepository;
 use App\Repository\VideoRepository;
 use App\Service\FileService;
 use App\Service\TikTokService;
@@ -27,6 +28,7 @@ final class UploadTikTokVideoHandler
     public function __construct(
         private ClipRepository $clipRepository,
         private VideoRepository $videoRepository,
+        private VideoPublishRepository $videoPublishRepository,
         private SocialAccountRepository $socialAccountRepository,
         private TikTokService $tikTokService,
         private MessageBusInterface $messageBus,
@@ -80,11 +82,14 @@ final class UploadTikTokVideoHandler
                 throw new UploadTikTokClipException($publishInfoTikTok->getErrorMessage());
             }
 
-            $videoPublish = new VideoPublish(
-                video: $video, 
-                socialAccount: $socialAccount, 
-                publishId: $publishInfoTikTok->getPublishId()
-            );
+            $videoPublish = $this->videoPublishRepository->createOrUpdate([
+                'video' => $video, 
+                'socialAccount' => $socialAccount, 
+            ], [
+                'video' => $video, 
+                'socialAccount' => $socialAccount, 
+                'publishId' => $publishInfoTikTok->getPublishId()
+            ]);
 
             $video->addVideoPublish($videoPublish);
             $this->videoRepository->save($video);

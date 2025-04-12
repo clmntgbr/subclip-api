@@ -24,4 +24,24 @@ abstract class AbstractRepository extends ServiceEntityRepository
 
         return $entity;
     }
+
+    public function update(object $entity, array $data): object
+    {
+        foreach ($data as $key => $value) {
+            $method = 'set'.ucfirst($key);
+            if (method_exists($entity, $method)) {
+                $entity->$method($value);
+            }
+
+            $method = 'add'.ucfirst($key);
+            if (method_exists($entity, $method)) {
+                $entity->$method($value);
+            }
+        }
+
+        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->flush();
+
+        return $entity;
+    }
 }

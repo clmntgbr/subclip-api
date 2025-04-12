@@ -9,35 +9,25 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<VideoPublish>
  */
-class VideoPublishRepository extends ServiceEntityRepository
+class VideoPublishRepository extends AbstractRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, VideoPublish::class);
     }
 
-    //    /**
-    //     * @return VideoPublish[] Returns an array of VideoPublish objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('v')
-    //            ->andWhere('v.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('v.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function createOrUpdate(array $search, array $payload): VideoPublish
+    {
+        $videoPublish = $this->findOneBy($search);
 
-    //    public function findOneBySomeField($value): ?VideoPublish
-    //    {
-    //        return $this->createQueryBuilder('v')
-    //            ->andWhere('v.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($videoPublish === null) {
+            $videoPublish = new VideoPublish(
+                video: $payload['video'] ?? null,
+                socialAccount: $payload['socialAccount']?? null,
+                publishId: $payload['publishId'] ?? null,
+            );
+        }
+
+        return $this->update($videoPublish, $payload);
+    }
 }

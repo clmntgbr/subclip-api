@@ -97,6 +97,11 @@ class CreatorQueryTikTok
         return $this->commentOff;
     }
 
+    public function getCommentOff(): bool
+    {
+        return $this->commentOff;
+    }
+
     public function getMaxVideoDuration(): int
     {
         return $this->maxVideoDurationSec;

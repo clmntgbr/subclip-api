@@ -9,6 +9,7 @@ use App\Protobuf\ConfigurationSubtitleOutlineThickness;
 use App\Protobuf\ConfigurationSubtitleShadow;
 use App\Protobuf\VideoFormatStyle;
 use App\Repository\ConfigurationRepository;
+use App\Service\TikTokService;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -71,6 +72,10 @@ class Configuration
     #[Groups([CLIP_READ])]
     private string $format;
 
+    #[ORM\Column(type: Types::STRING)]
+    #[Groups([CLIP_READ])]
+    private string $privacyOptions;
+
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups([CLIP_READ])]
     private int $split;
@@ -95,6 +100,7 @@ class Configuration
         $this->format = VideoFormatStyle::name(VideoFormatStyle::ORIGINAL);
         $this->split = 1;
         $this->marginV = 0;
+        $this->privacyOptions = TikTokService::PRIVACY_PRIVATE;
     }
 
     public function getId(): ?Uuid
@@ -160,6 +166,11 @@ class Configuration
     public function getFormat(): string
     {
         return $this->format;
+    }
+
+    public function getPrivacyOptions(): string
+    {
+        return $this->privacyOptions;
     }
 
     public function getSplit(): int
@@ -254,6 +265,13 @@ class Configuration
     public function setFormat(string $format): self
     {
         $this->format = $format;
+
+        return $this;
+    }
+
+    public function setPrivacyOptions(string $privacyOptions): self
+    {
+        $this->privacyOptions = $privacyOptions;
 
         return $this;
     }

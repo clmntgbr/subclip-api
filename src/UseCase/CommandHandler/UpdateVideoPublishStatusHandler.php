@@ -8,6 +8,7 @@ use App\Entity\VideoPublish;
 use App\Model\TikTok\PublishStatusTikTok;
 use App\Protobuf\VideoPublishStatus;
 use App\Repository\SocialAccountRepository;
+use App\Repository\VideoPublishRepository;
 use App\Repository\VideoRepository;
 use App\Service\TikTokService;
 use App\UseCase\Command\RemoveTemporaryVideo;
@@ -21,6 +22,7 @@ final class UpdateVideoPublishStatusHandler
     public function __construct(
         private VideoRepository $videoRepository,
         private SocialAccountRepository $socialAccountRepository,
+        private VideoPublishRepository $videoPublishRepository,
         private MessageBusInterface $messageBus,
     ) {
     }
@@ -41,7 +43,14 @@ final class UpdateVideoPublishStatusHandler
             throw new \Exception(sprintf('Social account does not exist with id [%s]', $message->socialAccountId->__toString()));
         }
 
-        $videoPublish = new VideoPublish($video, $socialAccount);
+        $videoPublish = $this->videoPublishRepository->createOrUpdate([
+            'video' => $video, 
+            'socialAccount' => $socialAccount, 
+        ], [
+            'video' => $video, 
+            'socialAccount' => $socialAccount, 
+        ]);
+
         if ($video->getVideoPublish($socialAccount)) {
             $videoPublish = $video->getVideoPublish($socialAccount);
         }

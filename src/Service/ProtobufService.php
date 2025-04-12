@@ -210,6 +210,10 @@ class ProtobufService
             $configuration->setSplit($protobufConfiguration->getSplit());
         }
 
+        if ($protobufConfiguration->getPrivacyOptions()) {
+            $configuration->setPrivacyOptions($protobufConfiguration->getPrivacyOptions());
+        }
+
         if ($protobufConfiguration->getSubtitleBold()) {
             $configuration->setSubtitleBold($protobufConfiguration->getSubtitleBold());
         }
@@ -275,6 +279,7 @@ class ProtobufService
         $protobuf->setSubtitleShadow($configuration->getSubtitleShadow());
         $protobuf->setSubtitleShadowColor($configuration->getSubtitleShadowColor());
         $protobuf->setSubtitleUnderline($configuration->getSubtitleUnderline());
+        $protobuf->setPrivacyOptions($configuration->getPrivacyOptions());
 
         return $protobuf;
     }
