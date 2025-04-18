@@ -57,7 +57,7 @@ final class CreateClipHandler
             user: $user,
             clipId: $message->clipId,
             originalVideo: $video,
-            configuration: new Configuration(),
+            configuration: $message->uploadVideoConfiguration->toEntity(),
         );
 
         if (!$this->clipStateMachine->can($clip, 'process_sound_extractor')) {

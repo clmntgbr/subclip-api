@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Model\UploadVideoConfiguration;
 use App\UseCase\Command\CreateClip;
 use League\Flysystem\FilesystemOperator;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -24,7 +25,7 @@ class UploadVideoService
     ) {
     }
 
-    public function upload(UploadedFile $file): JsonResponse
+    public function upload(UploadedFile $file, UploadVideoConfiguration $configuration): JsonResponse
     {
         $constraints = new File([
             'mimeTypes' => [
@@ -74,6 +75,7 @@ class UploadVideoService
             $this->messageBus->dispatch(new CreateClip(
                 clipId: $clipId,
                 userId: $user->getId(),
+                uploadVideoConfiguration: $configuration,
                 originalName: $file->getClientOriginalName(),
                 name: $fileName,
                 mimeType: $file->getMimeType(),
