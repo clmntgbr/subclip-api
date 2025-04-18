@@ -13,6 +13,7 @@ use App\Model\TikTok\TokenTikTok;
 use App\Model\TikTok\UserTikTok;
 use App\Repository\SocialAccountRepository;
 use App\UseCase\Command\UpdateTikTokToken;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Uid\Uuid;
 
@@ -44,6 +45,7 @@ class TikTokService
         private string $tiktokRedirectUri,
         private MessageBusInterface $messageBus,
         private SocialAccountRepository $socialAccountRepository,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -70,6 +72,7 @@ class TikTokService
                 return $token;
             }
         } catch (\Exception $_) {
+            throw new TikTokException('TikTok API Error');
         }
 
         throw new TikTokException('TikTok API Error');
@@ -132,15 +135,15 @@ class TikTokService
         }
     }
 
-    public function getPublishStatus(SocialAccount $socialAccount, string $publishId): PublishStatusTikTok
+    public function getPublishStatus(SocialAccount $socialAccount, ?string $publishId): PublishStatusTikTok
     {
         try {
             $response = $this->postWithAuth($socialAccount, self::BASE_PUBLISH_STATUS, ['publish_id' => $publishId]);
             $publishStatusTikTok = PublishStatusTikTok::fromJson($response);
 
             return $publishStatusTikTok;
-        } catch (\Exception $_) {
-            throw new TikTokException(sprintf('[%s]: TikTok API Error : %s', __METHOD__, $_->getMessage()));
+        } catch (\Exception $exception) {
+            throw new UploadTikTokClipException(username: $socialAccount->getUsername(), message: $exception->getMessage(), errorCode: $exception->getCode());
         }
     }
 
@@ -173,8 +176,8 @@ class TikTokService
             $publishInfoTikTok = PublishInfoTikTok::fromJson($response);
 
             return $publishInfoTikTok;
-        } catch (\Exception $_) {
-            throw new TikTokException(sprintf('[%s]: TikTok API Error : %s', __METHOD__, $_->getMessage()));
+        } catch (\Exception $exception) {
+            throw new TikTokException(sprintf('[SocialAccountUsername(%s)][Method(%s)][Code(%s)] %s', $socialAccount->getUsername(), __METHOD__, $exception->getCode(), $exception->getMessage()));
         }
     }
 
@@ -288,7 +291,7 @@ class TikTokService
     private function checkToken(SocialAccount $socialAccount): AccessToken
     {
         if ($socialAccount->getExpireAt() < new \DateTimeImmutable() && $socialAccount->getRefreshExpireAt() < new \DateTimeImmutable()) {
-            throw new UploadTikTokClipException('Tokens are expired');
+            throw new TikTokException('Tokens are expired');
         }
 
         if ($socialAccount->getExpireAt() < new \DateTimeImmutable()) {

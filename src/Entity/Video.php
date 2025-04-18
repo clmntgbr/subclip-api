@@ -5,12 +5,10 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\VideoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToMany;
-use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -83,7 +81,7 @@ class Video
         $this->name = $name;
         $this->mimeType = $mimeType;
         $this->size = $size;
-        $this->videoPublishes = new Collection();
+        $this->videoPublishes = new ArrayCollection();
     }
 
     public function getLength(): ?int
@@ -248,10 +246,10 @@ class Video
 
     public function getVideoPublish(SocialAccount $account): ?VideoPublish
     {
-        $filtered = $this->videoPublishes->filter(function(VideoPublish $videoPublish) use ($account) {
+        $filtered = $this->videoPublishes->filter(function (VideoPublish $videoPublish) use ($account) {
             return $videoPublish->getSocialAccount()->getId() === $account->getId();
         });
-        
+
         return $filtered->isEmpty() ? null : $filtered->first();
     }
 }

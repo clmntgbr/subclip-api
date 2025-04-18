@@ -47,8 +47,8 @@ class DebugController extends AbstractController
     #[Route('/tiktok', name: 'tiktok', methods: ['GET'])]
     public function tiktok(): JsonResponse
     {
-        $clip = $this->clipRepository->findOneBy(['id' => '8e90c18c-da70-4e1b-8671-30ce14851cd2']);
-        $socialAccount = $this->socialAccountRepository->findOneBy(['id' => 'f760f517-ed69-4a70-8487-ec5ba6b821fd']);
+        $clip = $this->clipRepository->findOneBy(['id' => 'd5b4af9a-730f-41a3-b12d-0e45b1a2f362']);
+        $socialAccount = $this->socialAccountRepository->findOneBy(['id' => 'deedd8b9-60e1-4f50-b7da-90d5b18edb2c']);
 
         $this->messageBus->dispatch(new UploadTikTokClip(
             clipId: $clip->getId(),

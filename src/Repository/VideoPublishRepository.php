@@ -20,10 +20,10 @@ class VideoPublishRepository extends AbstractRepository
     {
         $videoPublish = $this->findOneBy($search);
 
-        if ($videoPublish === null) {
+        if (null === $videoPublish) {
             $videoPublish = new VideoPublish(
                 video: $payload['video'] ?? null,
-                socialAccount: $payload['socialAccount']?? null,
+                socialAccount: $payload['socialAccount'] ?? null,
                 publishId: $payload['publishId'] ?? null,
             );
         }

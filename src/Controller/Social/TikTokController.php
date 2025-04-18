@@ -4,14 +4,15 @@ namespace App\Controller\Social;
 
 use App\Entity\SocialAccount;
 use App\Entity\User;
+use App\Model\TikTok\Callback;
 use App\Protobuf\SocialAccountType;
 use App\Repository\SocialAccountRepository;
 use App\Repository\UserRepository;
 use App\Service\TikTokService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
@@ -64,15 +65,15 @@ class TikTokController extends AbstractController
     }
 
     #[Route('/callback', name: 'callback', methods: ['GET'])]
-    public function callback(Request $request): JsonResponse
+    public function callback(#[MapQueryString()] Callback $callback): JsonResponse
     {
-        $user = $this->userRepository->findOneBy(['state' => $request->query->get('state')]);
+        $user = $this->userRepository->findOneBy(['state' => $callback->state]);
 
         if (null === $user) {
             return new JsonResponse(data: ['message' => 'User not found with this state. Login again.'], status: Response::HTTP_BAD_REQUEST);
         }
 
-        $tokenTikTok = $this->tikTokService->getToken($request->query->get('code'));
+        $tokenTikTok = $this->tikTokService->getToken($callback->code);
 
         $now = new \DateTime('now');
 
@@ -124,6 +125,7 @@ class TikTokController extends AbstractController
         );
 
         $this->socialAccountRepository->save($socialAccount);
+
         return new JsonResponse(data: ['message' => 'TikTok account linked'], status: Response::HTTP_OK);
     }
 }

@@ -11,7 +11,6 @@ use App\Repository\SocialAccountRepository;
 use App\Service\FileService;
 use App\Service\TikTokService;
 use App\UseCase\Command\UpdateClipStatus;
-use App\UseCase\Command\UpdateTikTokToken;
 use App\UseCase\Command\UploadTikTokClip;
 use App\UseCase\Command\UploadTikTokVideo;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -37,20 +36,20 @@ final class UploadTikTokClipHandler
             $clip = $this->clipRepository->findOneBy(['id' => $message->clipId->__toString()]);
 
             if (null === $clip) {
-                throw new UploadTikTokClipException(sprintf('Clip does not exist with id [%s]', $message->clipId->__toString()));
+                throw new UploadTikTokClipException(message: 'TikTokClip does not exist with id '.$message->clipId->__toString());
             }
 
             /** @var ?SocialAccount $socialAccount */
             $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->__toString()]);
 
             if (null === $socialAccount) {
-                throw new UploadTikTokClipException(sprintf('Social Account does not exist with id [%s]', $message->socialAccountId->__toString()));
+                throw new UploadTikTokClipException(message: 'Social Account does not exist with id '.$message->socialAccountId->__toString());
             }
 
             $creatorQuery = $this->tikTokService->getCreatorInfo($socialAccount);
 
             if (!$creatorQuery->hasPrivacyOption(TikTokService::PRIVACY_PRIVATE)) {
-                throw new UploadTikTokClipException('TikTok Error: This Creator cannot publish with the privacy level '.implode(', ', $creatorQuery->getPrivacyOptions()));
+                throw new UploadTikTokClipException(username: $socialAccount->getUsername(), message: 'This Creator cannot publish with the privacy level '.implode(', ', $creatorQuery->getPrivacyOptions()));
             }
 
             $this->messageBus->dispatch(new UpdateClipStatus(

@@ -97,9 +97,9 @@ class Configuration
         $this->subtitleOutlineThickness = ConfigurationSubtitleOutlineThickness::OUTLINE_MEDIUM;
         $this->subtitleShadow = ConfigurationSubtitleShadow::SHADOW_MEDIUM;
         $this->subtitleShadowColor = '#000000';
-        $this->format = VideoFormatStyle::name(VideoFormatStyle::ORIGINAL);
-        $this->split = 1;
-        $this->marginV = 0;
+        $this->format = VideoFormatStyle::name(VideoFormatStyle::NORMAL_916_WITH_BORDERS);
+        $this->split = 4;
+        $this->marginV = 30;
         $this->privacyOptions = TikTokService::PRIVACY_PRIVATE;
     }
 

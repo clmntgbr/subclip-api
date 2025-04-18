@@ -37,7 +37,7 @@ class VideoPublish
     #[Groups([VIDEO_PUBLISH_READ])]
     private string $status;
 
-    #[ORM\Column(type: Types::STRING, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $message;
 
     #[ManyToOne(targetEntity: Video::class, inversedBy: 'videoPublishes')]

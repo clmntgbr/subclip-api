@@ -5,7 +5,6 @@ namespace App\UseCase\CommandHandler;
 use App\Entity\Clip;
 use App\Entity\SocialAccount;
 use App\Entity\Video;
-use App\Entity\VideoPublish;
 use App\Exception\UploadTikTokClipException;
 use App\Protobuf\VideoPublishStatus;
 use App\Repository\ClipRepository;
@@ -43,25 +42,25 @@ final class UploadTikTokVideoHandler
             $clip = $this->clipRepository->findOneBy(['id' => $message->clipId->__toString()]);
 
             if (null === $clip) {
-                throw new UploadTikTokClipException(sprintf('Clip does not exist with id [%s]', $message->clipId->__toString()));
+                throw new UploadTikTokClipException(message: 'TikTokClip does not exist with id '.$message->clipId->__toString());
             }
 
             /** @var ?Video $video */
             $video = $this->videoRepository->findOneBy(['id' => $message->videoId->__toString()]);
 
             if (null === $video) {
-                throw new UploadTikTokClipException(sprintf('TikTok video does not exist with id [%s]', $message->videoId->__toString()));
+                throw new UploadTikTokClipException(message: 'TikTok video does not exist with id '.$message->videoId->__toString());
             }
 
             /** @var ?SocialAccount $socialAccount */
             $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->__toString()]);
 
             if (null === $socialAccount) {
-                throw new UploadTikTokClipException(sprintf('Social Account does not exist with id [%s]', $message->socialAccountId->__toString()));
+                throw new UploadTikTokClipException(message: 'Social Account does not exist with id '.$message->socialAccountId->__toString());
             }
 
             if ($video->getLength() > $message->maxDuration) {
-                throw new UploadTikTokClipException('TikTok Error: The video is too long. Max length is '.$video->getLength().' seconds');
+                throw new UploadTikTokClipException(username: $socialAccount->getUsername(), message: 'The video is too long. Max length is '.$video->getLength().' seconds');
             }
 
             $localPath = $this->fileService->downloadFromS3(
@@ -79,16 +78,17 @@ final class UploadTikTokVideoHandler
             );
 
             if (!$publishInfoTikTok->isSuccess()) {
-                throw new UploadTikTokClipException($publishInfoTikTok->getErrorMessage());
+                throw new UploadTikTokClipException(username: $socialAccount->getUsername(), errorCode: $publishInfoTikTok->getErrorCode(), message: $publishInfoTikTok->getErrorMessage());
             }
 
             $videoPublish = $this->videoPublishRepository->createOrUpdate([
-                'video' => $video, 
-                'socialAccount' => $socialAccount, 
+                'video' => $video,
+                'socialAccount' => $socialAccount,
             ], [
-                'video' => $video, 
-                'socialAccount' => $socialAccount, 
-                'publishId' => $publishInfoTikTok->getPublishId()
+                'video' => $video,
+                'socialAccount' => $socialAccount,
+                'publishId' => $publishInfoTikTok->getPublishId(),
+                'message' => null,
             ]);
 
             $video->addVideoPublish($videoPublish);

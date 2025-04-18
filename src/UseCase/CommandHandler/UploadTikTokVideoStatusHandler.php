@@ -20,6 +20,8 @@ use Symfony\Component\Messenger\Stamp\DelayStamp;
 #[AsMessageHandler]
 final class UploadTikTokVideoStatusHandler
 {
+    public const DELAY = 60000;
+
     public function __construct(
         private VideoRepository $videoRepository,
         private SocialAccountRepository $socialAccountRepository,
@@ -35,14 +37,14 @@ final class UploadTikTokVideoStatusHandler
             $video = $this->videoRepository->findOneBy(['id' => $message->videoId->__toString()]);
 
             if (null === $video) {
-                throw new UploadTikTokClipException(sprintf('TikTok video does not exist with id [%s]', $message->videoId->__toString()));
+                throw new UploadTikTokClipException(message: 'TikTok video does not exist with id '.$message->videoId->__toString());
             }
 
             /** @var ?SocialAccount $socialAccount */
             $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->__toString()]);
 
             if (null === $socialAccount) {
-                throw new UploadTikTokClipException(sprintf('Social Account does not exist with id [%s]', $message->socialAccountId->__toString()));
+                throw new UploadTikTokClipException(message: 'Social Account does not exist with id '.$message->socialAccountId->__toString());
             }
 
             $publishStatus = $this->tikTokService->getPublishStatus(
@@ -55,7 +57,7 @@ final class UploadTikTokVideoStatusHandler
                     videoId: $video->getId(),
                     clipId: $message->clipId,
                     status: $publishStatus->getStatus(),
-                    message: $publishStatus->getErrorMessage(),
+                    message: sprintf('[SocialAccountUsername(%s)][Method(%s)][Line(%s)][Code(%s)] %s', $socialAccount->getUsername(), __METHOD__, __LINE__, $publishStatus->getErrorCode(), $publishStatus->getErrorMessage()),
                     socialAccountId: $socialAccount->getId(),
                 ));
 
@@ -67,7 +69,7 @@ final class UploadTikTokVideoStatusHandler
                 socialAccountId: $socialAccount->getId(),
                 clipId: $message->clipId,
                 checkId: uniqid(),
-            ), [new AmqpStamp('async'), new DelayStamp(30000)]);
+            ), [new AmqpStamp('async'), new DelayStamp(self::DELAY)]);
 
             return;
         } catch (\Exception $exception) {

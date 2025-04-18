@@ -59,7 +59,7 @@ class PublishStatusTikTok
                 $reason = $json['data']['fail_reason'];
             }
 
-            return new self(false, '', '', $json['data']['status'], $reason);
+            return new self(false, $json['data']['status'], '', $json['data']['video_pull_failed'], $reason);
         }
 
         $publicPostId = '';

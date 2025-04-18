@@ -35,7 +35,7 @@ final class UpdateTikTokTokenHandler
         $refreshExpireAt->modify(sprintf('+%s seconds', $tokenTikTok->getRefreshExpiresIn()));
 
         $socialAccount->updateToken(
-            accessToken: uniqid(),
+            accessToken: $tokenTikTok->getAccessToken(),
             refreshToken: $tokenTikTok->getRefreshToken(),
             expireAt: $expireAt,
             refreshExpireAt: $refreshExpireAt,

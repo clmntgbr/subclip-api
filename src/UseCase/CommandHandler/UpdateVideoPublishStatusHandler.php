@@ -4,13 +4,11 @@ namespace App\UseCase\CommandHandler;
 
 use App\Entity\SocialAccount;
 use App\Entity\Video;
-use App\Entity\VideoPublish;
 use App\Model\TikTok\PublishStatusTikTok;
 use App\Protobuf\VideoPublishStatus;
 use App\Repository\SocialAccountRepository;
 use App\Repository\VideoPublishRepository;
 use App\Repository\VideoRepository;
-use App\Service\TikTokService;
 use App\UseCase\Command\RemoveTemporaryVideo;
 use App\UseCase\Command\UpdateVideoPublishStatus;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -44,11 +42,11 @@ final class UpdateVideoPublishStatusHandler
         }
 
         $videoPublish = $this->videoPublishRepository->createOrUpdate([
-            'video' => $video, 
-            'socialAccount' => $socialAccount, 
+            'video' => $video,
+            'socialAccount' => $socialAccount,
         ], [
-            'video' => $video, 
-            'socialAccount' => $socialAccount, 
+            'video' => $video,
+            'socialAccount' => $socialAccount,
         ]);
 
         if ($video->getVideoPublish($socialAccount)) {
@@ -59,7 +57,7 @@ final class UpdateVideoPublishStatusHandler
             $videoPublish->updateStatusError($message->message);
         }
 
-        if ($message->status === PublishStatusTikTok::PUBLISH_COMPLETE) {
+        if (PublishStatusTikTok::PUBLISH_COMPLETE === $message->status) {
             $videoPublish->updateStatusPublished($message->message);
         }
 

@@ -79,7 +79,7 @@ class PublishInfoTikTok
 
     public function getErrorCode()
     {
-        return $this->errorCode;
+        return (string) $this->errorCode;
     }
 
     public function getErrorMessage()
