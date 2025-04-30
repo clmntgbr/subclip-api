@@ -23,7 +23,7 @@ final class RemoveTemporaryVideoHandler
     public function __invoke(RemoveTemporaryVideo $message): void
     {
         $this->fileService->removeLocalFile(
-            filePath: sprintf('public/tmp/%s/%s/%s', $message->userId->__toString(), $message->clipId->__toString(), $message->videoName),
+            filePath: sprintf('public/tmp/%s/%s/%s', $message->userId->toString(), $message->clipId->toString(), $message->videoName),
         );
     }
 }

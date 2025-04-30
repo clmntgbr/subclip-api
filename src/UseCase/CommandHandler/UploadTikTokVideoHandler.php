@@ -39,24 +39,24 @@ final class UploadTikTokVideoHandler
     {
         try {
             /** @var ?Clip $clip */
-            $clip = $this->clipRepository->findOneBy(['id' => $message->clipId->__toString()]);
+            $clip = $this->clipRepository->findOneBy(['id' => $message->clipId->toString()]);
 
             if (null === $clip) {
-                throw new UploadTikTokClipException(message: 'TikTokClip does not exist with id '.$message->clipId->__toString());
+                throw new UploadTikTokClipException(message: 'TikTokClip does not exist with id '.$message->clipId->toString());
             }
 
             /** @var ?Video $video */
-            $video = $this->videoRepository->findOneBy(['id' => $message->videoId->__toString()]);
+            $video = $this->videoRepository->findOneBy(['id' => $message->videoId->toString()]);
 
             if (null === $video) {
-                throw new UploadTikTokClipException(message: 'TikTok video does not exist with id '.$message->videoId->__toString());
+                throw new UploadTikTokClipException(message: 'TikTok video does not exist with id '.$message->videoId->toString());
             }
 
             /** @var ?SocialAccount $socialAccount */
-            $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->__toString()]);
+            $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->toString()]);
 
             if (null === $socialAccount) {
-                throw new UploadTikTokClipException(message: 'Social Account does not exist with id '.$message->socialAccountId->__toString());
+                throw new UploadTikTokClipException(message: 'Social Account does not exist with id '.$message->socialAccountId->toString());
             }
 
             if ($video->getLength() > $message->maxDuration) {

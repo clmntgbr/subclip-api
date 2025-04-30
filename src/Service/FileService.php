@@ -14,7 +14,7 @@ class FileService
 
     public function downloadFromS3(Uuid $userId, Uuid $clipId, string $fileName): string
     {
-        $path = sprintf('%s/%s/%s', $userId->__toString(), $clipId->__toString(), $fileName);
+        $path = sprintf('%s/%s/%s', $userId->toString(), $clipId->toString(), $fileName);
         $localPath = sprintf('public/tmp/%s', $path);
 
         $dirPath = dirname($localPath);

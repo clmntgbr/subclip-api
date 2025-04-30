@@ -17,7 +17,7 @@ final class UpdateApiKeyHandler
 
     public function __invoke(UpdateApiKey $message): void
     {
-        $user = $this->userRepository->findOneBy(['id' => $message->userId->__toString()]);
+        $user = $this->userRepository->findOneBy(['id' => $message->userId->toString()]);
 
         if (null === $user) {
             return;

@@ -21,6 +21,7 @@
         "hautelook/alice-bundle": ">=2.15.0",
         "league/flysystem-aws-s3-v3": "^3.29",
         "league/flysystem-bundle": "^3.4",
+        "lexik/jwt-authentication-bundle": "^3.1",
         "nelmio/cors-bundle": ">=2.5",
         "php-amqplib/rabbitmq-bundle": "^2.17",
         "runtime/frankenphp-symfony": ">=0.2",

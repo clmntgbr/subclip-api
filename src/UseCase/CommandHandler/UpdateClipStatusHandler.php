@@ -19,10 +19,10 @@ final class UpdateClipStatusHandler
     public function __invoke(UpdateClipStatus $message): void
     {
         /** @var ?Clip $clip */
-        $clip = $this->clipRepository->findOneBy(['id' => $message->clipId->__toString()]);
+        $clip = $this->clipRepository->findOneBy(['id' => $message->clipId->toString()]);
 
         if (null === $clip) {
-            throw new \Exception(sprintf('Clip does not exist with id [%s]', $message->clipId->__toString()));
+            throw new \Exception(sprintf('Clip does not exist with id [%s]', $message->clipId->toString()));
         }
 
         if ($message->status === ClipStatus::name(ClipStatus::CLIP_UPLOADING)) {

@@ -71,10 +71,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'state', type: Types::STRING, length: 180, nullable: true, unique: true)]
     private string $state;
 
-    #[ORM\OneToOne(targetEntity: ApiKey::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(name: 'api_key_id', referencedColumnName: 'id', nullable: true)]
-    private ?ApiKey $apiKey = null;
-
     #[OneToMany(targetEntity: SocialAccount::class, mappedBy: 'user')]
     #[Groups([USER_READ])]
     private Collection $socialAccounts;
@@ -126,18 +122,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         $this->plainPassword = null;
-    }
-
-    public function getApiKey(): ?ApiKey
-    {
-        return $this->apiKey;
-    }
-
-    public function setApiKey(?ApiKey $apiKey): static
-    {
-        $this->apiKey = $apiKey;
-
-        return $this;
     }
 
     public function getId(): ?Uuid

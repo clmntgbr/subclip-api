@@ -57,8 +57,8 @@ class ProtobufService
     {
         $protobuf = new ProtobufClip();
 
-        $protobuf->setId($clip->getId()->__toString());
-        $protobuf->setUserId($clip->getUser()->getId()->__toString());
+        $protobuf->setId($clip->getId()->toString());
+        $protobuf->setUserId($clip->getUser()->getId()->toString());
         $protobuf->setStatus($clip->getStatus());
 
         if ($clip->getCover()) {
@@ -154,7 +154,7 @@ class ProtobufService
         }
 
         if ($video->getId()) {
-            $protobuf->setId($video->getId()->__toString());
+            $protobuf->setId($video->getId()->toString());
         }
 
         if ($video->getOriginalName()) {
@@ -265,7 +265,7 @@ class ProtobufService
     {
         $protobuf = new ProtobufConfiguration();
 
-        $protobuf->setId($configuration->getId()->__toString());
+        $protobuf->setId($configuration->getId()->toString());
         $protobuf->setSubtitleFont($configuration->getSubtitleFont());
         $protobuf->setSubtitleSize($configuration->getSubtitleSize());
         $protobuf->setFormat($configuration->getFormat());

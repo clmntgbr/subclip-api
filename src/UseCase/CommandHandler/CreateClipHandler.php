@@ -3,7 +3,6 @@
 namespace App\UseCase\CommandHandler;
 
 use App\Entity\Clip;
-use App\Entity\Configuration;
 use App\Entity\Video;
 use App\Message\TaskMessage;
 use App\Repository\ClipRepository;
@@ -30,10 +29,10 @@ final class CreateClipHandler
 
     public function __invoke(CreateClip $message): void
     {
-        $user = $this->userRepository->findOneBy(['id' => $message->userId->__toString()]);
+        $user = $this->userRepository->findOneBy(['id' => $message->userId->toString()]);
 
         if (null === $user) {
-            throw new \Exception(sprintf('User does not exist with id [%s]', $message->userId->__toString()));
+            throw new \Exception(sprintf('User does not exist with id [%s]', $message->userId->toString()));
         }
 
         $videoId = Uuid::v4();
@@ -47,10 +46,10 @@ final class CreateClipHandler
         ));
 
         /** @var ?Video $video */
-        $video = $this->videoRepository->findOneBy(['id' => $videoId->__toString()]);
+        $video = $this->videoRepository->findOneBy(['id' => $videoId->toString()]);
 
         if (null === $video) {
-            throw new \Exception(sprintf('Video does not exist with id [%s]', $$videoId->__toString()));
+            throw new \Exception(sprintf('Video does not exist with id [%s]', $$videoId->toString()));
         }
 
         $clip = new Clip(

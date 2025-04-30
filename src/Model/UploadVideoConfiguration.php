@@ -3,10 +3,6 @@
 namespace App\Model;
 
 use App\Entity\Configuration;
-use App\Protobuf\ConfigurationSubtitleFont;
-use App\Protobuf\ConfigurationSubtitleOutlineThickness;
-use App\Protobuf\ConfigurationSubtitleShadow;
-use App\Protobuf\VideoFormatStyle;
 
 class UploadVideoConfiguration
 {
@@ -46,63 +42,63 @@ class UploadVideoConfiguration
     public function toEntity(): Configuration
     {
         $configuration = new Configuration();
-        
-        if ($this->subtitleFont !== null) {
+
+        if (null !== $this->subtitleFont) {
             $configuration->setSubtitleFont($this->subtitleFont);
         }
-        
-        if ($this->subtitleSize !== null) {
+
+        if (null !== $this->subtitleSize) {
             $configuration->setSubtitleSize($this->subtitleSize);
         }
-        
-        if ($this->subtitleColor !== null) {
+
+        if (null !== $this->subtitleColor) {
             $configuration->setSubtitleColor($this->subtitleColor);
         }
-        
-        if ($this->subtitleBold !== null) {
+
+        if (null !== $this->subtitleBold) {
             $configuration->setSubtitleBold($this->subtitleBold);
         }
-        
-        if ($this->subtitleItalic !== null) {
+
+        if (null !== $this->subtitleItalic) {
             $configuration->setSubtitleItalic($this->subtitleItalic);
         }
-        
-        if ($this->subtitleUnderline !== null) {
+
+        if (null !== $this->subtitleUnderline) {
             $configuration->setSubtitleUnderline($this->subtitleUnderline);
         }
-        
-        if ($this->subtitleOutlineColor !== null) {
+
+        if (null !== $this->subtitleOutlineColor) {
             $configuration->setSubtitleOutlineColor($this->subtitleOutlineColor);
         }
-        
-        if ($this->subtitleOutlineThickness !== null) {
+
+        if (null !== $this->subtitleOutlineThickness) {
             $configuration->setSubtitleOutlineThickness($this->subtitleOutlineThickness);
         }
-        
-        if ($this->subtitleShadow !== null) {
+
+        if (null !== $this->subtitleShadow) {
             $configuration->setSubtitleShadow($this->subtitleShadow);
         }
-        
-        if ($this->subtitleShadowColor !== null) {
+
+        if (null !== $this->subtitleShadowColor) {
             $configuration->setSubtitleShadowColor($this->subtitleShadowColor);
         }
-        
-        if ($this->format !== null) {
+
+        if (null !== $this->format) {
             $configuration->setFormat($this->format);
         }
-        
-        if ($this->split !== null) {
+
+        if (null !== $this->split) {
             $configuration->setSplit($this->split);
         }
-        
-        if ($this->marginV !== null) {
+
+        if (null !== $this->marginV) {
             $configuration->setMarginV($this->marginV);
         }
-        
-        if ($this->privacyOptions !== null) {
+
+        if (null !== $this->privacyOptions) {
             $configuration->setPrivacyOptions($this->privacyOptions);
         }
-        
+
         return $configuration;
     }
 }

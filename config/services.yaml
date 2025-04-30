@@ -5,6 +5,7 @@ services:
         autowire: true
         autoconfigure: true
         bind:
+            string $secretKey: '%env(JWT_PASSPHRASE)%'
             string $rabbitMqTransportDsn: '%env(MESSENGER_TRANSPORT_DSN)%'
             string $tiktokClientKey: '%env(TIKTOK_CLIENT_KEY)%'
             string $tiktokClientSecret: '%env(TIKTOK_CLIENT_SECRET)%'
@@ -42,3 +43,8 @@ services:
 
     App\Serializer\ValueObjectNormalizer:
         tags: [serializer.normalizer]
+
+    app.event.authentication_success_listener:
+        class: App\EventListener\AuthenticationSuccessListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }

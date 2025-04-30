@@ -33,17 +33,17 @@ final class UploadTikTokClipHandler
     {
         try {
             /** @var ?Clip $clip */
-            $clip = $this->clipRepository->findOneBy(['id' => $message->clipId->__toString()]);
+            $clip = $this->clipRepository->findOneBy(['id' => $message->clipId->toString()]);
 
             if (null === $clip) {
-                throw new UploadTikTokClipException(message: 'TikTokClip does not exist with id '.$message->clipId->__toString());
+                throw new UploadTikTokClipException(message: 'TikTokClip does not exist with id '.$message->clipId->toString());
             }
 
             /** @var ?SocialAccount $socialAccount */
-            $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->__toString()]);
+            $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->toString()]);
 
             if (null === $socialAccount) {
-                throw new UploadTikTokClipException(message: 'Social Account does not exist with id '.$message->socialAccountId->__toString());
+                throw new UploadTikTokClipException(message: 'Social Account does not exist with id '.$message->socialAccountId->toString());
             }
 
             $creatorQuery = $this->tikTokService->getCreatorInfo($socialAccount);

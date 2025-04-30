@@ -18,7 +18,7 @@ final class UpdateTikTokTokenHandler
 
     public function __invoke(UpdateTikTokToken $message): void
     {
-        $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->__toString()]);
+        $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->toString()]);
 
         if (null === $socialAccount) {
             return;

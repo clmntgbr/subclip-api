@@ -22,7 +22,7 @@ final class TaskMessageHandler
 
     public function __invoke(TaskMessage $message): void
     {
-        $clip = $this->clipRepository->findOneBy(['id' => $message->clipId->__toString()]);
+        $clip = $this->clipRepository->findOneBy(['id' => $message->clipId->toString()]);
 
         if (null === $clip) {
             return;

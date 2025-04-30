@@ -28,17 +28,17 @@ final class UpdateVideoPublishStatusHandler
     public function __invoke(UpdateVideoPublishStatus $message): void
     {
         /** @var ?Video $video */
-        $video = $this->videoRepository->findOneBy(['id' => $message->videoId->__toString()]);
+        $video = $this->videoRepository->findOneBy(['id' => $message->videoId->toString()]);
 
         if (null === $video) {
-            throw new \Exception(sprintf('Video does not exist with id [%s]', $message->videoId->__toString()));
+            throw new \Exception(sprintf('Video does not exist with id [%s]', $message->videoId->toString()));
         }
 
         /** @var ?SocialAccount $socialAccount */
-        $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->__toString()]);
+        $socialAccount = $this->socialAccountRepository->findOneBy(['id' => $message->socialAccountId->toString()]);
 
         if (null === $socialAccount) {
-            throw new \Exception(sprintf('Social account does not exist with id [%s]', $message->socialAccountId->__toString()));
+            throw new \Exception(sprintf('Social account does not exist with id [%s]', $message->socialAccountId->toString()));
         }
 
         $videoPublish = $this->videoPublishRepository->createOrUpdate([
