@@ -186,7 +186,7 @@ class TikTokService
         $accessToken = $this->checkToken($socialAccount);
 
         $headers = [
-            'Authorization: Bearer '.$accessToken->toString(),
+            'Authorization: Bearer '.$accessToken->__toString(),
         ];
 
         return self::post($url, $data, $headers, true);
@@ -245,7 +245,7 @@ class TikTokService
         $accessToken = $this->checkToken($socialAccount);
 
         $headers = [
-            'Authorization: Bearer '.$accessToken->toString(),
+            'Authorization: Bearer '.$accessToken->__toString(),
         ];
 
         return self::get($url, $headers);
