@@ -7,13 +7,11 @@ meta {
 post {
   url: {{api_url}}api/video/upload
   body: multipartForm
-  auth: apikey
+  auth: bearer
 }
 
-auth:apikey {
-  key: X-API-KEY
-  value: {{token}}
-  placement: header
+auth:bearer {
+  token: {{token}}
 }
 
 body:multipart-form {

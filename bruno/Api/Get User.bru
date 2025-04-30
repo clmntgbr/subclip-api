@@ -7,11 +7,9 @@ meta {
 get {
   url: {{api_url}}api/me
   body: none
-  auth: apikey
+  auth: bearer
 }
 
-auth:apikey {
-  key: X-API-KEY
-  value: {{token}}
-  placement: header
+auth:bearer {
+  token: {{token}}
 }
