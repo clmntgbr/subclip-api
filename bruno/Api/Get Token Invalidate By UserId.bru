@@ -1,0 +1,23 @@
+meta {
+  name: Get Token Invalidate By UserId
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{api_url}}token/invalidate
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  { "email": "clement@gmail.com", "password": "clement" }
+}
+
+script:post-response {
+  bru.setEnvVar("token", res.body.token);
+}

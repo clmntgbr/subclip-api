@@ -6,4 +6,9 @@ App\Entity\User:
     lastname: "<lastname('Random')>"
     plain_password: "<plainPassword('clement')>"
     roles: ["ROLE_ADMIN"]
-    api_key: '@api_key_1'
+  user_2:
+    id: 'ca1c6288-fdcf-4e5a-98fb-6f8fbfc8477e'
+    email: "<email('user@gmail.com')>"
+    firstname: "<firstname('User')>"
+    lastname: "<lastname('Random')>"
+    plain_password: "<plainPassword('random')>"

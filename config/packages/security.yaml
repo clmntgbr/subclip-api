@@ -16,17 +16,16 @@ security:
             provider: app_user_provider
             entry_point: jwt
             json_login:
-                check_path: /login
+                check_path: /token
                 username_path: email
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
-            logout:
-                path: api_token_invalidate
     access_control:
         - { path: ^/api/tiktok/callback, roles: PUBLIC_ACCESS, methods: GET }
-        - { path: ^/login, roles: PUBLIC_ACCESS, methods: POST }
+        - { path: ^/token/invalidate, roles: ROLE_USER, methods: GET }
+        - { path: ^/token, roles: PUBLIC_ACCESS, methods: POST }
         - { path: ^/api/status, roles: PUBLIC_ACCESS, methods: GET }
         - { path: ^/api, roles: ROLE_USER }
 
