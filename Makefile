@@ -98,3 +98,6 @@ consume:
 
 consume-async:
 	$(PHP) php bin/console messenger:consume async -vv
+
+ngrok: 
+	ngrok http --url=choice-pretty-leech.ngrok-free.app --host-header=localhost https://localhost:443
